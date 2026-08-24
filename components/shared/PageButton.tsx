@@ -8,6 +8,7 @@ interface PageButtonProps {
   light?: boolean;
   size?: ButtonSize;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const PageButton = ({
@@ -16,6 +17,7 @@ const PageButton = ({
   light,
   size = "md",
   onClick,
+  disabled = false,
 }: PageButtonProps) => {
   const sizeStyles = {
     sm: "px-3 py-1.5 text-xs rounded-xl",
@@ -32,21 +34,18 @@ const PageButton = ({
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className={`
         transition-all duration-300 ease-out
-        cursor-pointer
         flex items-center gap-2
-        hover:scale-[1.03]
         justify-center
         ${sizeStyles[size]}
         ${
-          light
-            ? "bg-white border border-black text-black hover:bg-gray-50"
-            : `
-              bg-primary
-              hover:shadow-[0_0_20px_rgba(34,197,94,0.6)]
-              hover:bg-primary
-            `
+          disabled
+            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+            : light
+              ? "bg-white border border-black text-black hover:bg-gray-50 hover:scale-[1.03] cursor-pointer"
+              : "bg-primary hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] hover:bg-primary hover:scale-[1.03] cursor-pointer"
         }
       `}
     >

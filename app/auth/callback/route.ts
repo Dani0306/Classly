@@ -38,7 +38,7 @@ export async function GET(request: Request) {
   const now = new Date();
 
   const appUser: AppUser = {
-    // id: user.id,
+    id: user.id,
     name:
       (user.user_metadata.full_name as string) ||
       (user.user_metadata.name as string) ||

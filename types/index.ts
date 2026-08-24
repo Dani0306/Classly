@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react";
+
 export type Plan = "starter" | "pro" | "team";
 
 export type AppUser = {
@@ -23,34 +25,81 @@ export type Class = {
   updated_at: string;
 };
 
-export type NewClass = Omit<Class, "id" | "created_at" | "updated_at">;
+export type NewClass = Omit<
+  Class,
+  "id" | "created_at" | "updated_at" | "user_id"
+>;
 
 export type UpdateClass = Partial<
   Omit<Class, "id" | "user_id" | "created_at" | "updated_at">
 >;
 
-//* NOTE TYPE
+// * CONTENT TYPE
 
-export type NoteType = "literal" | "explanation" | "reminder" | "homework";
-export type NotePriority = "low" | "medium" | "high";
+export type ContentType =
+  | "note"
+  | "summarize"
+  | "reminder"
+  | "homework"
+  | "quiz"
+  | "diagram";
 
-export type Note = {
+export type ContentPriority = "low" | "medium" | "high";
+
+export type Content = {
   id: string;
   user_id: string;
   class_id: string;
-  type: NoteType;
+  type: ContentType;
   title: string;
   content: string;
   ai_output?: string;
   due_date?: string;
-  priority?: NotePriority;
-  is_completed?: boolean;
+  priority?: ContentPriority;
   image_urls?: string[];
+  is_completed?: boolean;
   created_at: string;
   updated_at: string;
 };
 
-export type NewNote = Omit<Note, "id" | "created_at" | "updated_at">;
-export type UpdateNote = Partial<
-  Omit<Note, "id" | "user_id" | "class_id" | "created_at" | "updated_at">
+export type NewContent = Omit<
+  Content,
+  "id" | "created_at" | "updated_at" | "image_urls" | "priority" | "user_id"
 >;
+
+export type UpdateContent = Partial<
+  Omit<Content, "id" | "user_id" | "class_id" | "created_at" | "updated_at">
+>;
+
+// * QUIZ TYPE
+
+export type QuizQuestion = {
+  question: string;
+  answers: string[];
+  correct_answer: string;
+  selected_answer?: string;
+};
+
+// * SHARED
+
+export interface SearchParamProps {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+// * Diagram type
+
+export type DiagramType =
+  | "flowchart"
+  | "mindmap"
+  | "orgchart"
+  | "venn"
+  | "timeline"
+  | "comparison"
+  | "cycle"
+  | "pyramid";
+
+export type DropDownMenuOptions = Array<{
+  label: string;
+  fn: () => void;
+  icon?: LucideIcon;
+}>;

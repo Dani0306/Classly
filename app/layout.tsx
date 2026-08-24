@@ -4,8 +4,9 @@ import "./globals.css";
 import AppModalProvider from "@/providers/AppModalProvider";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import ToastProvider from "@/providers/ToastProvider";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const sora = localFont({
   src: [
@@ -68,7 +69,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("light", "font-sans", geist.variable)}>
       <body className={`${sora.variable}`}>
-        <AppModalProvider>{children}</AppModalProvider>
+        <ToastProvider>
+          <AppModalProvider>{children}</AppModalProvider>
+        </ToastProvider>
       </body>
     </html>
   );

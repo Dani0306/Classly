@@ -1,11 +1,14 @@
-export const colors = {
-  green: "#22c55e",
-  softGreen: "#86efac",
-  softRed: "#fca5a5",
-  softBlue: "#bfdbfe",
-  softPurple: "#d8b4fe",
-  softYellow: "#fde68a",
-  softPink: "#fbcfe8",
-} as const;
+export type ClassColor = {
+  name: string;
+  color: string;
+};
 
-export type ClassColorKey = keyof typeof colors;
+export const classColors: ClassColor[] = [
+  { name: "green", color: "#22c55e" },
+  { name: "softGreen", color: "#86efac" },
+  { name: "softRed", color: "#fca5a5" },
+  { name: "softBlue", color: "#bfdbfe" },
+  { name: "softPurple", color: "#d8b4fe" },
+  { name: "softYellow", color: "#fde68a" },
+  { name: "softPink", color: "#fbcfe8" },
+];

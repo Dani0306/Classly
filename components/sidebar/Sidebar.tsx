@@ -7,11 +7,19 @@ import Logo from "../shared/Logo";
 import { UserCard } from "../user/UserCard";
 import { User } from "@supabase/supabase-js";
 
-export default function Sidebar({ user }: { user: User }) {
+export default function Sidebar({
+  user,
+  isMobile = false,
+}: {
+  user: User;
+  isMobile?: boolean;
+}) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex flex-col h-full w-70 py-4 bg-[#ccc]/30">
+    <aside
+      className={`flex flex-col h-full w-70 pt-16 md:pt-4 pb-4 bg-[#ccc]/30`}
+    >
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 h-14 shrink-0">
         <Logo />

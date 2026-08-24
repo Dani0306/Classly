@@ -11,21 +11,25 @@ import {
   Compass,
   Stethoscope,
   MoreHorizontal,
+  LucideIcon,
 } from "lucide-react";
 
-export const classIcons = {
-  bookOpen: BookOpen,
-  flask: FlaskConical,
-  sigma: Sigma,
-  globe: Globe,
-  palette: Palette,
-  scrollText: ScrollText,
-  microscope: Microscope,
-  terminal: Terminal,
-  brain: Brain,
-  compass: Compass,
-  stethoscope: Stethoscope,
-  more: MoreHorizontal,
-} as const;
+export type ClassIcon = {
+  name: string;
+  icon: LucideIcon;
+};
 
-export type ClassIconKey = keyof typeof classIcons;
+export const classIcons: ClassIcon[] = [
+  { name: "bookOpen", icon: BookOpen },
+  { name: "flask", icon: FlaskConical },
+  { name: "sigma", icon: Sigma },
+  { name: "globe", icon: Globe },
+  { name: "palette", icon: Palette },
+  { name: "scrollText", icon: ScrollText },
+  { name: "microscope", icon: Microscope },
+  { name: "terminal", icon: Terminal },
+  { name: "brain", icon: Brain },
+  { name: "compass", icon: Compass },
+  { name: "stethoscope", icon: Stethoscope },
+  { name: "more", icon: MoreHorizontal },
+];

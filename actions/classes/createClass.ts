@@ -1,7 +1,8 @@
-"use sever";
+"use server";
 
 import { NewClass } from "@/types";
 import { createServerSupabase } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 
 export const createClass = async (newClass: NewClass) => {
   const supabase = await createServerSupabase();
@@ -22,6 +23,8 @@ export const createClass = async (newClass: NewClass) => {
     console.error("Failed to create a class: ", error.message);
     throw new Error("Failed to create the class.");
   }
+
+  revalidatePath("app/classes");
 
   return data;
 };
