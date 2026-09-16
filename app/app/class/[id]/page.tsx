@@ -3,7 +3,6 @@ import ClassContent from "@/components/class/ClassContent";
 import ErrorScreen from "@/components/shared/ErrorScreen";
 import { ContentType } from "@/types";
 import { tryCatch } from "@/utils/tryCatch";
-import React from "react";
 
 type PageProps = {
   params: Promise<{ id: string }>;

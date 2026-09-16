@@ -2,6 +2,14 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@utility scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -14,7 +22,7 @@
   --primary-hover: #16a34a;
   --primary-foreground: #ffffff;
 
-  /* ========== SOFT GREEN SURFACES ========== */
+  /* ========== SOFT GREEN SURFACES =========s= */
   --surface-green: #e8f5ec;
   --surface-green-strong: #d7ecde;
   --surface: #ffffff;

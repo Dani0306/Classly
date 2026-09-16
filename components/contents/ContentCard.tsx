@@ -5,8 +5,9 @@ import { useModal } from "@/providers/AppModalProvider";
 import { Content, ContentType } from "@/types";
 import { cutText, formatDate, formatText } from "@/utils/fn";
 import ModalContainer from "../modal/ModalContainer";
-import ContentModal from "./ContentModal";
 import AIOutputSmall from "../ai/AIOutputSmall";
+import QuizComponent from "../quiz/QuizComponent";
+import ShowContent from "./ShowContent";
 
 export const TypeBadge = ({
   type,
@@ -39,7 +40,13 @@ const ContentCard = ({ content }: { content: Content }) => {
   const handleClick = () => {
     openModal(
       <ModalContainer defaultPadding={false}>
-        <ContentModal content={content} />
+        <>
+          {content.type === "quiz" ? (
+            <QuizComponent content={content} />
+          ) : (
+            <ShowContent content={content} />
+          )}
+        </>
       </ModalContainer>,
     );
   };

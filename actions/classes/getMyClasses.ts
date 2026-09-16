@@ -15,7 +15,7 @@ export const getMyClasses = async (search?: string) => {
     .from("classes")
     .select("*")
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: true });
 
   if (search && search.trim() !== "") {
     const term = search.trim();

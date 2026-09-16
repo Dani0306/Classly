@@ -1,5 +1,6 @@
 // * FORMAT TO COP
 
+import { addDays, setHours, setMinutes, startOfWeek } from "date-fns";
 import { QuizQuestion } from "@/types";
 
 export function calculateStarFillPercentages(rating: number) {
@@ -87,3 +88,19 @@ export const cleanMermaidCode = (raw: string): string => {
     .replace(/```/g, "")
     .trim();
 };
+
+//* AT
+
+const monday = startOfWeek(new Date(), { weekStartsOn: 1 });
+
+export function at(dayOffset: number, hour: number, minute = 0) {
+  return setMinutes(setHours(addDays(monday, dayOffset), hour), minute);
+}
+
+export function getHours(time: string) {
+  return Number(time.split(":")[0]);
+}
+
+export function getMinutes(time: string) {
+  return Number(time.split(":")[1]);
+}

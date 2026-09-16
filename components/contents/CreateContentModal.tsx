@@ -1,5 +1,5 @@
 import { ContentType } from "@/types";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import SelectContentTypeView from "./SelectContentTypeView";
 import GrammarCorrection from "../grammar/CreateGrammarCorrection";
 import CreateSummary from "../summary/CreateSummary";
@@ -13,14 +13,16 @@ const CreateContentModal = ({ classId }: { classId: string }) => {
   const [contentType, setContentType] = useState<ContentType>("note");
   const [currentSection, setCurrentSection] = useState(1);
   const contentToDisplay = () =>
-    ({
-      note: <GrammarCorrection classId={classId} />,
-      summarize: <CreateSummary classId={classId} />,
-      reminder: <CreateReminder classId={classId} />,
-      homework: <CreateHomework classId={classId} />,
-      quiz: <CreateQuiz classId={classId} />,
-      diagram: <CreateDiagram classId={classId} />,
-    })[contentType];
+    (
+      {
+        note: <GrammarCorrection classId={classId} />,
+        summarize: <CreateSummary classId={classId} />,
+        reminder: <CreateReminder classId={classId} />,
+        homework: <CreateHomework classId={classId} />,
+        quiz: <CreateQuiz classId={classId} />,
+        diagram: <CreateDiagram classId={classId} />,
+      } as Partial<Record<ContentType, ReactNode>>
+    )[contentType];
 
   return (
     <div className="flex h-full flex-col lg:flex-row space-x-4 space-y-6">

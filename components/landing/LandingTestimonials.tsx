@@ -36,8 +36,7 @@ const LandingTestimonials = () => {
                   fill
                   src={item.image}
                   alt="Customer image"
-                  className=" rounded-full"
-                  objectFit="cover"
+                  className="rounded-full object-cover"
                 />
               </div>
               <div className="flex flex-col space-y-1">
@@ -54,7 +53,7 @@ const LandingTestimonials = () => {
                         <Image
                           src={"/ratingStar1.png"}
                           fill
-                          objectFit="cover"
+                          className="object-cover"
                           alt="Rating star"
                         />
                       </div>
@@ -63,7 +62,7 @@ const LandingTestimonials = () => {
                         <Image
                           src={"/noStar.png"}
                           fill
-                          objectFit="cover"
+                          className="object-cover"
                           alt="Rating star"
                         />
                       </div>

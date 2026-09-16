@@ -1,52 +1,29 @@
-import { NotePriority } from "@/types";
-import React from "react";
+import { Flag } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ContentPriority } from "@/types";
 
-const priorityConfig: Record<
-  NotePriority,
-  { label: string; color: string; bg: string }
-> = {
-  low: {
-    label: "Low",
-    color: "#16a34a",
-    bg: "#16a34a20",
-  },
-  medium: {
-    label: "Medium",
-    color: "#f59e0b",
-    bg: "#f59e0b20",
-  },
-  high: {
-    label: "High",
-    color: "#ef4444",
-    bg: "#ef444420",
-  },
+const PRIORITY_ICON_COLORS: Record<ContentPriority, string> = {
+  low: "text-emerald-500",
+  medium: "text-amber-500",
+  high: "text-red-500",
 };
 
-const PriorityBadge = ({
-  priority,
-  filled = false,
-}: {
-  priority: NotePriority;
-  filled?: boolean;
-}) => {
-  const { label, color, bg } = priorityConfig[priority];
+const PRIORITY_LABELS: Record<ContentPriority, string> = {
+  low: "Low",
+  medium: "Medium",
+  high: "High",
+};
 
+const PriorityBadge = ({ priority }: { priority: ContentPriority }) => {
   return (
-    <span
-      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
-      style={{
-        backgroundColor: filled ? color : bg,
-        color: filled ? "#fff" : color,
-      }}
-    >
-      <span
-        className="w-1.5 h-1.5 rounded-full"
-        style={{
-          backgroundColor: filled ? "#fff" : color,
-        }}
+    <div className="inline-flex items-center gap-1.5 rounded-md px-3.5 py-1">
+      <Flag
+        className={cn("size-3.5 shrink-0", PRIORITY_ICON_COLORS[priority])}
       />
-      {label}
-    </span>
+      <span className="text-[12px] font-semibold text-black/70 whitespace-nowrap">
+        {PRIORITY_LABELS[priority]} priority
+      </span>
+    </div>
   );
 };
 

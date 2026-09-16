@@ -3,7 +3,6 @@
 import { Eye, Pencil, Trash2, Share2, BookOpen, Edit } from "lucide-react";
 import PageContainer from "../shared/PageContainer";
 import { Class, Content, DropDownMenuOptions } from "@/types";
-import { EllipsisIcon } from "lucide-react";
 import ClassNavbar from "./ClassNavbar";
 import ContentCard from "../contents/ContentCard";
 import { useModal } from "@/providers/AppModalProvider";

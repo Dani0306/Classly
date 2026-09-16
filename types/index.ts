@@ -12,6 +12,14 @@ export type AppUser = {
   id?: string | number;
 };
 
+//* SCHEDULE TYPE
+
+export type ScheduleEntry = {
+  day: number; // 0 = Sunday ... 6 = Saturday (matches JS Date.getDay())
+  start_time: string; // "09:00"
+  end_time: string; // "10:15"
+};
+
 // * CLASS TYPE
 
 export type Class = {
@@ -23,6 +31,7 @@ export type Class = {
   icon?: string;
   created_at: string;
   updated_at: string;
+  schedule?: ScheduleEntry[];
 };
 
 export type NewClass = Omit<
@@ -42,7 +51,8 @@ export type ContentType =
   | "reminder"
   | "homework"
   | "quiz"
-  | "diagram";
+  | "diagram"
+  | "class";
 
 export type ContentPriority = "low" | "medium" | "high";
 
@@ -64,7 +74,7 @@ export type Content = {
 
 export type NewContent = Omit<
   Content,
-  "id" | "created_at" | "updated_at" | "image_urls" | "priority" | "user_id"
+  "id" | "created_at" | "updated_at" | "image_urls" | "user_id"
 >;
 
 export type UpdateContent = Partial<
@@ -83,7 +93,7 @@ export type QuizQuestion = {
 // * SHARED
 
 export interface SearchParamProps {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // * Diagram type
@@ -103,3 +113,17 @@ export type DropDownMenuOptions = Array<{
   fn: () => void;
   icon?: LucideIcon;
 }>;
+
+//* EVENT TYPES
+
+export type EventKind = "class" | "homework" | "reminder";
+
+export interface Event {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  kind: EventKind;
+  description?: string;
+  allDay?: boolean;
+}

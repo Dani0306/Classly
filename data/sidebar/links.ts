@@ -6,6 +6,7 @@ import {
   Sparkles,
   FolderOpen,
   Settings,
+  Calendar,
 } from "lucide-react";
 
 export const links = [
@@ -13,6 +14,7 @@ export const links = [
   { label: "Classes", href: "/app/classes", icon: BookOpen },
   { label: "Notes", href: "/app/notes", icon: NotebookPen },
   { label: "Reminders", href: "/app/reminders", icon: BellRing },
+  { label: "Calendar", href: "/app/calendar", icon: Calendar },
   { label: "AI tools", href: "/app/ai", icon: Sparkles },
   { label: "Files", href: "/app/files", icon: FolderOpen },
   { label: "Settings", href: "/app/settings", icon: Settings },

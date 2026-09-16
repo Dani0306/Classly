@@ -7,13 +7,7 @@ import Logo from "../shared/Logo";
 import { UserCard } from "../user/UserCard";
 import { User } from "@supabase/supabase-js";
 
-export default function Sidebar({
-  user,
-  isMobile = false,
-}: {
-  user: User;
-  isMobile?: boolean;
-}) {
+export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
   const pathname = usePathname();
 
   return (

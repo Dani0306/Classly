@@ -15,7 +15,6 @@ const priorities = ["low", "medium", "high"];
 
 const CreateReminder = ({ classId }: { classId: string }) => {
   const [isPending, startTransition] = useTransition();
-
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");

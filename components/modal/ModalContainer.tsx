@@ -29,7 +29,7 @@ const ModalContainer = ({
     >
       <X
         onClick={closeModal}
-        className="cursor-pointer text-black size-5 absolute top-4 right-4"
+        className="cursor-pointer z-50 text-black size-5 absolute top-4 right-4"
       />
       {children}
     </div>
