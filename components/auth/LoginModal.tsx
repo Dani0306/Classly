@@ -1,8 +1,16 @@
 import { createBrowserSupabase } from "@/utils/supabase/client";
 import ImageComponent from "../shared/ImageComponent";
 import Logo from "../shared/Logo";
+import { useState } from "react";
 
 const LoginModal = () => {
+  const [loginType, setLoginType] = useState("Sign In");
+
+  const toggleLoginType = () => {
+    if (loginType === "sign In") setLoginType("Sign Up");
+    else setLoginType("sign In");
+  };
+
   const supabase = createBrowserSupabase();
 
   const handleSignIn = async () => {
@@ -20,7 +28,7 @@ const LoginModal = () => {
     <div className="w-full h-full flex flex-col items-center space-y-6 p-6 mt-8">
       <Logo version="cut" />
       <div className="flex flex-col space-y-1 items-center">
-        <h3 className="font-bold text-black text-2xl">Welcome Back</h3>
+        <h3 className="font-bold text-black text-2xl">Welcome To Classly</h3>
         <span className="text-xs font-light text-gray-600">
           Ready to resume your learning journey?
         </span>
@@ -63,8 +71,11 @@ const LoginModal = () => {
       </div>
       <p className="text-gray-600 text-xs mt-4">
         Don&apos;t have an account?{" "}
-        <span className="cursor-pointer text-primary font-medium ml-0.5">
-          Sign Up
+        <span
+          onClick={toggleLoginType}
+          className="cursor-pointer text-primary font-medium ml-0.5"
+        >
+          {loginType}
         </span>
       </p>
     </div>
