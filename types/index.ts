@@ -12,6 +12,8 @@ export type AppUser = {
   id?: string | number;
 };
 
+export type UpdateProfile = Pick<AppUser, "name" | "image_url">;
+
 //* SCHEDULE TYPE
 
 export type ScheduleEntry = {
