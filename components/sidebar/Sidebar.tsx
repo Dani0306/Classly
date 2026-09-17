@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Logo from "../shared/Logo";
 import { UserCard } from "../user/UserCard";
 import { User } from "@supabase/supabase-js";
+import { pathnameIncludes } from "@/utils/fn";
 
 export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
   const pathname = usePathname();
@@ -21,8 +22,8 @@ export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
 
       {/* Nav links */}
       <nav className="flex flex-col gap-1 px-4 mt-4 flex-1">
-        {links.map(({ label, href, icon: Icon }) => {
-          const active = pathname === href;
+        {links.map(({ label, href, icon: Icon, keywords }) => {
+          const active = pathnameIncludes(pathname, keywords);
           return (
             <Link
               key={href}

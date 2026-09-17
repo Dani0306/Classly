@@ -24,10 +24,12 @@ const Input = ({
   rows?: number;
 }) => {
   const sharedClasses = cn(
-    "w-full text-sm text-foreground outline-none transition-all duration-200",
-    "bg-gray-50 border border-gray-200",
-    "placeholder:text-muted-foreground/50",
-    "focus:border-primary/60 focus:ring-2 focus:ring-primary/10",
+    "w-full text-sm text-foreground outline-none",
+    "bg-surface-muted border border-border",
+    "placeholder:text-muted-foreground/60",
+    "transition-[background-color,border-color,box-shadow] duration-200",
+    "hover:border-muted-foreground/25",
+    "focus:bg-surface focus:border-primary/50 focus:ring-4 focus:ring-primary/10",
     textarea ? "rounded-2xl resize-none py-3" : "rounded-2xl py-2.5",
     Icon ? "pl-10 pr-4" : "px-4",
     className,
@@ -43,11 +45,12 @@ const Input = ({
           {label}
         </label>
       )}
-      <div className="relative w-full">
+      <div className="group relative w-full">
         {Icon && (
           <Icon
             className={cn(
               "absolute left-3.5 size-4 text-muted-foreground/60 pointer-events-none",
+              "transition-colors duration-200 group-focus-within:text-foreground/70",
               textarea ? "top-3.5" : "top-1/2 -translate-y-1/2",
             )}
           />

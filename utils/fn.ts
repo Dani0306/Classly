@@ -104,3 +104,14 @@ export function getHours(time: string) {
 export function getMinutes(time: string) {
   return Number(time.split(":")[1]);
 }
+
+// * PATHNAME INCLUDES
+
+export const pathnameIncludes = (pathname: string, keywords: string[]) => {
+  let includes = false;
+  for (let i = 0; i < keywords.length; i++) {
+    if (pathname.includes(keywords[i])) includes = true;
+  }
+
+  return includes;
+};
