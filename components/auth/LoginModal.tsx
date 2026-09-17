@@ -30,7 +30,7 @@ const LoginModal = () => {
       <div className="flex flex-col space-y-1 items-center">
         <h3 className="font-bold text-black text-2xl">Welcome To Classly</h3>
         <span className="text-xs font-light text-gray-600">
-          Ready to resume your learning journey?
+          Ready to start your learning journey?
         </span>
       </div>
 
