@@ -7,8 +7,8 @@ const LoginModal = () => {
   const [loginType, setLoginType] = useState("Sign In");
 
   const toggleLoginType = () => {
-    if (loginType === "sign In") setLoginType("Sign Up");
-    else setLoginType("sign In");
+    if (loginType === "Sign In") setLoginType("Sign Up");
+    else setLoginType("Sign In");
   };
 
   const supabase = createBrowserSupabase();
