@@ -8,10 +8,10 @@ import QuizNavigation from "./QuizNavigation";
 import { contentTypes } from "@/data/colors/typeColors";
 import DateBadge from "../shared/DateBadge";
 import PriorityBadge from "../shared/PriorityBadge";
-import { TypeBadge } from "../contents/ContentCard";
 import { Trash2 } from "lucide-react";
 import { useModal } from "@/providers/AppModalProvider";
 import { useDeleteContent } from "@/hooks/contents/useDeleteContent";
+import ContentBadge from "../contents/ContentBadge";
 
 const QuizComponent = ({ content }: { content: Content }) => {
   const itemContent = contentTypes.find((item) => item.type === content.type)!;
@@ -52,8 +52,8 @@ const QuizComponent = ({ content }: { content: Content }) => {
               {content.title}
             </h2>
             <div className="flex items-center space-x-2">
-              <TypeBadge filled type={content.type} />
-              <PriorityBadge filled priority={content.priority ?? "medium"} />
+              <ContentBadge type={content.type} />
+              <PriorityBadge priority={content.priority ?? "medium"} />
             </div>
           </div>
         </div>

@@ -14,14 +14,17 @@ import TextToEdit from "./TextToEdit";
 import { useUpdateContentText } from "@/hooks/contents/useUpdateContentText";
 import { useTextChanged } from "@/hooks/contents/useTextChanged";
 import { useState } from "react";
+import { useDeleteContent } from "@/hooks/contents/useDeleteContent";
 
 const ShowContent = ({ content }: { content: Content }) => {
   const type = content.type;
 
-  const { markAsCompleted, isPending } = useMarkAsCompleted(
-    content.is_completed ?? false,
+  const { isPending: loadingDelete, deleteContent } = useDeleteContent(
     content.id,
   );
+
+  const { markAsCompleted, isPending: loadingMarkAsCompleted } =
+    useMarkAsCompleted(content.is_completed ?? false, content.id);
 
   const textField: "content" | "ai_output" =
     content.ai_output != null ? "ai_output" : "content";
@@ -31,8 +34,6 @@ const ShowContent = ({ content }: { content: Content }) => {
   const { isEditingText, setIsEditingText, textValue, setTextValue } =
     useTextChanged(originalText);
 
-  // The modal keeps the content it was opened with, so `originalText` never
-  // reflects a save. Track what we saved to know if the text really changed.
   const [savedText, setSavedText] = useState(originalText);
 
   const saveText = (value: string) => {
@@ -42,10 +43,16 @@ const ShowContent = ({ content }: { content: Content }) => {
 
   const completed = content.is_completed ?? false;
 
-  if (isPending) {
+  if (loadingMarkAsCompleted || loadingDelete) {
     return (
       <div className="flex items-center justify-center w-full h-full">
-        <LoadingScreen message="Changing content status ..." />
+        <LoadingScreen
+          message={
+            loadingMarkAsCompleted
+              ? "Changing content status ..."
+              : "Deleting content ..."
+          }
+        />
       </div>
     );
   }
@@ -79,7 +86,7 @@ const ShowContent = ({ content }: { content: Content }) => {
         </div>
 
         {/* Content — fills remaining space, scrolls internally */}
-        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide">
+        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide!">
           {type === "diagram" && content.ai_output ? (
             <div className="relative w-full h-full min-h-75 rounded-xl overflow-hidden bg-black/5">
               <Image
@@ -147,7 +154,10 @@ const ShowContent = ({ content }: { content: Content }) => {
             {textValue !== savedText ? "Save" : "Edit"}
           </button>
 
-          <button className="text-[13px] font-medium text-red-600 hover:bg-red-50 rounded-lg px-3 py-3 transition-colors cursor-pointer">
+          <button
+            onClick={deleteContent}
+            className="text-[13px] font-medium text-red-600 hover:bg-red-50 rounded-lg px-3 py-3 transition-colors cursor-pointer"
+          >
             Delete
           </button>
         </div>

@@ -7,7 +7,7 @@ import { createServerSupabase } from "@/utils/supabase/server";
 export const generateSummary = async (
   title: string,
   text: string,
-  size: string,
+  size?: string,
 ) => {
   const supabase = await createServerSupabase();
 
@@ -24,5 +24,7 @@ export const generateSummary = async (
 
   if (error) throw new Error("Error generating summary.");
 
-  return output_text;
+  const response = JSON.parse(output_text);
+
+  return response;
 };

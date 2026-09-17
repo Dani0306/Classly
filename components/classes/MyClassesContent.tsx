@@ -13,14 +13,13 @@ import { useFilters } from "@/hooks/shared/useFilters";
 import { useEffect } from "react";
 
 const MyClassesContent = ({ classes }: { classes: Class[] }) => {
-  const { query, value, setQuery } = useDebounce(80);
+  const { query, value, setQuery } = useDebounce(50);
 
   const { handleFilter } = useFilters();
 
   useEffect(() => {
     handleFilter({ type: "search", value });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [value, handleFilter]);
 
   const { openModal } = useModal();
 

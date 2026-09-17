@@ -2,37 +2,13 @@
 
 import { contentTypes } from "@/data/colors/typeColors";
 import { useModal } from "@/providers/AppModalProvider";
-import { Content, ContentType } from "@/types";
-import { cutText, formatDate, formatText } from "@/utils/fn";
+import { Content } from "@/types";
+import { cutText, formatDate } from "@/utils/fn";
 import ModalContainer from "../modal/ModalContainer";
 import AIOutputSmall from "../ai/AIOutputSmall";
 import QuizComponent from "../quiz/QuizComponent";
 import ShowContent from "./ShowContent";
-
-export const TypeBadge = ({
-  type,
-  filled = false,
-}: {
-  type: ContentType;
-  filled?: boolean;
-}) => {
-  const typeData = contentTypes.find((item) => item.type === type);
-  const color = typeData?.color ?? "#ccc";
-  const Icon = typeData?.icon;
-
-  return (
-    <span
-      style={{
-        color: filled ? "#fff" : color,
-        backgroundColor: filled ? color : `${color}30`,
-      }}
-      className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-xl"
-    >
-      {Icon && <Icon style={{ width: 12, height: 12 }} />}
-      {formatText(type)}
-    </span>
-  );
-};
+import ContentBadge from "./ContentBadge";
 
 const ContentCard = ({ content }: { content: Content }) => {
   const { openModal } = useModal();
@@ -62,7 +38,7 @@ const ContentCard = ({ content }: { content: Content }) => {
       className="border-t-3 rounded-xl flex flex-col space-y-6 p-5 md:p-6 w-85 shadow-xl hover:scale-[1.03] transition-all duration-200 cursor-pointer"
     >
       <div className="flex items-center justify-between">
-        <TypeBadge type={content.type} />
+        <ContentBadge type={content.type} />
         <span className="text-xs text-foreground">
           {formatDate(content.created_at)}
         </span>

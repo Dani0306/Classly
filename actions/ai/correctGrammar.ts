@@ -20,5 +20,7 @@ export const grammarCorrection = async (title: string, text: string) => {
 
   if (error) throw new Error("Error generating AI output.");
 
-  return output_text;
+  const response = JSON.parse(output_text);
+
+  return response;
 };

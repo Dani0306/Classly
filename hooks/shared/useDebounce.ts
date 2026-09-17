@@ -1,8 +1,10 @@
+"use client";
+
 import { normalize } from "@/utils/fn";
 import { useEffect, useState } from "react";
 
-export const useDebounce = (delay = 200) => {
-  const [query, setQuery] = useState<string>("");
+export const useDebounce = (delay = 200, initialValue = "") => {
+  const [query, setQuery] = useState<string>(initialValue);
   const [debouncedValue, setDebouncedValue] = useState<string>(query);
 
   useEffect(() => {

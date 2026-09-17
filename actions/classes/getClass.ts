@@ -30,7 +30,7 @@ export const getClass = async (id: string, noteType?: ContentType) => {
       .eq("id", id)
       .eq("user_id", user.id)
       .single(),
-    query,
+    query.order("created_at", { ascending: false }),
   ]);
 
   if (classError) throw new Error("Failed getting class.");

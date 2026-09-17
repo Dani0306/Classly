@@ -1,21 +1,8 @@
-import {
-  LayoutDashboard,
-  BookOpen,
-  NotebookPen,
-  BellRing,
-  Sparkles,
-  FolderOpen,
-  Settings,
-  Calendar,
-} from "lucide-react";
+import { BookOpen, NotebookPen, Settings, Calendar } from "lucide-react";
 
 export const links = [
-  { label: "Dashboard", href: "/app/dashboard", icon: LayoutDashboard },
   { label: "Classes", href: "/app/classes", icon: BookOpen },
-  { label: "Notes", href: "/app/notes", icon: NotebookPen },
-  { label: "Reminders", href: "/app/reminders", icon: BellRing },
+  { label: "Contents", href: "/app/contents", icon: NotebookPen },
   { label: "Calendar", href: "/app/calendar", icon: Calendar },
-  { label: "AI tools", href: "/app/ai", icon: Sparkles },
-  { label: "Files", href: "/app/files", icon: FolderOpen },
   { label: "Settings", href: "/app/settings", icon: Settings },
 ];

@@ -20,5 +20,7 @@ export const generateQuiz = async (title: string, text: string) => {
 
   if (error) throw new Error("Failed generating quiz.");
 
-  return output_text;
+  const response = JSON.parse(output_text);
+
+  return response;
 };

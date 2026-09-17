@@ -77,6 +77,20 @@ export type NewContent = Omit<
   "id" | "created_at" | "updated_at" | "image_urls" | "user_id"
 >;
 
+export type CreatableContentType = Exclude<ContentType, "class">;
+
+export type CreateContentInput = {
+  type: CreatableContentType;
+  classId: string;
+  title: string;
+  text: string;
+  dueDate?: string;
+  priority?: ContentPriority;
+  size?: string;
+  diagramType?: DiagramType;
+  constraints?: string;
+};
+
 export type UpdateContent = Partial<
   Omit<Content, "id" | "user_id" | "class_id" | "created_at" | "updated_at">
 >;

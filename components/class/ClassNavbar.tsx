@@ -6,7 +6,7 @@ import PageButton from "../shared/PageButton";
 import { Plus } from "lucide-react";
 import { useModal } from "@/providers/AppModalProvider";
 import ModalContainer from "../modal/ModalContainer";
-import CreateNoteModal from "../contents/CreateContentModal";
+import CreateContentModal from "../contents/CreateContentModal";
 
 const ClassNavbar = ({ id }: { id: string }) => {
   const { handleFilter, hasFilter, hasAnyFilter, clearFilter } = useFilters();
@@ -15,7 +15,7 @@ const ClassNavbar = ({ id }: { id: string }) => {
   const handleOpenCreateNoteModal = () => {
     openModal(
       <ModalContainer size="md">
-        <CreateNoteModal classId={id} />
+        <CreateContentModal classId={id} />
       </ModalContainer>,
     );
   };

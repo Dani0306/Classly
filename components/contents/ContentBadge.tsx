@@ -39,7 +39,7 @@ const ContentBadge = ({ type }: { type: ContentType }) => {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-md border px-3.5 py-1",
+        "inline-flex items-center gap-1.5 rounded-md border-2 px-3.5 py-1",
         colors.bg,
         colors.border,
       )}
