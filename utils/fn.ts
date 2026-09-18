@@ -1,7 +1,7 @@
 // * FORMAT TO COP
 
 import { addDays, setHours, setMinutes, startOfWeek } from "date-fns";
-import { QuizQuestion } from "@/types";
+import { Content, QuizQuestion } from "@/types";
 
 export function calculateStarFillPercentages(rating: number) {
   return [1, 2, 3, 4, 5].map((position) => {
@@ -115,3 +115,44 @@ export const pathnameIncludes = (pathname: string, keywords: string[]) => {
 
   return includes;
 };
+
+// * Sanitize file name
+
+export const sanitizeFileName = (name: string) => {
+  const cleaned = name
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^[.-]+/, "");
+
+  return cleaned.slice(-80) || "file";
+};
+
+// * File helpers
+
+const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
+
+// Storage keys are written as "<timestamp>-<random>-<name>" by uploadFile(),
+// so strip that prefix before showing the name to the user.
+export const getFileName = (url: string) => {
+  try {
+    const key = decodeURIComponent(new URL(url).pathname.split("/").pop() ?? "");
+    return key.replace(/^\d+-[0-9a-f]{8}-/, "") || "file";
+  } catch {
+    return "file";
+  }
+};
+
+const hasExtension = (url: string, extensions: string[]) => {
+  const name = getFileName(url).toLowerCase();
+  return extensions.some((extension) => name.endsWith(extension));
+};
+
+export const isImageFile = (url: string) => hasExtension(url, IMAGE_EXTENSIONS);
+
+export const isPdfFile = (url: string) => hasExtension(url, [".pdf"]);
+
+// NewContent omits image_urls, so a file created through the normal pipeline
+// stores its public URL in ai_output, exactly like a diagram does.
+export const getFileUrl = (content: Pick<Content, "ai_output">) =>
+  content.ai_output ?? "";

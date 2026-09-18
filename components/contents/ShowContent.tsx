@@ -10,7 +10,9 @@ import DateBadge from "../shared/DateBadge";
 import ContentBadge from "../contents/ContentBadge";
 import PriorityBadge from "../shared/PriorityBadge";
 import { CONTENT_TYPE_COLORS } from "@/lib/contentcolors";
+import { getFileUrl } from "@/utils/fn";
 import TextToEdit from "./TextToEdit";
+import FilePreview from "./FilePreview";
 import { useUpdateContentText } from "@/hooks/contents/useUpdateContentText";
 import { useTextChanged } from "@/hooks/contents/useTextChanged";
 import { useState } from "react";
@@ -40,6 +42,8 @@ const ShowContent = ({ content }: { content: Content }) => {
     setSavedText(value);
     updateText(value);
   };
+
+  const fileUrl = getFileUrl(content);
 
   const completed = content.is_completed ?? false;
 
@@ -96,6 +100,8 @@ const ShowContent = ({ content }: { content: Content }) => {
                 className="object-contain"
               />
             </div>
+          ) : type === "file" && fileUrl ? (
+            <FilePreview url={fileUrl} title={content.title} />
           ) : (
             <TextToEdit
               isEditingText={isEditingText}
@@ -140,19 +146,21 @@ const ShowContent = ({ content }: { content: Content }) => {
               </>
             </>
           )}
-          <button
-            onClick={() => {
-              if (textValue === savedText) setIsEditingText(true);
-            }}
-            className={cn(
-              "text-[13px] font-medium rounded-lg px-4 py-3 transition-colors cursor-pointer",
-              textValue !== savedText
-                ? "text-emerald-900 bg-emerald-100 hover:bg-emerald-200"
-                : "text-black/80 bg-black/5 hover:bg-black/10",
-            )}
-          >
-            {textValue !== savedText ? "Save" : "Edit"}
-          </button>
+          {type !== "file" && (
+            <button
+              onClick={() => {
+                if (textValue === savedText) setIsEditingText(true);
+              }}
+              className={cn(
+                "text-[13px] font-medium rounded-lg px-4 py-3 transition-colors cursor-pointer",
+                textValue !== savedText
+                  ? "text-emerald-900 bg-emerald-100 hover:bg-emerald-200"
+                  : "text-black/80 bg-black/5 hover:bg-black/10",
+              )}
+            >
+              {textValue !== savedText ? "Save" : "Edit"}
+            </button>
+          )}
 
           <button
             onClick={deleteContent}

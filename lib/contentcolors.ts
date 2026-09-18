@@ -59,6 +59,14 @@ export const CONTENT_TYPE_COLORS: Record<
     icon: "text-pink-500",
     solid: "border-pink-500",
   },
+  file: {
+    bg: "bg-[#722F37]/10",
+    dark: "bg-[#722F37]",
+    border: "border-[#722F37]/30",
+    text: "text-[#722F37]",
+    icon: "text-[#722F37]",
+    solid: "border-[#722F37]",
+  },
   class: {
     bg: "bg-indigo-100",
     dark: "bg-indigo-600",

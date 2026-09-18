@@ -8,9 +8,7 @@ import { CreateContentInput, NewContent } from "@/types";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
-const buildContent = async (
-  input: CreateContentInput,
-): Promise<NewContent> => {
+const buildContent = async (input: CreateContentInput): Promise<NewContent> => {
   const { type, classId, title, text } = input;
   const base = { type, class_id: classId, title, content: text };
 
@@ -33,7 +31,11 @@ const buildContent = async (
     case "summarize": {
       const summary = await generateSummary(title, text, input.size);
       if (!summary.text) throw new Error("The generated summary was empty.");
-      return { ...base, title: summary.title || title, ai_output: summary.text };
+      return {
+        ...base,
+        title: summary.title || title,
+        ai_output: summary.text,
+      };
     }
 
     case "quiz": {
@@ -42,6 +44,11 @@ const buildContent = async (
         throw new Error("The generated quiz was empty.");
       return { ...base, ai_output: JSON.stringify(questions) };
     }
+
+    // A file has no AI step: uploadFile() has already produced the public
+    // URL by this point, so the record is stored as-is.
+    case "file":
+      return { ...base, ai_output: text };
 
     case "diagram": {
       const imageUrl = await generateDiagram(

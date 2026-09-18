@@ -55,7 +55,7 @@ export const generateDiagram = async (
   // Return just the public URL — tiny string instead of massive base64
   const {
     data: { publicUrl },
-  } = supabase.storage.from("diagrams").getPublicUrl(fileName);
+  } = supabase.storage.from("content-files").getPublicUrl(fileName);
 
   return publicUrl;
 };

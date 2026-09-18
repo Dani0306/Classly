@@ -19,6 +19,7 @@ import {
   SUMMARY_SIZES,
 } from "@/lib/contentforms";
 import { diagramTypes } from "@/data/diagram/diagramTypes";
+import FileInput from "./FileInput";
 
 const CreateContent = ({
   classId,
@@ -44,6 +45,8 @@ const CreateContent = ({
   const colors = CONTENT_TYPE_COLORS[type];
 
   const values: Record<ContentFormField, string> = {
+    file: text,
+    description: text,
     dueDate,
     priority,
     size,
@@ -102,15 +105,20 @@ const CreateContent = ({
           placeholder="Title ..."
           name="title"
         />
-        <Input
-          value={text}
-          setValue={setText}
-          label={form.textLabel}
-          placeholder={`${form.textLabel} ...`}
-          name="text"
-          textarea
-          rows={shows("constraints") ? 4 : 8}
-        />
+
+        {shows("description") && (
+          <Input
+            value={text}
+            setValue={setText}
+            label={form.textLabel}
+            placeholder={`${form.textLabel} ...`}
+            name="text"
+            textarea
+            rows={shows("constraints") ? 4 : 8}
+          />
+        )}
+
+        {shows("file") && <FileInput setFile={setText} />}
 
         {shows("dueDate") && shows("priority") && (
           <div className="flex flex-col space-y-3 lg:space-y-0 lg:flex-row items-center space-x-4">

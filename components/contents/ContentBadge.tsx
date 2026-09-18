@@ -5,6 +5,7 @@ import {
   ClipboardCheck,
   HelpCircle,
   Workflow,
+  Paperclip,
   GraduationCap,
   LucideIcon,
 } from "lucide-react";
@@ -19,6 +20,7 @@ const TYPE_ICONS: Record<ContentType, LucideIcon> = {
   homework: ClipboardCheck,
   quiz: HelpCircle,
   diagram: Workflow,
+  file: Paperclip,
   class: GraduationCap,
 };
 
@@ -29,6 +31,7 @@ const TYPE_LABELS: Record<ContentType, string> = {
   homework: "Homework",
   quiz: "Quiz",
   diagram: "Diagram",
+  file: "File",
   class: "Class",
 };
 

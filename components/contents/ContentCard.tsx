@@ -3,12 +3,51 @@
 import { contentTypes } from "@/data/colors/typeColors";
 import { useModal } from "@/providers/AppModalProvider";
 import { Content } from "@/types";
-import { cutText, formatDate } from "@/utils/fn";
+import {
+  cutText,
+  formatDate,
+  getFileName,
+  getFileUrl,
+  isImageFile,
+} from "@/utils/fn";
 import ModalContainer from "../modal/ModalContainer";
 import AIOutputSmall from "../ai/AIOutputSmall";
 import QuizComponent from "../quiz/QuizComponent";
 import ShowContent from "./ShowContent";
 import ContentBadge from "./ContentBadge";
+import Image from "next/image";
+import { Paperclip } from "lucide-react";
+
+const FileCardPreview = ({ content }: { content: Content }) => {
+  const url = getFileUrl(content);
+
+  if (!url)
+    return (
+      <p className="text-foreground/60 text-xs font-light">No file attached.</p>
+    );
+
+  if (isImageFile(url))
+    return (
+      <div className="relative h-32 w-full overflow-hidden rounded-xl bg-black/5">
+        <Image
+          src={url}
+          alt={content.title}
+          fill
+          sizes="340px"
+          className="object-cover"
+        />
+      </div>
+    );
+
+  return (
+    <div className="flex items-center gap-2 rounded-xl bg-black/5 p-3">
+      <Paperclip className="size-4 shrink-0 text-black/40" />
+      <span className="truncate text-xs font-medium text-black/70">
+        {getFileName(url)}
+      </span>
+    </div>
+  );
+};
 
 const ContentCard = ({ content }: { content: Content }) => {
   const { openModal } = useModal();
@@ -48,7 +87,9 @@ const ContentCard = ({ content }: { content: Content }) => {
         <strong className="text-base font-semibold text-foreground">
           {content.title}
         </strong>
-        {content.type === "quiz" || content.type === "diagram" ? (
+        {content.type === "file" ? (
+          <FileCardPreview content={content} />
+        ) : content.type === "quiz" || content.type === "diagram" ? (
           <p className="text-foreground/60 text-xs font-light">
             {cutText(content.content)}
           </p>

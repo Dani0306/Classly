@@ -54,7 +54,8 @@ export type ContentType =
   | "homework"
   | "quiz"
   | "diagram"
-  | "class";
+  | "class"
+  | "file";
 
 export type ContentPriority = "low" | "medium" | "high";
 

@@ -5,7 +5,9 @@ export type ContentFormField =
   | "priority"
   | "size"
   | "diagramType"
-  | "constraints";
+  | "constraints"
+  | "description"
+  | "file";
 
 type ContentFormConfig = {
   fields: ContentFormField[];
@@ -16,40 +18,46 @@ type ContentFormConfig = {
 
 export const CONTENT_FORMS: Record<CreatableContentType, ContentFormConfig> = {
   note: {
-    fields: [],
+    fields: ["description"],
     required: [],
     textLabel: "Content",
     loadingMessage: "Correcting your note ...",
   },
   summarize: {
-    fields: ["size"],
+    fields: ["size", "description"],
     required: [],
     textLabel: "Content to summarize",
     loadingMessage: "Summarizing your content ...",
   },
   reminder: {
-    fields: ["dueDate", "priority"],
+    fields: ["dueDate", "priority", "description"],
     required: ["dueDate", "priority"],
     textLabel: "Description",
     loadingMessage: "Creating reminder ...",
   },
   homework: {
-    fields: ["dueDate", "priority"],
+    fields: ["dueDate", "priority", "description"],
     required: ["dueDate", "priority"],
     textLabel: "Description",
     loadingMessage: "Creating homework ...",
   },
   quiz: {
-    fields: [],
+    fields: ["description"],
     required: [],
     textLabel: "Content to quiz yourself on",
     loadingMessage: "Generating quiz ...",
   },
   diagram: {
-    fields: ["diagramType", "constraints"],
+    fields: ["diagramType", "constraints", "description"],
     required: ["diagramType"],
     textLabel: "Topic",
     loadingMessage: "Drawing diagram ...",
+  },
+  file: {
+    fields: ["file"],
+    required: [],
+    textLabel: "Description",
+    loadingMessage: "Saving file ...",
   },
 };
 
