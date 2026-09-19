@@ -5,9 +5,9 @@ import {
   ClipboardCheck,
   HelpCircle,
   Workflow,
-  Paperclip,
   GraduationCap,
   LucideIcon,
+  Folder,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ContentType } from "@/types";
@@ -20,7 +20,7 @@ const TYPE_ICONS: Record<ContentType, LucideIcon> = {
   homework: ClipboardCheck,
   quiz: HelpCircle,
   diagram: Workflow,
-  file: Paperclip,
+  file: Folder,
   class: GraduationCap,
 };
 
@@ -35,12 +35,19 @@ const TYPE_LABELS: Record<ContentType, string> = {
   class: "Class",
 };
 
-const ContentBadge = ({ type }: { type: ContentType }) => {
+const ContentBadge = ({
+  type,
+  onClick,
+}: {
+  type: ContentType;
+  onClick?: () => void;
+}) => {
   const Icon = TYPE_ICONS[type];
   const colors = CONTENT_TYPE_COLORS[type];
 
   return (
     <div
+      onClick={onClick}
       className={cn(
         "inline-flex items-center gap-1.5 rounded-md border-2 px-3.5 py-1",
         colors.bg,

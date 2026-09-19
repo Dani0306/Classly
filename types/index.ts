@@ -69,7 +69,7 @@ export type Content = {
   ai_output?: string;
   due_date?: string;
   priority?: ContentPriority;
-  image_urls?: string[];
+  files_urls?: string[];
   is_completed?: boolean;
   created_at: string;
   updated_at: string;
@@ -92,6 +92,7 @@ export type CreateContentInput = {
   size?: string;
   diagramType?: DiagramType;
   constraints?: string;
+  files_urls?: string[];
 };
 
 export type UpdateContent = Partial<

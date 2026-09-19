@@ -38,6 +38,8 @@ const CreateContent = ({
   const [diagramType, setDiagramType] = useState<DiagramType>("flowchart");
   const [constraints, setConstraints] = useState("");
 
+  const [files, setFiles] = useState<Array<string>>([]);
+
   if (contentType === "class") return null;
 
   const type = contentType;
@@ -69,6 +71,7 @@ const CreateContent = ({
       classId,
       title,
       text,
+      files_urls: files,
       ...(shows("dueDate") && { dueDate }),
       ...(shows("priority") && { priority: priority as ContentPriority }),
       ...(shows("size") && { size }),
@@ -88,13 +91,14 @@ const CreateContent = ({
   return (
     <div className="w-full rounded-xl flex flex-col space-y-6">
       <div className="flex flex-col space-y-3">
-        <div>
-          <ContentBadge type={type} />
-        </div>
         <ModalTitle
           title={`New ${formatText(type)}`}
           description={CONTENT_DESCRIPTIONS[type]}
         />
+
+        <div>
+          <ContentBadge type={type} />
+        </div>
       </div>
 
       <div className="flex flex-1 flex-col space-y-4 px-0">
@@ -118,7 +122,7 @@ const CreateContent = ({
           />
         )}
 
-        {shows("file") && <FileInput setFile={setText} />}
+        {shows("file") && <FileInput setFiles={setFiles} />}
 
         {shows("dueDate") && shows("priority") && (
           <div className="flex flex-col space-y-3 lg:space-y-0 lg:flex-row items-center space-x-4">

@@ -87,7 +87,7 @@ export const getMyEvents = async (type?: EventKind | "all") => {
           kind: item.type as Event["kind"],
           start: due,
           end: due,
-          description: item.content ?? "",
+          description: item.ai_output ?? item.content ?? "",
           allDay: true,
         };
       });

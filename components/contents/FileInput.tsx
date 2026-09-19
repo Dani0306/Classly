@@ -1,10 +1,10 @@
-import { uploadFile } from "@/actions/contents/uploadFile";
 import { cn } from "@/lib/utils";
 // Aliased: the lucide `File` icon would otherwise shadow the global File type.
 import { File as FileIcon, Folder, Image } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
 import { useToast } from "@/providers/ToastProvider";
+import { uploadFiles } from "@/actions/contents/uploadFiles";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -19,28 +19,27 @@ const ACCEPTED_TYPES = {
 };
 
 function FileInput({
-  setFile,
+  setFiles,
 }: {
-  setFile: React.Dispatch<React.SetStateAction<string>>;
+  setFiles: React.Dispatch<React.SetStateAction<Array<string>>>;
 }) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
-  const [fileName, setFileName] = useState<string>("");
+  const [fileNames, setFileNames] = useState<string[]>([]);
 
   const handleDrop = (accepted: File[]) => {
-    const selected = accepted[0];
+    const selected = accepted;
 
-    if (!selected) return;
-
-    setFileName(selected.name);
+    if (!selected.length) return;
 
     startTransition(async () => {
       try {
-        const fileUrl = await uploadFile(selected);
-        setFile(fileUrl);
+        const files = await uploadFiles(selected);
+        setFiles(files);
+        setFileNames(selected.map((file) => file.name));
       } catch (error) {
-        setFileName("");
-        setFile("");
+        setFileNames([]);
+        setFiles([]);
 
         toast({
           title: "Something went wrong",
@@ -101,10 +100,17 @@ function FileInput({
         )}
       </div>
       <aside>
-        {fileName && !isPending && (
-          <p className="mt-2 truncate text-xs text-foreground/60">
-            Uploaded: <strong className="font-medium">{fileName}</strong>
-          </p>
+        {fileNames.length > 0 && !isPending && (
+          <>
+            {fileNames.map((name) => (
+              <p
+                key={name}
+                className="mt-2 truncate text-xs text-foreground/60"
+              >
+                Uploaded: <strong className="font-medium">{name}</strong>
+              </p>
+            ))}
+          </>
         )}
       </aside>
     </div>
