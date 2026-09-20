@@ -54,8 +54,7 @@ export type ContentType =
   | "homework"
   | "quiz"
   | "diagram"
-  | "class"
-  | "file";
+  | "class";
 
 export type ContentPriority = "low" | "medium" | "high";
 
@@ -92,7 +91,7 @@ export type CreateContentInput = {
   size?: string;
   diagramType?: DiagramType;
   constraints?: string;
-  files_urls?: string[];
+  files: File[];
 };
 
 export type UpdateContent = Partial<

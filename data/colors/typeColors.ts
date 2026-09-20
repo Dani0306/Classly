@@ -6,7 +6,6 @@ import {
   ClipboardList,
   HelpCircle,
   GitFork,
-  FileUp,
   LucideIcon,
 } from "lucide-react";
 
@@ -60,12 +59,5 @@ export const contentTypes: NoteTypeOption[] = [
     color: "#ec4899",
     description: "Generate a visual diagram or chart from your content.",
     icon: GitFork,
-  },
-  {
-    type: "file",
-    label: "File",
-    color: "#722F37",
-    description: "Upload an image or PDF and keep it attached to your class.",
-    icon: FileUp,
   },
 ];

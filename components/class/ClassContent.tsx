@@ -72,7 +72,7 @@ const ClassContent = ({
     >
       <ClassNavbar id={classItem.id} />
 
-      <div className="flex flex-wrap gap-5">
+      <div className="flex flex-wrap items-center gap-5">
         {contents.map((content) => (
           <ContentCard key={content.id} content={content} />
         ))}

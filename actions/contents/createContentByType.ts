@@ -7,9 +7,17 @@ import { generateSummary } from "@/actions/ai/generateSummary";
 import { CreateContentInput, NewContent } from "@/types";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { uploadFiles } from "./uploadFiles";
 
 const buildContent = async (input: CreateContentInput): Promise<NewContent> => {
-  const { type, classId, title, text, files_urls } = input;
+  const { type, classId, title, text, files } = input;
+
+  let files_urls: string[] = [];
+
+  if (files.length !== 0) {
+    files_urls = await uploadFiles(files);
+  }
+
   const base = { type, class_id: classId, title, content: text, files_urls };
 
   switch (type) {
@@ -44,11 +52,6 @@ const buildContent = async (input: CreateContentInput): Promise<NewContent> => {
         throw new Error("The generated quiz was empty.");
       return { ...base, ai_output: JSON.stringify(questions) };
     }
-
-    // A file has no AI step: uploadFile() has already produced the public
-    // URL by this point, so the record is stored as-is.
-    case "file":
-      return { ...base, ai_output: text };
 
     case "diagram": {
       const imageUrl = await generateDiagram(

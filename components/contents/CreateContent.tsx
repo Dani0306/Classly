@@ -49,7 +49,6 @@ const CreateContent = ({
   const colors = CONTENT_TYPE_COLORS[type];
 
   const values: Record<ContentFormField, string> = {
-    file: text,
     description: text,
     dueDate,
     priority,
@@ -69,6 +68,7 @@ const CreateContent = ({
     if (!canSubmit) return;
 
     createContentFn({
+      files,
       type,
       classId,
       title,
@@ -128,8 +128,6 @@ const CreateContent = ({
               rows={shows("constraints") ? 4 : 8}
             />
           )}
-
-          {shows("file") && <FileInput setFiles={setFiles} />}
 
           {shows("dueDate") && shows("priority") && (
             <div className="flex flex-col space-y-3 lg:space-y-0 lg:flex-row items-center space-x-4">

@@ -6,8 +6,7 @@ export type ContentFormField =
   | "size"
   | "diagramType"
   | "constraints"
-  | "description"
-  | "file";
+  | "description";
 
 type ContentFormConfig = {
   fields: ContentFormField[];
@@ -52,12 +51,6 @@ export const CONTENT_FORMS: Record<CreatableContentType, ContentFormConfig> = {
     required: ["diagramType"],
     textLabel: "Topic",
     loadingMessage: "Drawing diagram ...",
-  },
-  file: {
-    fields: ["file"],
-    required: [],
-    textLabel: "Description",
-    loadingMessage: "Saving file ...",
   },
 };
 
