@@ -83,7 +83,7 @@ const ContentCard = ({ content }: { content: Content }) => {
         <ContentBadge type={content.type} />
         <div className="flex">
           {attachments.length > 0 && (
-            <div className="flex space-x-1 items-center justify-center">
+            <div className="flex space-x-1 items-center justify-center text-blue-800">
               <Paperclip className="size-4" />
               <span>{attachments.length}</span>
             </div>
