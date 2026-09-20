@@ -136,7 +136,9 @@ const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
 // so strip that prefix before showing the name to the user.
 export const getFileName = (url: string) => {
   try {
-    const key = decodeURIComponent(new URL(url).pathname.split("/").pop() ?? "");
+    const key = decodeURIComponent(
+      new URL(url).pathname.split("/").pop() ?? "",
+    );
     return key.replace(/^\d+-[0-9a-f]{8}-/, "") || "file";
   } catch {
     return "file";
@@ -188,3 +190,15 @@ export const isPdfFile = (url: string) => hasExtension(url, [".pdf"]);
 // stores its public URL in ai_output, exactly like a diagram does.
 export const getFileUrl = (content: Pick<Content, "ai_output">) =>
   content.ai_output ?? "";
+
+//* Craete local URL for a file
+
+export const createLocalUrl = (file: File) => {
+  return URL.createObjectURL(file);
+};
+
+// Object URLs live until the document unloads, so every createLocalUrl needs a
+// matching revoke once the preview is gone.
+export const revokeLocalUrl = (url: string) => {
+  URL.revokeObjectURL(url);
+};

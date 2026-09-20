@@ -1,5 +1,5 @@
 import React from "react";
-import FilePreview from "./FilePreview";
+import FilePreview from "../files/FilePreview";
 import { getTitleByUrl } from "@/utils/fn";
 
 const Attachments = ({ files }: { files: string[] }) => {

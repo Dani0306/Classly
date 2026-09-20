@@ -8,7 +8,7 @@ import SelectOptions from "../shared/SelectOptions";
 import ContentBadge from "./ContentBadge";
 import { ContentPriority, ContentType, DiagramType, ViewType } from "@/types";
 import { useCreateContent } from "@/hooks/contents/useCreateContent";
-import { formatText, getTitleByUrl } from "@/utils/fn";
+import { formatText } from "@/utils/fn";
 import { cn } from "@/lib/utils";
 import { CONTENT_TYPE_COLORS } from "@/lib/contentcolors";
 import { CONTENT_DESCRIPTIONS } from "@/lib/contentdescriptions";
@@ -19,9 +19,9 @@ import {
   SUMMARY_SIZES,
 } from "@/lib/contentforms";
 import { diagramTypes } from "@/data/diagram/diagramTypes";
-import FileInput from "./FileInput";
+import FileInput from "../files/FileInput";
 import { AttachmentsBadge } from "./ContentHeader";
-import FilePreview from "./FilePreview";
+import LocalFilePreview from "../files/LocalFilePreview";
 
 const CreateContent = ({
   classId,
@@ -40,8 +40,7 @@ const CreateContent = ({
   const [size, setSize] = useState("");
   const [diagramType, setDiagramType] = useState<DiagramType>("flowchart");
   const [constraints, setConstraints] = useState("");
-
-  const [files, setFiles] = useState<Array<string>>([]);
+  const [files, setFiles] = useState<Array<File>>([]);
 
   if (contentType === "class") return null;
 
@@ -74,7 +73,7 @@ const CreateContent = ({
       classId,
       title,
       text,
-      files_urls: files,
+      // * files_urls: files, --> todo
       ...(shows("dueDate") && { dueDate }),
       ...(shows("priority") && { priority: priority as ContentPriority }),
       ...(shows("size") && { size }),
@@ -205,18 +204,17 @@ const CreateContent = ({
               <>
                 <strong>Files uploaded: </strong>
                 <div className="flex flex-wrap gap-2">
-                  {files.map((url) => {
-                    const title = getTitleByUrl(url);
-                    return (
-                      <FilePreview
-                        deletable
-                        small
-                        key={url}
-                        url={url}
-                        title={title}
-                      />
-                    );
-                  })}
+                  {files.map((file, index) => (
+                    <LocalFilePreview
+                      onRemove={() =>
+                        setFiles(files.filter((_, i) => i !== index))
+                      }
+                      key={index}
+                      deletable
+                      small
+                      file={file}
+                    />
+                  ))}
                 </div>
               </>
             ) : (

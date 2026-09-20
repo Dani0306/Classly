@@ -2,7 +2,7 @@ import { Content } from "@/types";
 import { getFileUrl } from "@/utils/fn";
 import { ContentTextEditor } from "@/hooks/contents/useContentText";
 import DiagramPreview from "./DiagramPreview";
-import FilePreview from "./FilePreview";
+import FilePreview from "../files/FilePreview";
 import TextToEdit from "./TextToEdit";
 
 const ContentBody = ({

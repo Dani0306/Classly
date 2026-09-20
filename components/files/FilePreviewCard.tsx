@@ -1,4 +1,3 @@
-import Image from "next/image";
 import {
   FileText,
   Image as ImageGlyph,
@@ -6,73 +5,89 @@ import {
   ExternalLink,
   X,
   Loader2,
+  LucideIcon,
 } from "lucide-react";
-import { getTitleByUrl, isImageFile, isPdfFile } from "@/utils/fn";
 import { cn } from "@/lib/utils";
 import DropDownMenu from "../shared/DropDownMenu";
 import { DropDownMenuOptions } from "@/types";
 import { useState } from "react";
-import { useDeleteFile } from "@/hooks/files/useDeleteFile";
 
-const getFileMeta = (url: string) => {
-  if (isPdfFile(url))
-    return { label: "PDF", Icon: FileText, color: "text-red-500" };
+export type FileMeta = { label: string; Icon: LucideIcon; color: string };
 
-  if (isImageFile(url))
-    return { label: "Image", Icon: ImageGlyph, color: "text-blue-500" };
-
-  return { label: "File", Icon: Paperclip, color: "text-black/40" };
+export const PDF_META: FileMeta = {
+  label: "PDF",
+  Icon: FileText,
+  color: "text-red-500",
 };
 
-const FilePreview = ({
-  url,
+export const IMAGE_META: FileMeta = {
+  label: "Image",
+  Icon: ImageGlyph,
+  color: "text-blue-500",
+};
+
+export const OTHER_META: FileMeta = {
+  label: "File",
+  Icon: Paperclip,
+  color: "text-black/40",
+};
+
+/**
+ * The card chrome shared by FilePreview and LocalFilePreview: tray, sheet,
+ * info row, delete affordance and menu. It takes an already-resolved preview,
+ * so neither variant has to repeat the layout.
+ */
+const FilePreviewCard = ({
+  src,
   title,
+  meta,
+  image,
+  isPdf,
   author,
   options,
   small,
-  deletable,
+  removable,
+  isPending,
+  onDelete,
 }: {
-  url: string;
+  src: string;
   title: string;
+  meta: FileMeta;
+  /** The rendered image, when this file is one. */
+  image?: React.ReactNode;
+  isPdf?: boolean;
   author?: string;
   options?: DropDownMenuOptions;
   small?: boolean;
-  deletable?: boolean;
+  removable?: boolean;
+  isPending?: boolean;
+  onDelete?: () => void;
 }) => {
-  const { label, Icon, color } = getFileMeta(url);
-
-  const displayTitle = title?.trim() || getTitleByUrl(url);
   const [showDeleteX, setShowDeleteX] = useState(false);
 
-  const { deleteFileFn, isPending } = useDeleteFile();
+  const { label, Icon, color } = meta;
 
   const menuOptions: DropDownMenuOptions = options ?? [
     {
       label: "Open file",
       icon: ExternalLink,
-      fn: () => window.open(url, "_blank", "noopener,noreferrer"),
+      fn: () => window.open(src, "_blank", "noopener,noreferrer"),
     },
   ];
-
-  const handleDeleteFile = () => {
-    deleteFileFn(url);
-  };
 
   return (
     <div
       onMouseOver={() => {
-        if (deletable) setShowDeleteX(true);
+        if (removable) setShowDeleteX(true);
       }}
       onMouseLeave={() => {
-        if (deletable) setShowDeleteX(false);
+        if (removable) setShowDeleteX(false);
       }}
       className={cn(
         "overflow-hidden relative border border-black/10 bg-white shadow-sm",
         small ? "w-40 rounded-xl" : "w-full rounded-2xl",
       )}
     >
-      {/* Preview — the document sits on a white sheet inside a soft tray */}
-
       {isPending && (
         <div className="absolute inset-0 z-50 grid place-items-center rounded-[inherit] bg-white/70 backdrop-blur-[1px]">
           <Loader2
@@ -86,11 +101,12 @@ const FilePreview = ({
 
       {showDeleteX && !isPending && (
         <X
-          onClick={handleDeleteFile}
+          onClick={onDelete}
           className="size-6 cursor-pointer bg-black/50 z-50 text-white p-1 rounded-full flex items-center justify-center absolute right-0 top-0"
         />
       )}
 
+      {/* Preview — the document sits on a white sheet inside a soft tray */}
       <div className={cn("bg-black/2", small ? "p-1.5" : "p-4")}>
         <div
           className={cn(
@@ -98,12 +114,12 @@ const FilePreview = ({
             small ? "h-20 rounded-lg" : "h-60 rounded-xl",
           )}
         >
-          {isImageFile(url) ? (
-            <Image src={url} alt={displayTitle} fill className="object-cover" />
-          ) : isPdfFile(url) ? (
+          {image ? (
+            image
+          ) : isPdf ? (
             <object
               // Hides the native viewer chrome so the embed reads as a thumbnail.
-              data={`${url}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
+              data={`${src}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
               type="application/pdf"
               className="pointer-events-none h-full w-full"
             >
@@ -135,7 +151,7 @@ const FilePreview = ({
               small ? "text-[11px] leading-tight" : "text-[15px]",
             )}
           >
-            {displayTitle}
+            {title}
           </p>
           <p
             className={cn(
@@ -153,4 +169,4 @@ const FilePreview = ({
   );
 };
 
-export default FilePreview;
+export default FilePreviewCard;

@@ -3,13 +3,7 @@
 import { contentTypes } from "@/data/colors/typeColors";
 import { useModal } from "@/providers/AppModalProvider";
 import { Content } from "@/types";
-import {
-  cutText,
-  formatDate,
-  getFileName,
-  getFileUrl,
-  isImageFile,
-} from "@/utils/fn";
+import { cutText, getFileName, getFileUrl, isImageFile } from "@/utils/fn";
 import ModalContainer from "../modal/ModalContainer";
 import AIOutputSmall from "../ai/AIOutputSmall";
 import QuizComponent from "../quiz/QuizComponent";
