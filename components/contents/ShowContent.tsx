@@ -1,6 +1,6 @@
 "use client";
 
-import { Content } from "@/types";
+import { Content, ViewType } from "@/types";
 import { cn } from "@/lib/utils";
 import { CONTENT_TYPE_COLORS } from "@/lib/contentcolors";
 import { useContentText } from "@/hooks/contents/useContentText";
@@ -13,10 +13,8 @@ import ContentFooter from "./ContentFooter";
 import { useState } from "react";
 import Attachments from "./Attachments";
 
-export type SectionType = "content" | "attachments";
-
 const ShowContent = ({ content }: { content: Content }) => {
-  const [section, setSection] = useState<SectionType>("content");
+  const [section, setSection] = useState<ViewType>("content");
 
   const completed = content.is_completed ?? false;
   const editor = useContentText(content);
@@ -60,7 +58,7 @@ const ShowContent = ({ content }: { content: Content }) => {
           {section === "content" ? (
             <ContentBody content={content} editor={editor} />
           ) : (
-            <Attachments />
+            <Attachments files={content.files_urls ?? []} />
           )}
         </div>
 

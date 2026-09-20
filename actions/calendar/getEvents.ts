@@ -22,8 +22,6 @@ export const getMyEvents = async (type?: EventKind | "all") => {
   const wantsContents =
     !type || type === "homework" || type === "reminder" || type === "all";
 
-  //* classes
-
   let classesEvents: Event[] = [];
 
   if (wantsClasses) {

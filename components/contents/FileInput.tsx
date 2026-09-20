@@ -76,7 +76,7 @@ function FileInput({
       <div
         {...getRootProps({ className: "dropzone" })}
         className={cn(
-          "flex-col border-2 border-dashed border-primary min-h-40 flex items-center justify-center",
+          "flex-col border-2 border-dashed border-primary min-h-50 flex items-center justify-center",
           isDragActive && "opacity-50",
         )}
       >
@@ -88,7 +88,7 @@ function FileInput({
             <p className="text-gray-400 text-sm">
               {isDragActive
                 ? "Drop the file here to upload it"
-                : "Drag and drop a file here, or click to select one"}
+                : "Drag and drop the files here, or click to select them ."}
             </p>
             <div className="flex mt-4">
               {/* eslint-disable-next-line */}

@@ -145,3 +145,7 @@ export interface Event {
   description?: string;
   allDay?: boolean;
 }
+
+// * section type
+
+export type ViewType = "content" | "attachments";

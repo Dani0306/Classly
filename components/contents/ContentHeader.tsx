@@ -1,11 +1,16 @@
-import { Content } from "@/types";
+import { Content, ViewType } from "@/types";
 import ContentBadge from "./ContentBadge";
 import DateBadge from "../shared/DateBadge";
 import PriorityBadge from "../shared/PriorityBadge";
-import { SectionType } from "./ShowContent";
 import { Paperclip } from "lucide-react";
 
-const AttachmentsBadge = ({ onClick }: { onClick: () => void }) => {
+export const AttachmentsBadge = ({
+  onClick,
+  text,
+}: {
+  onClick: () => void;
+  text: string;
+}) => {
   return (
     <div
       onClick={onClick}
@@ -15,7 +20,7 @@ const AttachmentsBadge = ({ onClick }: { onClick: () => void }) => {
     >
       <Paperclip className="size-3.5 shrink-0" />
       <span className="text-[12px] font-semibold whitespace-nowrap">
-        Attachments
+        {text}
       </span>
     </div>
   );
@@ -26,7 +31,7 @@ const ContentHeader = ({
   setSection,
 }: {
   content: Content;
-  setSection: React.Dispatch<React.SetStateAction<SectionType>>;
+  setSection: React.Dispatch<React.SetStateAction<ViewType>>;
 }) => {
   const type = content.type;
   const isScheduled = type === "homework" || type === "reminder";
@@ -41,7 +46,10 @@ const ContentHeader = ({
 
       <div className="shrink-0 flex flex-wrap items-center gap-2 text-[13px]">
         <ContentBadge onClick={() => setSection("content")} type={type} />
-        <AttachmentsBadge onClick={() => setSection("attachments")} />
+        <AttachmentsBadge
+          text="See attachments"
+          onClick={() => setSection("attachments")}
+        />
         {isScheduled && (
           <>
             {content.due_date && <DateBadge timestamp={content.due_date} />}

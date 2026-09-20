@@ -17,6 +17,7 @@ import ShowContent from "./ShowContent";
 import ContentBadge from "./ContentBadge";
 import Image from "next/image";
 import { Paperclip } from "lucide-react";
+import DateBadge from "../shared/DateBadge";
 
 const FileCardPreview = ({ content }: { content: Content }) => {
   const url = getFileUrl(content);
@@ -52,6 +53,8 @@ const FileCardPreview = ({ content }: { content: Content }) => {
 const ContentCard = ({ content }: { content: Content }) => {
   const { openModal } = useModal();
 
+  const attachments = content.files_urls ?? [];
+
   const handleClick = () => {
     openModal(
       <ModalContainer defaultPadding={false}>
@@ -78,9 +81,15 @@ const ContentCard = ({ content }: { content: Content }) => {
     >
       <div className="flex items-center justify-between">
         <ContentBadge type={content.type} />
-        <span className="text-xs text-foreground">
-          {formatDate(content.created_at)}
-        </span>
+        <div className="flex">
+          {attachments.length > 0 && (
+            <div className="flex space-x-1 items-center justify-center">
+              <Paperclip className="size-4" />
+              <span>{attachments.length}</span>
+            </div>
+          )}
+          <DateBadge timestamp={content.due_date ?? content.created_at} />
+        </div>
       </div>
 
       <div className="flex flex-col space-y-3">

@@ -143,6 +143,38 @@ export const getFileName = (url: string) => {
   }
 };
 
+// next/image serves optimized files from /_next/image?url=<encoded original>,
+// so the real file URL has to be unwrapped before reading its path.
+const unwrapOptimizerUrl = (url: URL) => {
+  const inner = url.searchParams.get("url");
+
+  if (!inner) return url;
+
+  try {
+    return new URL(inner, url.origin);
+  } catch {
+    return url;
+  }
+};
+
+/**
+ * Display title for a file URL, whether it is a raw storage URL or one wrapped
+ * by the next/image optimizer.
+ *
+ *   .../content-files/<uid>/1789698077400-60b01b0f-img_4552.jpeg -> img_4552.jpeg
+ *   /_next/image?url=<that, encoded>&w=750&q=75                  -> img_4552.jpeg
+ */
+export const getTitleByUrl = (url: string) => {
+  try {
+    const parsed = unwrapOptimizerUrl(new URL(url));
+    const key = decodeURIComponent(parsed.pathname.split("/").pop() ?? "");
+
+    return key.replace(/^\d+-[0-9a-f]{8}-/, "") || "file";
+  } catch {
+    return "file";
+  }
+};
+
 const hasExtension = (url: string, extensions: string[]) => {
   const name = getFileName(url).toLowerCase();
   return extensions.some((extension) => name.endsWith(extension));

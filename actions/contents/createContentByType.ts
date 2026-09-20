@@ -9,8 +9,8 @@ import { createServerSupabase } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
 const buildContent = async (input: CreateContentInput): Promise<NewContent> => {
-  const { type, classId, title, text } = input;
-  const base = { type, class_id: classId, title, content: text };
+  const { type, classId, title, text, files_urls } = input;
+  const base = { type, class_id: classId, title, content: text, files_urls };
 
   switch (type) {
     case "note":

@@ -6,9 +6,9 @@ import ModalTitle from "../modal/ModalTitle";
 import DatePicker from "../shared/DatePicker";
 import SelectOptions from "../shared/SelectOptions";
 import ContentBadge from "./ContentBadge";
-import { ContentPriority, ContentType, DiagramType } from "@/types";
+import { ContentPriority, ContentType, DiagramType, ViewType } from "@/types";
 import { useCreateContent } from "@/hooks/contents/useCreateContent";
-import { formatText } from "@/utils/fn";
+import { formatText, getTitleByUrl } from "@/utils/fn";
 import { cn } from "@/lib/utils";
 import { CONTENT_TYPE_COLORS } from "@/lib/contentcolors";
 import { CONTENT_DESCRIPTIONS } from "@/lib/contentdescriptions";
@@ -20,6 +20,8 @@ import {
 } from "@/lib/contentforms";
 import { diagramTypes } from "@/data/diagram/diagramTypes";
 import FileInput from "./FileInput";
+import { AttachmentsBadge } from "./ContentHeader";
+import FilePreview from "./FilePreview";
 
 const CreateContent = ({
   classId,
@@ -30,6 +32,7 @@ const CreateContent = ({
 }) => {
   const { createContentFn, isPending } = useCreateContent();
 
+  const [currentView, setCurrentView] = useState<ViewType>("content");
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [dueDate, setDueDate] = useState("");
@@ -96,99 +99,134 @@ const CreateContent = ({
           description={CONTENT_DESCRIPTIONS[type]}
         />
 
-        <div>
-          <ContentBadge type={type} />
+        <div className="flex space-x-3">
+          <ContentBadge onClick={() => setCurrentView("content")} type={type} />
+          <AttachmentsBadge
+            onClick={() => setCurrentView("attachments")}
+            text="Add Atachments"
+          />
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col space-y-4 px-0">
-        <Input
-          value={title}
-          setValue={setTitle}
-          label="Title"
-          placeholder="Title ..."
-          name="title"
-        />
-
-        {shows("description") && (
+      {currentView === "content" ? (
+        <div className="flex flex-1 flex-col space-y-4 px-0">
           <Input
-            value={text}
-            setValue={setText}
-            label={form.textLabel}
-            placeholder={`${form.textLabel} ...`}
-            name="text"
-            textarea
-            rows={shows("constraints") ? 4 : 8}
+            value={title}
+            setValue={setTitle}
+            label="Title"
+            placeholder="Title ..."
+            name="title"
           />
-        )}
 
-        {shows("file") && <FileInput setFiles={setFiles} />}
-
-        {shows("dueDate") && shows("priority") && (
-          <div className="flex flex-col space-y-3 lg:space-y-0 lg:flex-row items-center space-x-4">
-            <DatePicker
-              value={dueDate}
-              setValue={setDueDate}
-              placeholder={type === "homework" ? "Due date" : "Reminder date"}
-              label={type === "homework" ? "Due date" : "Reminder date"}
+          {shows("description") && (
+            <Input
+              value={text}
+              setValue={setText}
+              label={form.textLabel}
+              placeholder={`${form.textLabel} ...`}
+              name="text"
+              textarea
+              rows={shows("constraints") ? 4 : 8}
             />
+          )}
+
+          {shows("file") && <FileInput setFiles={setFiles} />}
+
+          {shows("dueDate") && shows("priority") && (
+            <div className="flex flex-col space-y-3 lg:space-y-0 lg:flex-row items-center space-x-4">
+              <DatePicker
+                value={dueDate}
+                setValue={setDueDate}
+                placeholder={type === "homework" ? "Due date" : "Reminder date"}
+                label={type === "homework" ? "Due date" : "Reminder date"}
+              />
+              <SelectOptions
+                name="priority"
+                placeholder="Select priority"
+                options={PRIORITIES}
+                label="Priority"
+                value={priority}
+                setValue={setPriority}
+              />
+            </div>
+          )}
+
+          {shows("size") && (
             <SelectOptions
-              name="priority"
-              placeholder="Select priority"
-              options={PRIORITIES}
-              label="Priority"
-              value={priority}
-              setValue={setPriority}
+              name="size"
+              placeholder="Medium (150-250 words)"
+              options={SUMMARY_SIZES}
+              label="Summary size"
+              value={size}
+              setValue={setSize}
             />
+          )}
+
+          {shows("constraints") && (
+            <Input
+              value={constraints}
+              setValue={setConstraints}
+              label="Instructions (optional)"
+              placeholder="e.g. focus only on the main steps ..."
+              name="constraints"
+              textarea
+              rows={3}
+            />
+          )}
+
+          {shows("diagramType") && (
+            <div className="flex flex-wrap gap-2">
+              {diagramTypes.map((item) => {
+                const selected = diagramType === item.type;
+
+                return (
+                  <button
+                    type="button"
+                    key={item.type}
+                    onClick={() => setDiagramType(item.type)}
+                    className={cn(
+                      "cursor-pointer px-4 py-1.5 text-xs font-medium rounded-xl border",
+                      colors.border,
+                      selected ? cn(colors.dark, "text-white") : colors.text,
+                    )}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="flex flex-col flex-1 space-y-3">
+          <FileInput setFiles={setFiles} />
+          <div className="flex flex-col space-y-3">
+            {files.length > 0 ? (
+              <>
+                <strong>Files uploaded: </strong>
+                <div className="flex flex-wrap gap-2">
+                  {files.map((url) => {
+                    const title = getTitleByUrl(url);
+                    return (
+                      <FilePreview
+                        deletable
+                        small
+                        key={url}
+                        url={url}
+                        title={title}
+                      />
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <p className="text-sm text-foreground font-extralight">
+                No files yet.
+              </p>
+            )}
           </div>
-        )}
-
-        {shows("size") && (
-          <SelectOptions
-            name="size"
-            placeholder="Medium (150-250 words)"
-            options={SUMMARY_SIZES}
-            label="Summary size"
-            value={size}
-            setValue={setSize}
-          />
-        )}
-
-        {shows("constraints") && (
-          <Input
-            value={constraints}
-            setValue={setConstraints}
-            label="Instructions (optional)"
-            placeholder="e.g. focus only on the main steps ..."
-            name="constraints"
-            textarea
-            rows={3}
-          />
-        )}
-
-        {shows("diagramType") && (
-          <div className="flex flex-wrap gap-2">
-            {diagramTypes.map((item) => {
-              const selected = diagramType === item.type;
-
-              return (
-                <button
-                  type="button"
-                  key={item.type}
-                  onClick={() => setDiagramType(item.type)}
-                  className={cn(
-                    "cursor-pointer px-4 py-1.5 text-xs font-medium rounded-xl border",
-                    colors.border,
-                    selected ? cn(colors.dark, "text-white") : colors.text,
-                  )}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <button
         onClick={handleCreate}

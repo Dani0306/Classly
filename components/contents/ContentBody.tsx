@@ -19,7 +19,7 @@ const ContentBody = ({
     return <DiagramPreview url={content.ai_output} title={content.title} />;
 
   if (type === "file" && fileUrl)
-    return <FilePreview url={fileUrl} title={content.title} />;
+    return <FilePreview small url={fileUrl} title={content.title} />;
 
   return (
     <TextToEdit

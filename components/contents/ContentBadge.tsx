@@ -52,6 +52,7 @@ const ContentBadge = ({
         "inline-flex items-center gap-1.5 rounded-md border-2 px-3.5 py-1",
         colors.bg,
         colors.border,
+        onClick && "cursor-pointer",
       )}
     >
       <Icon className={cn("size-3.5 shrink-0", colors.icon)} />
