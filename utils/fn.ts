@@ -186,6 +186,12 @@ export const isImageFile = (url: string) => hasExtension(url, IMAGE_EXTENSIONS);
 
 export const isPdfFile = (url: string) => hasExtension(url, [".pdf"]);
 
+export const isWordFile = (url: string) =>
+  hasExtension(url, [".doc", ".docx"]);
+
+// Only .docx (a zip of XML) can be rendered in the browser; legacy .doc can't.
+export const isDocxFile = (url: string) => hasExtension(url, [".docx"]);
+
 // NewContent omits image_urls, so a file created through the normal pipeline
 // stores its public URL in ai_output, exactly like a diagram does.
 export const getFileUrl = (content: Pick<Content, "ai_output">) =>

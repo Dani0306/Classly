@@ -1,17 +1,6 @@
 import { useDropzone, type FileRejection } from "react-dropzone";
 import { useToast } from "@/providers/ToastProvider";
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
-
-// Mirrors ALLOWED_MIME_TYPES in the uploadFile action, so the picker rejects
-// what the server would reject anyway.
-const ACCEPTED_TYPES = {
-  "image/png": [".png"],
-  "image/jpeg": [".jpg", ".jpeg"],
-  "image/webp": [".webp"],
-  "image/gif": [".gif"],
-  "application/pdf": [".pdf"],
-};
+import { ACCEPTED_FILE_TYPES, MAX_FILE_SIZE } from "@/lib/storage";
 
 function FileInput({
   children,
@@ -44,7 +33,7 @@ function FileInput({
       title: "That file cannot be uploaded",
       description:
         rejections[0]?.errors[0]?.message ??
-        "Only images and PDFs up to 5MB are supported.",
+        "Only images, PDFs and Word files up to 5MB are supported.",
       type: "error",
     });
   };
@@ -53,7 +42,7 @@ function FileInput({
     onDrop: handleDrop,
     onDropRejected: handleReject,
     maxSize: MAX_FILE_SIZE,
-    accept: ACCEPTED_TYPES,
+    accept: ACCEPTED_FILE_TYPES,
   });
 
   return (

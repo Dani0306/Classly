@@ -1,5 +1,11 @@
 import Image from "next/image";
-import { getTitleByUrl, isImageFile, isPdfFile } from "@/utils/fn";
+import {
+  getTitleByUrl,
+  isDocxFile,
+  isImageFile,
+  isPdfFile,
+  isWordFile,
+} from "@/utils/fn";
 import { DropDownMenuOptions } from "@/types";
 import { Trash2 } from "lucide-react";
 import { useDeleteFiles } from "@/hooks/files/useDeleteFiles";
@@ -7,11 +13,14 @@ import FilePreviewCard, {
   IMAGE_META,
   OTHER_META,
   PDF_META,
+  WORD_META,
 } from "./FilePreviewCard";
+import WordThumbnail from "./WordThumbnail";
 
 const getFileMeta = (url: string) => {
   if (isPdfFile(url)) return PDF_META;
   if (isImageFile(url)) return IMAGE_META;
+  if (isWordFile(url)) return WORD_META;
   return OTHER_META;
 };
 
@@ -61,9 +70,11 @@ const FilePreview = ({
       title={displayTitle}
       meta={getFileMeta(url)}
       isPdf={isPdfFile(url)}
-      image={
+      preview={
         isImageFile(url) ? (
           <Image src={url} alt={displayTitle} fill className="object-cover" />
+        ) : isWordFile(url) ? (
+          <WordThumbnail src={url} renderable={isDocxFile(url)} />
         ) : undefined
       }
       author={author}

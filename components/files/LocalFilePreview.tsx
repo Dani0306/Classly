@@ -1,16 +1,20 @@
 import { useEffect, useMemo } from "react";
 import { createLocalUrl, revokeLocalUrl } from "@/utils/fn";
+import { DOC_MIME_TYPE, DOCX_MIME_TYPE, resolveMimeType } from "@/lib/storage";
 import { DropDownMenuOptions } from "@/types";
 import FilePreviewCard, {
   IMAGE_META,
   OTHER_META,
   PDF_META,
+  WORD_META,
 } from "./FilePreviewCard";
+import WordThumbnail from "./WordThumbnail";
 
 // A local file reports its own type, so nothing has to be read from the URL.
 const getFileMetaByType = (type: string) => {
   if (type === "application/pdf") return PDF_META;
   if (type.startsWith("image/")) return IMAGE_META;
+  if (type === DOCX_MIME_TYPE || type === DOC_MIME_TYPE) return WORD_META;
   return OTHER_META;
 };
 
@@ -41,15 +45,18 @@ const LocalFilePreview = ({
   }, [localUrl]);
 
   const displayTitle = title?.trim() || file.name;
-  const isImage = file.type.startsWith("image/");
+  // Word files often arrive with an empty type, so fall back to the name.
+  const type = resolveMimeType(file);
+  const isImage = type.startsWith("image/");
+  const isWord = type === DOCX_MIME_TYPE || type === DOC_MIME_TYPE;
 
   return (
     <FilePreviewCard
       src={localUrl}
       title={displayTitle}
-      meta={getFileMetaByType(file.type)}
-      isPdf={file.type === "application/pdf"}
-      image={
+      meta={getFileMetaByType(type)}
+      isPdf={type === "application/pdf"}
+      preview={
         isImage ? (
           // next/image rejects blob: URLs, so a local preview stays an img.
           // eslint-disable-next-line @next/next/no-img-element
@@ -57,6 +64,11 @@ const LocalFilePreview = ({
             src={localUrl}
             alt={displayTitle}
             className="h-full w-full object-cover"
+          />
+        ) : isWord ? (
+          <WordThumbnail
+            src={localUrl}
+            renderable={type === DOCX_MIME_TYPE}
           />
         ) : undefined
       }

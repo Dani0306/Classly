@@ -1,18 +1,13 @@
 "use server";
 
-import { CONTENT_FILES_BUCKET } from "@/lib/storage";
+import {
+  ACCEPTED_FILE_TYPES,
+  CONTENT_FILES_BUCKET,
+  MAX_FILE_SIZE,
+  resolveMimeType,
+} from "@/lib/storage";
 import { sanitizeFileName } from "@/utils/fn";
 import { createServerSupabase } from "@/utils/supabase/server";
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
-
-const ALLOWED_MIME_TYPES = [
-  "image/png",
-  "image/jpeg",
-  "image/webp",
-  "image/gif",
-  "application/pdf",
-];
 
 export const uploadFiles = async (
   input: File[] | readonly File[],
@@ -33,7 +28,7 @@ export const uploadFiles = async (
     if (file.size > MAX_FILE_SIZE)
       throw new Error(`"${file.name}" is larger than the 5MB limit.`);
 
-    if (!ALLOWED_MIME_TYPES.includes(file.type))
+    if (!(resolveMimeType(file) in ACCEPTED_FILE_TYPES))
       throw new Error(`"${file.name}" is not a supported file type.`);
   }
 
@@ -49,7 +44,10 @@ export const uploadFiles = async (
 
     const { error } = await supabase.storage
       .from(CONTENT_FILES_BUCKET)
-      .upload(path, file, { contentType: file.type, upsert: false });
+      .upload(path, file, {
+        contentType: resolveMimeType(file),
+        upsert: false,
+      });
 
     if (error) {
       // Roll the batch back so a partial upload leaves no orphaned objects.

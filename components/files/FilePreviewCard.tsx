@@ -1,5 +1,6 @@
 import {
   FileText,
+  FileType,
   Image as ImageGlyph,
   Paperclip,
   ExternalLink,
@@ -26,6 +27,12 @@ export const IMAGE_META: FileMeta = {
   color: "text-blue-500",
 };
 
+export const WORD_META: FileMeta = {
+  label: "Word",
+  Icon: FileType,
+  color: "text-blue-700",
+};
+
 export const OTHER_META: FileMeta = {
   label: "File",
   Icon: Paperclip,
@@ -41,7 +48,7 @@ const FilePreviewCard = ({
   src,
   title,
   meta,
-  image,
+  preview,
   isPdf,
   author,
   options,
@@ -53,8 +60,9 @@ const FilePreviewCard = ({
   src: string;
   title: string;
   meta: FileMeta;
-  /** The rendered image, when this file is one. */
-  image?: React.ReactNode;
+  /** A rendered thumbnail (an image, a Word page). Without one, a PDF gets
+   *  its embed and anything else a glyph. */
+  preview?: React.ReactNode;
   isPdf?: boolean;
   author?: string;
   options?: DropDownMenuOptions;
@@ -128,8 +136,8 @@ const FilePreviewCard = ({
             small ? "h-20 rounded-lg" : "h-60 rounded-xl",
           )}
         >
-          {image ? (
-            image
+          {preview ? (
+            preview
           ) : isPdf ? (
             <object
               // Hides the native viewer chrome so the embed reads as a thumbnail.
