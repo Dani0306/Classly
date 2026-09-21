@@ -48,21 +48,19 @@ const ContentFooter = ({
         </>
       )}
 
-      {type !== "file" && (
-        <button
-          onClick={() => {
-            if (!editor.isDirty) editor.startEditing();
-          }}
-          className={cn(
-            "text-[13px] font-medium rounded-lg px-4 py-3 transition-colors cursor-pointer",
-            editor.isDirty
-              ? "text-emerald-900 bg-emerald-100 hover:bg-emerald-200"
-              : "text-black/80 bg-black/5 hover:bg-black/10",
-          )}
-        >
-          {editor.isDirty ? "Save" : "Edit"}
-        </button>
-      )}
+      <button
+        onClick={() => {
+          if (!editor.isDirty) editor.startEditing();
+        }}
+        className={cn(
+          "text-[13px] font-medium rounded-lg px-4 py-3 transition-colors cursor-pointer",
+          editor.isDirty
+            ? "text-emerald-900 bg-emerald-100 hover:bg-emerald-200"
+            : "text-black/80 bg-black/5 hover:bg-black/10",
+        )}
+      >
+        {editor.isDirty ? "Save" : "Edit"}
+      </button>
 
       <button
         onClick={deleteContent}

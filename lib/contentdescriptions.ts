@@ -11,7 +11,6 @@ export const CONTENT_DESCRIPTIONS: Record<ContentType, string> = {
   quiz: "Write or paste your content and AI will generate multiple choice questions to test your knowledge.",
   diagram:
     "Describe your topic and AI will generate a visual diagram to help you study and understand it better.",
-  file: "Upload an image or PDF and keep it attached to your class for later.",
   class:
     "Create a class to organize your notes, homework and reminders in one place.",
 };

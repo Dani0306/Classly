@@ -15,7 +15,7 @@ export const deleteContent = async (id: string) => {
 
   const { data: content } = await supabase
     .from("contents")
-    .select("type, ai_output, files_urls")
+    .select("files_urls")
     .eq("id", id)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -28,8 +28,7 @@ export const deleteContent = async (id: string) => {
 
   if (error) throw new Error("Error deleting content.");
 
-  // Attachments can sit on any content type in files_urls; a legacy "file"
-  // content kept its single URL in ai_output instead.
+  // Attachments can sit on any content type in files_urls.
   const urls: string[] = [...(content?.files_urls ?? [])];
 
   const paths = urls
