@@ -46,6 +46,10 @@ const ShowContent = ({ content }: { content: Content }) => {
     });
   };
 
+  const handleFileDeleted = (url: string) => {
+    setFileUrls((prev) => prev.filter((item) => item !== url));
+  };
+
   const completed = content.is_completed ?? false;
   const editor = useContentText(content);
 
@@ -92,6 +96,7 @@ const ShowContent = ({ content }: { content: Content }) => {
               files={fileUrls}
               isUploading={isUploading}
               onFilesAdded={handleFilesAdded}
+              onFileDeleted={handleFileDeleted}
             />
           )}
         </div>

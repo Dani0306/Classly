@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { getTitleByUrl, isImageFile, isPdfFile } from "@/utils/fn";
 import { DropDownMenuOptions } from "@/types";
-import { useDeleteFile } from "@/hooks/files/useDeleteFile";
+import { Trash2 } from "lucide-react";
+import { useDeleteFiles } from "@/hooks/files/useDeleteFiles";
 import FilePreviewCard, {
   IMAGE_META,
   OTHER_META,
@@ -23,6 +24,7 @@ const FilePreview = ({
   small,
   deletable,
   onRemove,
+  onDeleted,
 }: {
   url: string;
   title?: string;
@@ -32,8 +34,19 @@ const FilePreview = ({
   deletable?: boolean;
   /** Takes over from the server delete when the parent owns removal. */
   onRemove?: () => void;
+  /** Called after the server delete succeeds, to drop the URL from the list. */
+  onDeleted?: (url: string) => void;
 }) => {
-  const { deleteFileFn, isPending } = useDeleteFile();
+  const { deleteFilesFn, isPending } = useDeleteFiles(onDeleted);
+
+  const handleDelete = onRemove ?? (() => deleteFilesFn(url));
+
+  const menuOptions: DropDownMenuOptions | undefined = deletable
+    ? [
+        ...(options ?? []),
+        { label: "Delete file", icon: Trash2, fn: handleDelete },
+      ]
+    : options;
 
   const displayTitle = title?.trim() || getTitleByUrl(url);
 
@@ -49,11 +62,11 @@ const FilePreview = ({
         ) : undefined
       }
       author={author}
-      options={options}
+      options={menuOptions}
       small={small}
       removable={deletable}
       isPending={isPending}
-      onDelete={onRemove ?? (() => deleteFileFn(url))}
+      onDelete={handleDelete}
     />
   );
 };

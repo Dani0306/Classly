@@ -67,13 +67,22 @@ const FilePreviewCard = ({
 
   const { label, Icon, color } = meta;
 
-  const menuOptions: DropDownMenuOptions = options ?? [
-    {
-      label: "Open file",
-      icon: ExternalLink,
-      fn: () => window.open(src, "_blank", "noopener,noreferrer"),
-    },
-  ];
+  const menuOptions: DropDownMenuOptions = options
+    ? [
+        {
+          label: "Open file",
+          icon: ExternalLink,
+          fn: () => window.open(src, "_blank", "noopener,noreferrer"),
+        },
+        ...options,
+      ]
+    : [
+        {
+          label: "Open file",
+          icon: ExternalLink,
+          fn: () => window.open(src, "_blank", "noopener,noreferrer"),
+        },
+      ];
 
   return (
     <div

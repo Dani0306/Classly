@@ -1,4 +1,3 @@
-import React from "react";
 import { Loader2 } from "lucide-react";
 import FilePreview from "../files/FilePreview";
 import { getTitleByUrl } from "@/utils/fn";
@@ -10,10 +9,12 @@ const Attachments = ({
   files,
   isUploading,
   onFilesAdded,
+  onFileDeleted,
 }: {
   files: string[];
   isUploading?: boolean;
   onFilesAdded: (files: File[]) => void;
+  onFileDeleted: (url: string) => void;
 }) => {
   return (
     <>
@@ -32,6 +33,8 @@ const Attachments = ({
           {files.map((item) => (
             <FilePreview
               key={item}
+              deletable
+              onDeleted={onFileDeleted}
               small
               url={item}
               title={getTitleByUrl(item)}
