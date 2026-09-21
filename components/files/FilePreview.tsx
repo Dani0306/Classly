@@ -44,7 +44,12 @@ const FilePreview = ({
   const menuOptions: DropDownMenuOptions | undefined = deletable
     ? [
         ...(options ?? []),
-        { label: "Delete file", icon: Trash2, fn: handleDelete },
+        {
+          label: "Delete file",
+          icon: Trash2,
+          fn: handleDelete,
+          destructive: true,
+        },
       ]
     : options;
 

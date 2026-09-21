@@ -129,6 +129,8 @@ export type DropDownMenuOptions = Array<{
   label: string;
   fn: () => void;
   icon?: LucideIcon;
+  /** Renders the item in the destructive color (delete actions). */
+  destructive?: boolean;
 }>;
 
 //* EVENT TYPES
