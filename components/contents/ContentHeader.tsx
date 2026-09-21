@@ -47,7 +47,7 @@ const ContentHeader = ({
       <div className="shrink-0 flex flex-wrap items-center gap-2 text-[13px]">
         <ContentBadge onClick={() => setSection("content")} type={type} />
         <AttachmentsBadge
-          text="See attachments"
+          text="Attachments"
           onClick={() => setSection("attachments")}
         />
         {isScheduled && (

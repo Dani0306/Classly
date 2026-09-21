@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils";
-import { File as FileIcon, Folder, Image } from "lucide-react";
 import { useDropzone, type FileRejection } from "react-dropzone";
 import { useToast } from "@/providers/ToastProvider";
 
@@ -16,16 +14,24 @@ const ACCEPTED_TYPES = {
 };
 
 function FileInput({
+  children,
   setFiles,
+  onDrop,
 }: {
-  setFiles: React.Dispatch<React.SetStateAction<Array<File>>>;
+  /** Collects dropped files into a list the parent holds. */
+  setFiles?: React.Dispatch<React.SetStateAction<Array<File>>>;
+  /** Receives only the files from this drop — use it to act on each drop. */
+  onDrop?: (files: File[]) => void;
+  children: React.ReactNode;
 }) {
   const { toast } = useToast();
 
   const handleDrop = (accepted: File[]) => {
     if (!accepted.length) return;
 
-    setFiles((prev) => [
+    onDrop?.(accepted);
+
+    setFiles?.((prev) => [
       ...prev,
       ...accepted.filter(
         (file) => !prev.find((item) => item.name === file.name),
@@ -43,7 +49,7 @@ function FileInput({
     });
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     onDrop: handleDrop,
     onDropRejected: handleReject,
     maxSize: MAX_FILE_SIZE,
@@ -51,28 +57,12 @@ function FileInput({
   });
 
   return (
-    <div className="flex flex-col">
-      <div
-        {...getRootProps({ className: "dropzone" })}
-        className={cn(
-          "flex-col border-2 border-dashed border-primary min-h-50 flex items-center justify-center",
-          isDragActive && "opacity-50",
-        )}
-      >
-        <input {...getInputProps()} />
-        <p className="text-gray-400 text-sm">
-          {isDragActive
-            ? "Drop the files here to upload them"
-            : "Drag and drop the files here, or click to select them ."}
-        </p>
-        <div className="flex mt-4">
-          {/* eslint-disable-next-line */}
-          <Image className="size-6 text-gray-400" />
-          <FileIcon className="size-6 text-gray-400" />
-          <Folder className="size-6 text-gray-400" />
-        </div>
-      </div>
-      <aside></aside>
+    <div
+      {...getRootProps({ className: "dropzone" })}
+      className="flex flex-col space-y-4"
+    >
+      <input {...getInputProps()} />
+      {children}
     </div>
   );
 }

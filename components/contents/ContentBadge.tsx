@@ -7,7 +7,6 @@ import {
   Workflow,
   GraduationCap,
   LucideIcon,
-  Folder,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ContentType } from "@/types";
@@ -20,7 +19,6 @@ const TYPE_ICONS: Record<ContentType, LucideIcon> = {
   homework: ClipboardCheck,
   quiz: HelpCircle,
   diagram: Workflow,
-  file: Folder,
   class: GraduationCap,
 };
 
@@ -31,7 +29,6 @@ const TYPE_LABELS: Record<ContentType, string> = {
   homework: "Homework",
   quiz: "Quiz",
   diagram: "Diagram",
-  file: "File",
   class: "Class",
 };
 

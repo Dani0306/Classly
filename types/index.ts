@@ -68,7 +68,7 @@ export type Content = {
   ai_output?: string;
   due_date?: string;
   priority?: ContentPriority;
-  files_urls?: string[];
+  files_urls: string[];
   is_completed?: boolean;
   created_at: string;
   updated_at: string;

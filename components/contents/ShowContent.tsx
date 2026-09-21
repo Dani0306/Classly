@@ -10,11 +10,41 @@ import LoadingScreen from "../loading/LoadingScreen";
 import ContentHeader from "./ContentHeader";
 import ContentBody from "./ContentBody";
 import ContentFooter from "./ContentFooter";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Attachments from "./Attachments";
+import { attachFiles } from "@/actions/contents/attachFiles";
+import { useToast } from "@/providers/ToastProvider";
 
 const ShowContent = ({ content }: { content: Content }) => {
   const [section, setSection] = useState<ViewType>("content");
+
+  const { toast } = useToast();
+
+  // The content prop is fixed when the modal opens, so newly attached files
+  // are tracked here rather than waiting on a refetch that never reaches it.
+  const [fileUrls, setFileUrls] = useState<string[]>(content.files_urls ?? []);
+  const [isUploading, startUpload] = useTransition();
+
+  const handleFilesAdded = (files: File[]) => {
+    startUpload(async () => {
+      try {
+        const saved = await attachFiles(content.id, files);
+
+        // Merge rather than replace: a slower, earlier drop can resolve after
+        // a later one and carry a shorter list.
+        setFileUrls((prev) => Array.from(new Set([...prev, ...saved])));
+      } catch (error) {
+        toast({
+          title: "Failed to add files",
+          description:
+            error instanceof Error
+              ? error.message
+              : "Something went wrong. Please try again.",
+          type: "error",
+        });
+      }
+    });
+  };
 
   const completed = content.is_completed ?? false;
   const editor = useContentText(content);
@@ -58,7 +88,11 @@ const ShowContent = ({ content }: { content: Content }) => {
           {section === "content" ? (
             <ContentBody content={content} editor={editor} />
           ) : (
-            <Attachments files={content.files_urls ?? []} />
+            <Attachments
+              files={fileUrls}
+              isUploading={isUploading}
+              onFilesAdded={handleFilesAdded}
+            />
           )}
         </div>
 

@@ -84,7 +84,7 @@ const FilePreviewCard = ({
         if (removable) setShowDeleteX(false);
       }}
       className={cn(
-        "overflow-hidden relative border border-black/10 bg-white shadow-sm",
+        "relative border border-black/10 bg-white shadow-sm",
         small ? "w-40 rounded-xl" : "w-full rounded-2xl",
       )}
     >
@@ -107,7 +107,12 @@ const FilePreviewCard = ({
       )}
 
       {/* Preview — the document sits on a white sheet inside a soft tray */}
-      <div className={cn("bg-black/2", small ? "p-1.5" : "p-4")}>
+      <div
+        className={cn(
+          "rounded-t-[inherit] bg-black/2",
+          small ? "p-1.5" : "p-4",
+        )}
+      >
         <div
           className={cn(
             "relative w-full overflow-hidden bg-white shadow-sm",

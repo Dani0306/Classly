@@ -1,7 +1,6 @@
 "use server";
 
 import { CONTENT_FILES_BUCKET, getStoragePath } from "@/lib/storage";
-import { getFileUrl } from "@/utils/fn";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
@@ -16,7 +15,7 @@ export const deleteContent = async (id: string) => {
 
   const { data: content } = await supabase
     .from("contents")
-    .select("type, ai_output")
+    .select("type, ai_output, files_urls")
     .eq("id", id)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -29,15 +28,19 @@ export const deleteContent = async (id: string) => {
 
   if (error) throw new Error("Error deleting content.");
 
-  if (content?.type === "file") {
-    const path = getStoragePath(getFileUrl(content));
+  // Attachments can sit on any content type in files_urls; a legacy "file"
+  // content kept its single URL in ai_output instead.
+  const urls: string[] = [...(content?.files_urls ?? [])];
 
-    if (path) {
-      const { error: storageError } = await supabase.storage
-        .from(CONTENT_FILES_BUCKET)
-        .remove([path]);
-      if (storageError) console.error(storageError);
-    }
+  const paths = urls
+    .map((url) => getStoragePath(url))
+    .filter((path): path is string => path !== null);
+
+  if (paths.length > 0) {
+    const { error: storageError } = await supabase.storage
+      .from(CONTENT_FILES_BUCKET)
+      .remove(paths);
+    if (storageError) console.error(storageError);
   }
 
   revalidatePath("/app/class/[id]");

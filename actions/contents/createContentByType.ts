@@ -7,7 +7,7 @@ import { generateSummary } from "@/actions/ai/generateSummary";
 import { CreateContentInput, NewContent } from "@/types";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
-import { uploadFiles } from "./uploadFiles";
+import { uploadFiles } from "../files/uploadFiles";
 
 const buildContent = async (input: CreateContentInput): Promise<NewContent> => {
   const { type, classId, title, text, files } = input;

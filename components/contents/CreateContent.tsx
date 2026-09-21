@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { CloudUpload, Plus } from "lucide-react";
 import LoadingScreen from "../loading/LoadingScreen";
 import Input from "../shared/Input";
 import ModalTitle from "../modal/ModalTitle";
@@ -22,6 +22,9 @@ import { diagramTypes } from "@/data/diagram/diagramTypes";
 import FileInput from "../files/FileInput";
 import { AttachmentsBadge } from "./ContentHeader";
 import LocalFilePreview from "../files/LocalFilePreview";
+import PageButton from "../shared/PageButton";
+import AddFilesButton from "../files/AddFilesButton";
+import NoFilesContent from "../files/NoFilesContent";
 
 const CreateContent = ({
   classId,
@@ -196,7 +199,6 @@ const CreateContent = ({
         </div>
       ) : (
         <div className="flex flex-col flex-1 space-y-3">
-          <FileInput setFiles={setFiles} />
           <div className="flex flex-col space-y-3">
             {files.length > 0 ? (
               <>
@@ -213,12 +215,15 @@ const CreateContent = ({
                       file={file}
                     />
                   ))}
+                  <FileInput setFiles={setFiles}>
+                    <AddFilesButton />
+                  </FileInput>
                 </div>
               </>
             ) : (
-              <p className="text-sm text-foreground font-extralight">
-                No files yet.
-              </p>
+              <FileInput setFiles={setFiles}>
+                <NoFilesContent />
+              </FileInput>
             )}
           </div>
         </div>

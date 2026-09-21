@@ -34,9 +34,13 @@ const DropDownMenu = ({ options }: { options: DropDownMenuOptions }) => {
         <div className="absolute right-0 top-8 z-50 w-44 bg-white rounded-xl shadow-lg border border-border overflow-hidden">
           {options.map((item) => (
             <button
-              onClick={() => item.fn()}
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen(false);
+                item.fn();
+              }}
               key={item.label}
-              className="cursor-pointer w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-gray-50 transition-colors"
+              className="cursor-pointer w-full flex items-center gap-3 pl-10 border py-2.5 text-xs text-foreground hover:bg-gray-50 transition-colors"
             >
               {item.icon && <item.icon className="size-4" />}
               {item.label}
