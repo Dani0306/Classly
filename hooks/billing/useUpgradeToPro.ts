@@ -78,6 +78,23 @@ export const useUpgradeToPro = ({
         eventCallback: (event) => {
           if (event.name === CheckoutEventNames.CHECKOUT_COMPLETED)
             void waitForActivation();
+
+          // Paddle's own modal only says "Something went wrong"; the event
+          // carries the actual reason (bad price id, no default payment
+          // link, sandbox/live mismatch, ...).
+          if (
+            event.name === CheckoutEventNames.CHECKOUT_ERROR ||
+            event.type === "checkout.warning"
+          ) {
+            console.error("Paddle checkout error:", event);
+
+            if (event.name === CheckoutEventNames.CHECKOUT_ERROR)
+              toast({
+                type: "error",
+                title: "Checkout couldn't open",
+                description: event.detail ?? event.code ?? "Unknown error",
+              });
+          }
         },
       });
 
