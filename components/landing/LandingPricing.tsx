@@ -1,7 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import PageButton from "../shared/PageButton";
 import { PRICING_INFO } from "@/data/landing/pricing";
 import { useInviewCustom } from "@/hooks/shared/useInViewCustom";

@@ -47,7 +47,8 @@ export async function GET(request: Request) {
     image_url: (user.user_metadata.avatar_url as string) ?? "",
     created_at: now,
     updated_at: now,
-    plan: "starter", // or whatever your default Plan value is
+    // RLS only accepts "starter" on insert; upgrades come from billing.
+    plan: "starter",
   };
 
   await createUser(appUser);

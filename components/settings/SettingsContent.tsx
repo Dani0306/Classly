@@ -1,10 +1,16 @@
-import { AppUser } from "@/types";
+import { AppUser, BillingSubscription } from "@/types";
 import PageContainer from "../shared/PageContainer";
 import ProfileSection from "./ProfileSection";
 import PlanSection from "./PlanSection";
 import AccountSection from "./AccountSection";
 
-const SettingsContent = ({ profile }: { profile: AppUser }) => {
+const SettingsContent = ({
+  profile,
+  subscription,
+}: {
+  profile: AppUser;
+  subscription: BillingSubscription | null;
+}) => {
   return (
     <PageContainer
       title="Settings"
@@ -12,7 +18,12 @@ const SettingsContent = ({ profile }: { profile: AppUser }) => {
     >
       <div className="flex w-full flex-col space-y-6">
         <ProfileSection profile={profile} />
-        <PlanSection plan={profile.plan} />
+        <PlanSection
+          plan={profile.plan}
+          subscription={subscription}
+          userId={String(profile.id)}
+          email={profile.email}
+        />
         <AccountSection profile={profile} />
       </div>
     </PageContainer>

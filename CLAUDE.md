@@ -25,7 +25,8 @@ Classly is a study app: users create **classes** and, inside them, **contents** 
 
 ## Auth and data access
 
-- Every Supabase client (`utils/supabase/server.ts`, `client.ts`) uses the **anon key plus the user's cookie session**. Server actions are not privileged: every query runs as `authenticated` under RLS. The code never uses the service-role key.
+- Every Supabase client (`utils/supabase/server.ts`, `client.ts`) uses the **anon key plus the user's cookie session**. Server actions are not privileged: every query runs as `authenticated` under RLS. The one exception is `utils/supabase/admin.ts` (service-role key), used only by the Paddle webhook after it verifies the signature.
+- `users.plan` (`'starter' | 'pro'`) can't be written by users: column grants leave it out of UPDATE and RLS only allows `'starter'` on INSERT. It is derived from `paddle_subscriptions` by a trigger.
 - RLS on `users`, `classes` and `contents` is owner-only (`auth.uid() = user_id`; for `users`, `= id`). A missing policy returns empty results, not an error.
 - `app/auth/callback/route.ts` exchanges the OAuth code and creates the `public.users` row with `id = auth user id`.
 - Production login redirects depend on Supabase **Site URL / Redirect URLs** (Auth → URL Configuration), not on code.
@@ -37,6 +38,12 @@ Classly is a study app: users create **classes** and, inside them, **contents** 
 - **Client mutations** go through hooks in `hooks/<domain>/` that wrap `useTransition` with `useToast` and usually `closeModal`.
 - **Modals**: `useModal().openModal(node)` renders the node once. Props passed in are frozen for the modal's lifetime, and `revalidatePath` does not update them. If a modal changes data it displays, keep that data in local state (see `ShowContent`'s `fileUrls`).
 - **List filters** are URL search params managed by `hooks/shared/useFilters.ts`; server pages read `searchParams`.
+
+## Billing (Paddle)
+
+- Upgrade opens Paddle.js checkout (`hooks/billing/useUpgradeToPro.ts`) with `customData.user_id`. `app/api/paddle/webhook/route.ts` verifies the signature and calls the `upsert_paddle_subscription` RPC (service role only), which ignores events older than the stored row. A trigger on `paddle_subscriptions` sets `users.plan`: `pro` while any subscription is `active`, `trialing` or `past_due`.
+- "Manage subscription" creates a Paddle customer portal session (`actions/billing/createPortalSession.ts`); cancelling there is how users return to Starter.
+- Sandbox and live are separate Paddle accounts. `PADDLE_API_KEY`, `NEXT_PUBLIC_PADDLE_CLIENT_TOKEN`, `PADDLE_WEBHOOK_SECRET` and `NEXT_PUBLIC_PADDLE_PRO_PRICE_ID` must all come from the account selected by `NEXT_PUBLIC_PADDLE_ENV`.
 
 ## Content model
 

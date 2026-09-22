@@ -1,10 +1,21 @@
 import { PLANS } from "@/data/settings/plans";
-import { Plan } from "@/types";
+import { BillingSubscription, Plan } from "@/types";
 import { cn } from "@/lib/utils";
 import SettingsSection from "./SettingsSection";
 import { Sparkles, Check } from "lucide-react";
+import PlanActions from "./PlanActions";
 
-const PlanSection = ({ plan }: { plan: Plan }) => {
+const PlanSection = ({
+  plan,
+  subscription,
+  userId,
+  email,
+}: {
+  plan: Plan;
+  subscription: BillingSubscription | null;
+  userId: string;
+  email: string;
+}) => {
   return (
     <SettingsSection
       title="Plan"
@@ -76,6 +87,19 @@ const PlanSection = ({ plan }: { plan: Plan }) => {
                     </li>
                   ))}
                 </ul>
+
+                {/* Billing lives on the Pro card: upgrade into it, or manage
+                    it (cancel returns the account to Starter). */}
+                {value === "pro" && (
+                  <div className="mt-auto pt-2">
+                    <PlanActions
+                      plan={plan}
+                      subscription={subscription}
+                      userId={userId}
+                      email={email}
+                    />
+                  </div>
+                )}
               </div>
             );
           },
@@ -83,7 +107,8 @@ const PlanSection = ({ plan }: { plan: Plan }) => {
       </div>
 
       <p className="text-[11px] font-light text-foreground/50">
-        Billing is not connected yet — plans are shown for reference only.
+        Payments are processed securely by Paddle. To switch back to Starter,
+        cancel Pro from Manage subscription.
       </p>
     </SettingsSection>
   );

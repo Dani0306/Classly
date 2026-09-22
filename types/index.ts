@@ -1,6 +1,6 @@
 import { LucideIcon } from "lucide-react";
 
-export type Plan = "starter" | "pro" | "team";
+export type Plan = "starter" | "pro";
 
 export type AppUser = {
   created_at: Date;
@@ -13,6 +13,23 @@ export type AppUser = {
 };
 
 export type UpdateProfile = Pick<AppUser, "name" | "image_url">;
+
+export type SubscriptionStatus =
+  | "active"
+  | "trialing"
+  | "past_due"
+  | "paused"
+  | "canceled";
+
+/** A row of paddle_subscriptions, written only by the Paddle webhook. */
+export type BillingSubscription = {
+  subscription_id: string;
+  customer_id: string;
+  status: SubscriptionStatus;
+  current_period_ends_at: string | null;
+  scheduled_change_action: "cancel" | "pause" | "resume" | null;
+  scheduled_change_at: string | null;
+};
 
 //* SCHEDULE TYPE
 

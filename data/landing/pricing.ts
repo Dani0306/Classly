@@ -1,6 +1,6 @@
 export const PRICING_INFO = [
   {
-    name: "Student",
+    name: "Starter",
     price: 0,
     billing: "forever",
     description: "Perfect for getting started with AI study aids.",
@@ -13,8 +13,8 @@ export const PRICING_INFO = [
     ],
   },
   {
-    name: "University",
-    price: 12,
+    name: "Pro",
+    price: 5,
     billing: "month",
     description: "Unlimited power for the serious academic.",
     popular: true,
