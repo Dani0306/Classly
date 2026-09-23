@@ -53,7 +53,7 @@ const LandingHero = ({ user }: { user: User | null }) => {
 
       <div className="w-full max-w-260 rounded-2xl aspect-video mx-auto mt-4">
         <ImageComponent
-          src="/screen1.png"
+          src="/screen.png"
           alt="screen"
           className="w-full h-full object-contain rounded-2xl"
         />
