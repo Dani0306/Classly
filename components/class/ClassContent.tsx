@@ -2,7 +2,7 @@
 
 import { Eye, Pencil, Trash2, Share2, BookOpen, Edit } from "lucide-react";
 import PageContainer from "../shared/PageContainer";
-import { Class, Content, DropDownMenuOptions } from "@/types";
+import { AppUser, Class, Content, DropDownMenuOptions } from "@/types";
 import ClassNavbar from "./ClassNavbar";
 import ContentCard from "../contents/ContentCard";
 import { useModal } from "@/providers/AppModalProvider";
@@ -13,9 +13,11 @@ import DropDownMenu from "../shared/DropDownMenu";
 const ClassContent = ({
   classItem,
   contents,
+  user,
 }: {
   classItem: Class;
   contents: Content[];
+  user: AppUser;
 }) => {
   const { openModal } = useModal();
 
@@ -70,7 +72,7 @@ const ClassContent = ({
         </div>
       }
     >
-      <ClassNavbar id={classItem.id} />
+      <ClassNavbar plan={user.plan ?? "starter"} id={classItem.id} />
 
       <div className="flex flex-wrap justify-center md:justify-start gap-5">
         {contents.map((content) => (

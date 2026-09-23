@@ -1,4 +1,5 @@
 import { getClass } from "@/actions/classes/getClass";
+import { getMyProfile } from "@/actions/user";
 import ClassContent from "@/components/class/ClassContent";
 import ErrorScreen from "@/components/shared/ErrorScreen";
 import { ContentType } from "@/types";
@@ -14,10 +15,18 @@ const page = async ({ params, searchParams }: PageProps) => {
   const { type } = await searchParams;
 
   const [data, error] = await tryCatch(getClass(id, type as ContentType));
+  const [user, userError] = await tryCatch(getMyProfile());
 
   if (error) return <ErrorScreen error={error} />;
+  if (userError) return <ErrorScreen error={userError} />;
 
-  return <ClassContent contents={data.contents} classItem={data.classItem} />;
+  return (
+    <ClassContent
+      user={user}
+      contents={data.contents}
+      classItem={data.classItem}
+    />
+  );
 };
 
 export default page;

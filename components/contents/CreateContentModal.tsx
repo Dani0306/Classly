@@ -1,9 +1,15 @@
-import { ContentType } from "@/types";
+import { ContentType, Plan } from "@/types";
 import { useState } from "react";
 import SelectContentTypeView from "./SelectContentTypeView";
 import CreateContent from "./CreateContent";
 import { useAiUsage } from "@/hooks/ai/useAiUsage";
-const CreateContentModal = ({ classId }: { classId: string }) => {
+const CreateContentModal = ({
+  classId,
+  plan,
+}: {
+  classId: string;
+  plan: Plan;
+}) => {
   const [contentType, setContentType] = useState<ContentType>("note");
   const [currentSection, setCurrentSection] = useState(1);
 
@@ -17,7 +23,7 @@ const CreateContentModal = ({ classId }: { classId: string }) => {
           contentType={contentType}
           setContentType={setContentType}
           setCurrentSection={setCurrentSection}
-          usage={usage}
+          plan={plan}
         />
       ) : (
         <CreateContent

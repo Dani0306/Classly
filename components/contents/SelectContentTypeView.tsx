@@ -1,30 +1,28 @@
-import { ContentType } from "@/types";
+import { ContentType, Plan } from "@/types";
 import React from "react";
 import ModalTitle from "../modal/ModalTitle";
 import { contentTypes } from "@/data/colors/typeColors";
 import PageButton from "../shared/PageButton";
 import { ArrowRight, Check, Lock } from "lucide-react";
-import { AI_KIND_BY_CONTENT_TYPE } from "@/lib/ai/kinds";
-import type { AiUsageSummary } from "@/actions/ai/getMyAiUsage";
 import { cn } from "@/lib/utils";
 
 const SelectContentTypeView = ({
   setCurrentSection,
   contentType,
   setContentType,
-  usage,
+  plan,
 }: {
   contentType: ContentType;
   setCurrentSection: React.Dispatch<React.SetStateAction<number>>;
   setContentType: React.Dispatch<React.SetStateAction<ContentType>>;
-  usage: AiUsageSummary | null;
+  plan: Plan;
 }) => {
   // A limit of 0 means the plan doesn't include that type at all.
   const isLocked = (type: ContentType) => {
-    if (!usage || type === "class") return false;
-
-    const kind = AI_KIND_BY_CONTENT_TYPE[type];
-    return usage.allowances[kind]?.limit === 0;
+    if (type === "diagram" || type === "quiz") {
+      if (plan === "starter") return true;
+    }
+    return false;
   };
 
   return (
@@ -95,7 +93,7 @@ const SelectContentTypeView = ({
         </div>
       </div>
       <div className="w-full flex flex-wrap items-center justify-between gap-3 lg:pb-0 pb-8">
-        {usage?.plan === "starter" ? (
+        {plan === "starter" ? (
           <p className="text-[11px] font-light text-foreground/50">
             Quizzes and diagrams are included in Pro.
           </p>

@@ -7,15 +7,16 @@ import { Plus } from "lucide-react";
 import { useModal } from "@/providers/AppModalProvider";
 import ModalContainer from "../modal/ModalContainer";
 import CreateContentModal from "../contents/CreateContentModal";
+import { Plan } from "@/types";
 
-const ClassNavbar = ({ id }: { id: string }) => {
+const ClassNavbar = ({ id, plan }: { id: string; plan: Plan }) => {
   const { handleFilter, hasFilter, hasAnyFilter, clearFilter } = useFilters();
   const { openModal } = useModal();
 
-  const handleOpenCreateNoteModal = () => {
+  const handleOpenCreateContentModal = () => {
     openModal(
       <ModalContainer size="md">
-        <CreateContentModal classId={id} />
+        <CreateContentModal plan={plan} classId={id} />
       </ModalContainer>,
     );
   };
@@ -58,7 +59,11 @@ const ClassNavbar = ({ id }: { id: string }) => {
         })}
       </div>
 
-      <PageButton onClick={handleOpenCreateNoteModal} text="New" icon={Plus} />
+      <PageButton
+        onClick={handleOpenCreateContentModal}
+        text="New"
+        icon={Plus}
+      />
     </div>
   );
 };
