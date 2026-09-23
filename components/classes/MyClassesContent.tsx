@@ -1,7 +1,7 @@
 "use client";
 import { useDebounce } from "@/hooks/shared/useDebounce";
 import Input from "../shared/Input";
-import { Plus, Search } from "lucide-react";
+import { GraduationCap, Plus, Search, SearchX } from "lucide-react";
 import PageContainer from "../shared/PageContainer";
 import PageButton from "../shared/PageButton";
 import { useModal } from "@/providers/AppModalProvider";
@@ -9,6 +9,7 @@ import ModalContainer from "../modal/ModalContainer";
 import CreateClassModal from "./CreateClassModal";
 import { Class } from "@/types";
 import ClassCard from "./ClassCard";
+import EmptyState from "../shared/EmptyState";
 import { useFilters } from "@/hooks/shared/useFilters";
 import { useEffect } from "react";
 
@@ -53,11 +54,36 @@ const MyClassesContent = ({ classes }: { classes: Class[] }) => {
           icon={Search}
         />
       </div>
-      <div className="flex gap-8 flex-wrap justify-center md:justify-start">
-        {classes.map((item) => (
-          <ClassCard key={item.id} item={item} />
-        ))}
-      </div>
+      {classes.length === 0 ? (
+        value ? (
+          <EmptyState
+            compact
+            icon={SearchX}
+            title={`No classes match "${value}"`}
+            description="Try a different name, or clear the search to see all of your classes."
+          />
+        ) : (
+          <EmptyState
+            icon={GraduationCap}
+            title="Your classes live here"
+            description="A class holds its notes, summaries, quizzes and homework in one place. Create your first one to get started."
+            action={
+              <PageButton
+                onClick={handleOpenNewClassModal}
+                text="Create your first class"
+                icon={Plus}
+                size="md"
+              />
+            }
+          />
+        )
+      ) : (
+        <div className="flex gap-8 flex-wrap justify-center md:justify-start">
+          {classes.map((item) => (
+            <ClassCard key={item.id} item={item} />
+          ))}
+        </div>
+      )}
     </PageContainer>
   );
 };
