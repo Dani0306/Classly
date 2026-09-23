@@ -5,7 +5,7 @@ export const PRICING_INFO = [
     billing: "forever",
     description: "Perfect for getting started with AI study aids.",
     popular: false,
-    buttonText: "Get Started",
+    buttonText: "Plan starter",
     features: [
       "Basic AI OCR (20 pages/mo)",
       "5 Smart Summaries / mo",
@@ -18,7 +18,7 @@ export const PRICING_INFO = [
     billing: "month",
     description: "Unlimited power for the serious academic.",
     popular: true,
-    buttonText: "Go Pro",
+    buttonText: "Plan pro",
     features: [
       "Unlimited AI OCR",
       "Unlimited Smart Summaries",

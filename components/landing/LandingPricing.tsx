@@ -40,7 +40,7 @@ const PricingCard = ({
       <div className="flex flex-col space-y-2">
         <strong className="text-sm font-medium text-black">{name}</strong>
         <span>
-          <strong className="text-2xl font-bold text-black">{price}</strong>
+          <strong className="text-2xl font-bold text-black">{price}$</strong>
           <span className="text-xs font-light text-gray-600"> / {billing}</span>
         </span>
         <span className="text-[10px] font-light text-gray-600">
