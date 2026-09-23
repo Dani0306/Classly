@@ -10,42 +10,12 @@ import LoadingScreen from "../loading/LoadingScreen";
 import ModalTitle from "../modal/ModalTitle";
 import { Class, ScheduleEntry } from "@/types";
 import { modifyClass } from "@/actions/classes/modifyClass";
-import { X } from "lucide-react";
-
-const DAYS = [
-  { label: "Sun", value: 0 },
-  { label: "Mon", value: 1 },
-  { label: "Tue", value: 2 },
-  { label: "Wed", value: 3 },
-  { label: "Thu", value: 4 },
-  { label: "Fri", value: 5 },
-  { label: "Sat", value: 6 },
-];
+import ScheduleSelector, { isScheduleValid } from "./ScheduleSelector";
 
 const CreateClassModal = ({ classContent }: { classContent?: Class }) => {
   const [schedule, setSchedule] = useState<ScheduleEntry[]>(
     classContent?.schedule ?? [],
   );
-
-  const addScheduleEntry = () => {
-    setSchedule((prev) => [...prev, { day: 1, start_time: "", end_time: "" }]);
-  };
-
-  const updateScheduleEntry = (
-    index: number,
-    field: keyof ScheduleEntry,
-    value: string | number,
-  ) => {
-    setSchedule((prev) =>
-      prev.map((entry, i) =>
-        i === index ? { ...entry, [field]: value } : entry,
-      ),
-    );
-  };
-
-  const removeScheduleEntry = (index: number) => {
-    setSchedule((prev) => prev.filter((_, i) => i !== index));
-  };
 
   const { closeModal } = useModal();
   const { toast } = useToast();
@@ -59,6 +29,16 @@ const CreateClassModal = ({ classContent }: { classContent?: Class }) => {
 
   const createClassFn = () => {
     if (!name || !description) return;
+
+    // A half-filled or clashing session would land on the calendar wrong.
+    if (!isScheduleValid(schedule)) {
+      toast({
+        title: "Check the schedule",
+        description: "Every meeting day needs a valid start and end time.",
+        type: "error",
+      });
+      return;
+    }
 
     if (!classContent) {
       startTransition(async () => {
@@ -152,73 +132,8 @@ const CreateClassModal = ({ classContent }: { classContent?: Class }) => {
         placeholder="Class Description ..."
       />
 
-      <div className="flex flex-col space-y-3">
-        <label className="text-xs font-medium text-foreground">
-          Class Schedule
-        </label>
+      <ScheduleSelector schedule={schedule} setSchedule={setSchedule} />
 
-        {schedule.map((entry, index) => (
-          <div key={index} className="flex items-end gap-2">
-            <div className="flex flex-col space-y-1">
-              <label className="text-xs text-foreground/60">Day</label>
-              <select
-                value={entry.day}
-                onChange={(e) =>
-                  updateScheduleEntry(index, "day", Number(e.target.value))
-                }
-                className="px-3 py-2 rounded-lg bg-foreground/10 text-sm outline-none focus:ring-2 focus:ring-primary"
-              >
-                {DAYS.map((d) => (
-                  <option key={d.value} value={d.value}>
-                    {d.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col space-y-1 flex-1">
-              <label className="text-xs text-foreground/60">Start</label>
-              <input
-                type="time"
-                value={entry.start_time}
-                onChange={(e) =>
-                  updateScheduleEntry(index, "start_time", e.target.value)
-                }
-                className="px-3 py-2 rounded-lg bg-foreground/10 text-sm outline-none focus:ring-2 focus:ring-primary w-full"
-              />
-            </div>
-
-            <div className="flex flex-col space-y-1 flex-1">
-              <label className="text-xs text-foreground/60">End</label>
-              <input
-                type="time"
-                value={entry.end_time}
-                onChange={(e) =>
-                  updateScheduleEntry(index, "end_time", e.target.value)
-                }
-                className="px-3 py-2 rounded-lg bg-foreground/10 text-sm outline-none focus:ring-2 focus:ring-primary w-full"
-              />
-            </div>
-
-            <button
-              type="button"
-              onClick={() => removeScheduleEntry(index)}
-              className="p-2 rounded-lg bg-foreground/10 hover:bg-foreground/20 cursor-pointer"
-              aria-label="Remove day"
-            >
-              <X className="size-4" />
-            </button>
-          </div>
-        ))}
-
-        <button
-          type="button"
-          onClick={addScheduleEntry}
-          className="text-xs font-medium text-primary self-start cursor-pointer hover:underline"
-        >
-          + Add meeting day
-        </button>
-      </div>
       <div className="flex flex-col space-y-5">
         <label className="text-xs font-medium text-foreground">
           Class Icon
