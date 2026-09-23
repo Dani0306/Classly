@@ -63,7 +63,7 @@ const PricingCard = ({
 };
 
 const LandingPricing = () => {
-  const [plan, setPlan] = useState<string>("University");
+  const [plan, setPlan] = useState<string>("Starter");
 
   const { inView, ref } = useInviewCustom();
 
