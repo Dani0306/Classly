@@ -1,15 +1,11 @@
 "use server";
 
-import { Class, Content, Event, EventKind } from "@/types";
-import { at, getHours, getMinutes } from "@/utils/fn";
+import { Class, Content, EventData, EventKind } from "@/types";
 import { createServerSupabase } from "@/utils/supabase/server";
 
-// ScheduleEntry.day is 0=Sun..6=Sat. at() expects days after Monday.
-function dayOffsetFromMonday(day: number) {
-  return (day + 6) % 7; // Mon->0, Tue->1, ... Sun->6
-}
-
-export const getMyEvents = async (type?: EventKind | "all") => {
+export const getMyEvents = async (
+  type?: EventKind | "all",
+): Promise<EventData[]> => {
   const supabase = await createServerSupabase();
 
   const {
@@ -22,7 +18,7 @@ export const getMyEvents = async (type?: EventKind | "all") => {
   const wantsContents =
     !type || type === "homework" || type === "reminder" || type === "all";
 
-  let classesEvents: Event[] = [];
+  let classesEvents: EventData[] = [];
 
   if (wantsClasses) {
     const { data: classes, error: classesError } = await supabase
@@ -40,25 +36,17 @@ export const getMyEvents = async (type?: EventKind | "all") => {
           id: `${item.id}-${i}`,
           title: item.name,
           kind: "class" as const,
-          start: at(
-            dayOffsetFromMonday(s.day),
-            getHours(s.start_time),
-            getMinutes(s.start_time),
-          ),
-          end: at(
-            dayOffsetFromMonday(s.day),
-            getHours(s.end_time),
-            getMinutes(s.end_time),
-          ),
           description: item.description ?? "",
-          allDay: false,
+          day: s.day,
+          startTime: s.start_time,
+          endTime: s.end_time,
         })),
       ) ?? [];
   }
 
   //* reminders + homework
 
-  let contentEvents: Event[] = [];
+  let contentEvents: EventData[] = [];
 
   if (wantsContents) {
     let query = supabase.from("contents").select("*").eq("user_id", user.id);
@@ -77,18 +65,15 @@ export const getMyEvents = async (type?: EventKind | "all") => {
 
     contentEvents = (contents ?? [])
       .filter((item) => item.due_date)
-      .map((item) => {
-        const due = new Date(item.due_date!);
-        return {
-          id: item.id,
-          title: item.title,
-          kind: item.type as Event["kind"],
-          start: due,
-          end: due,
-          description: item.ai_output ?? item.content ?? "",
-          allDay: true,
-        };
-      });
+      // due_date is a timestamp without a timezone — a calendar day, not a
+      // moment — so keep only the date part and let the browser place it.
+      .map((item) => ({
+        id: item.id,
+        title: item.title,
+        kind: item.type as EventData["kind"],
+        description: item.ai_output ?? item.content ?? "",
+        dueDate: item.due_date!.slice(0, 10),
+      }));
   }
 
   return [...classesEvents, ...contentEvents];

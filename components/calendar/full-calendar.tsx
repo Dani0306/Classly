@@ -5,8 +5,11 @@ import {
   addDays,
   addMonths,
   addWeeks,
+  eachDayOfInterval,
+  endOfMonth,
   endOfWeek,
   format,
+  startOfMonth,
   startOfWeek,
   subDays,
   subMonths,
@@ -18,7 +21,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarView } from "./types";
 import { WeekView } from "./week-view";
 import { MonthView } from "./month-view";
-import { Event } from "@/types";
+import { EventData } from "@/types";
+import { buildEvents } from "./utils";
 import { useFilters } from "@/hooks/shared/useFilters";
 
 import {
@@ -31,7 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export function FullCalendar({ events }: { events: Event[] }) {
+export function FullCalendar({ events }: { events: EventData[] }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<CalendarView>("week");
 
@@ -40,6 +44,24 @@ export function FullCalendar({ events }: { events: Event[] }) {
     const start = startOfWeek(currentDate, { weekStartsOn: 1 });
     return Array.from({ length: 7 }, (_, i) => addDays(start, i));
   }, [currentDate, view]);
+
+  // Every day the current view can show, so weekly classes can be repeated
+  // across it. The month grid starts before the 1st and ends after the last.
+  const visibleDays = useMemo(() => {
+    if (view !== "month") return days;
+
+    return eachDayOfInterval({
+      start: startOfWeek(startOfMonth(currentDate), { weekStartsOn: 1 }),
+      end: endOfWeek(endOfMonth(currentDate), { weekStartsOn: 1 }),
+    });
+  }, [view, currentDate, days]);
+
+  // Dates are built here, in the browser, so they land on the day and time
+  // the user picked rather than the server's timezone.
+  const calendarEvents = useMemo(
+    () => buildEvents(events, visibleDays),
+    [events, visibleDays],
+  );
 
   const rangeLabel = useMemo(() => {
     if (view === "day") return format(currentDate, "MMMM d, yyyy");
@@ -144,9 +166,9 @@ export function FullCalendar({ events }: { events: Event[] }) {
       <div className="flex min-h-0 flex-1">
         <main className="min-w-0 flex-1 overflow-hidden">
           {view === "month" ? (
-            <MonthView currentDate={currentDate} events={events} />
+            <MonthView currentDate={currentDate} events={calendarEvents} />
           ) : (
-            <WeekView days={days} events={events} />
+            <WeekView days={days} events={calendarEvents} />
           )}
         </main>
       </div>

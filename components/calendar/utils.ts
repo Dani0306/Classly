@@ -1,11 +1,66 @@
-import { differenceInMinutes, isSameDay } from "date-fns";
+import {
+  differenceInMinutes,
+  format,
+  isSameDay,
+  parseISO,
+  setHours,
+  setMinutes,
+  startOfDay,
+} from "date-fns";
 import { ColorKey } from "./types";
-import { Event } from "@/types";
+import { Event, EventData } from "@/types";
 
 // Visible time window for the day/week grid. Adjust to fit your class schedule.
 export const DAY_START_HOUR = 5;
 export const DAY_END_HOUR = 23;
 export const PX_PER_HOUR = 64;
+
+const atTime = (day: Date, time: string) => {
+  const [hour, minute] = time.split(":").map(Number);
+  return setMinutes(setHours(startOfDay(day), hour), minute || 0);
+};
+
+/**
+ * Turns the server's plain event data into Dates, in the browser's timezone.
+ * Classes repeat weekly, so one is emitted for every matching day on screen.
+ */
+export function buildEvents(data: EventData[], days: Date[]): Event[] {
+  return data.flatMap((item): Event[] => {
+    if (item.kind === "class") {
+      if (item.day == null || !item.startTime || !item.endTime) return [];
+
+      return days
+        .filter((day) => day.getDay() === item.day)
+        .map((day) => ({
+          id: `${item.id}-${format(day, "yyyy-MM-dd")}`,
+          title: item.title,
+          kind: item.kind,
+          description: item.description,
+          start: atTime(day, item.startTime!),
+          end: atTime(day, item.endTime!),
+          allDay: false,
+        }));
+    }
+
+    if (!item.dueDate) return [];
+
+    // parseISO reads a plain "YYYY-MM-DD" as local midnight, so the day shown
+    // is the day that was picked, wherever the user is.
+    const due = parseISO(item.dueDate);
+
+    return [
+      {
+        id: item.id,
+        title: item.title,
+        kind: item.kind,
+        description: item.description,
+        start: due,
+        end: due,
+        allDay: true,
+      },
+    ];
+  });
+}
 
 export function eventsForDay(events: Event[], day: Date) {
   return events

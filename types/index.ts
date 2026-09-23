@@ -164,6 +164,28 @@ export interface Event {
   allDay?: boolean;
 }
 
+/**
+ * What the server sends to the calendar. Dates stay as plain text and weekly
+ * classes as their slot, because a Date built on the server is fixed to the
+ * server's timezone (UTC in production) and would land on the wrong day or
+ * hour once the browser renders it. The client turns these into Dates in the
+ * user's own timezone.
+ */
+export type EventData = {
+  id: string;
+  title: string;
+  kind: EventKind;
+  description?: string;
+  /** Homework and reminders: the day it is due, as "YYYY-MM-DD". */
+  dueDate?: string;
+  /** Classes: weekly slot. day is 0 = Sunday ... 6 = Saturday. */
+  day?: number;
+  /** Classes: "09:00". */
+  startTime?: string;
+  /** Classes: "10:15". */
+  endTime?: string;
+};
+
 // * section type
 
 export type ViewType = "content" | "attachments";
