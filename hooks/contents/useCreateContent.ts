@@ -20,9 +20,15 @@ export const useCreateContent = () => {
           type: "success",
         });
         closeModal();
-      } catch {
+      } catch (err) {
+        // Plan limits explain themselves, so show the action's message when
+        // there is one.
         toast({
-          title: `Failed creating ${formatText(input.type)}, please try again.`,
+          title: `Failed creating ${formatText(input.type)}`,
+          description:
+            err instanceof Error
+              ? err.message
+              : "Something went wrong. Please try again.",
           type: "error",
         });
       }

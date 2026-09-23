@@ -23,17 +23,24 @@ import FileInput from "../files/FileInput";
 import { AttachmentsBadge } from "./ContentHeader";
 import LocalFilePreview from "../files/LocalFilePreview";
 import PageButton from "../shared/PageButton";
+import AllowanceNote from "./AllowanceNote";
+import { AI_KIND_BY_CONTENT_TYPE } from "@/lib/ai/kinds";
+import type { AiUsageSummary } from "@/actions/ai/getMyAiUsage";
+import { useModal } from "@/providers/AppModalProvider";
 import AddFilesButton from "../files/AddFilesButton";
 import NoFilesContent from "../files/NoFilesContent";
 
 const CreateContent = ({
   classId,
   contentType,
+  usage,
 }: {
   classId: string;
   contentType: ContentType;
+  usage: AiUsageSummary | null;
 }) => {
   const { createContentFn, isPending } = useCreateContent();
+  const { closeModal } = useModal();
 
   const [currentView, setCurrentView] = useState<ViewType>("content");
   const [title, setTitle] = useState("");
@@ -51,6 +58,12 @@ const CreateContent = ({
   const form = CONTENT_FORMS[type];
   const colors = CONTENT_TYPE_COLORS[type];
 
+  const kind = AI_KIND_BY_CONTENT_TYPE[type];
+  const allowance = usage?.allowances[kind];
+  // The server enforces this too; here it only avoids a wasted form.
+  const outOfCredits =
+    allowance?.limit != null && allowance.used >= allowance.limit;
+
   const values: Record<ContentFormField, string> = {
     description: text,
     dueDate,
@@ -63,6 +76,7 @@ const CreateContent = ({
   const shows = (field: ContentFormField) => form.fields.includes(field);
 
   const canSubmit =
+    !outOfCredits &&
     title.trim() !== "" &&
     text.trim() !== "" &&
     form.required.every((field) => values[field] !== "");
@@ -99,6 +113,12 @@ const CreateContent = ({
         <ModalTitle
           title={`New ${formatText(type)}`}
           description={CONTENT_DESCRIPTIONS[type]}
+        />
+
+        <AllowanceNote
+          kind={kind}
+          allowance={allowance}
+          onNavigate={closeModal}
         />
 
         <div className="flex space-x-3">

@@ -2,9 +2,13 @@ import { ContentType } from "@/types";
 import { useState } from "react";
 import SelectContentTypeView from "./SelectContentTypeView";
 import CreateContent from "./CreateContent";
+import { useAiUsage } from "@/hooks/ai/useAiUsage";
 const CreateContentModal = ({ classId }: { classId: string }) => {
   const [contentType, setContentType] = useState<ContentType>("note");
   const [currentSection, setCurrentSection] = useState(1);
+
+  // What the plan allows, so limits are shown before the form is filled in.
+  const usage = useAiUsage();
 
   return (
     <div className="flex h-full flex-col lg:flex-row space-x-4 space-y-6">
@@ -13,9 +17,14 @@ const CreateContentModal = ({ classId }: { classId: string }) => {
           contentType={contentType}
           setContentType={setContentType}
           setCurrentSection={setCurrentSection}
+          usage={usage}
         />
       ) : (
-        <CreateContent classId={classId} contentType={contentType} />
+        <CreateContent
+          classId={classId}
+          contentType={contentType}
+          usage={usage}
+        />
       )}
     </div>
   );

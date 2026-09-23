@@ -4,17 +4,21 @@ import { cn } from "@/lib/utils";
 import SettingsSection from "./SettingsSection";
 import { Sparkles, Check } from "lucide-react";
 import PlanActions from "./PlanActions";
+import UsageSummary from "./UsageSummary";
+import type { AiUsageSummary } from "@/actions/ai/getMyAiUsage";
 
 const PlanSection = ({
   plan,
   subscription,
   userId,
   email,
+  usage,
 }: {
   plan: Plan;
   subscription: BillingSubscription | null;
   userId: string;
   email: string;
+  usage: AiUsageSummary | null;
 }) => {
   return (
     <SettingsSection
@@ -105,6 +109,8 @@ const PlanSection = ({
           },
         )}
       </div>
+
+      {usage && <UsageSummary usage={usage} />}
 
       <p className="text-[11px] font-light text-foreground/50">
         Payments are processed securely by Paddle. To switch back to Starter,

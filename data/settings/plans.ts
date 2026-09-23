@@ -19,11 +19,7 @@ export const PLANS: PlanOption[] = [
     billing: "forever",
     description: "Everything you need to organize your first classes.",
     icon: GraduationCap,
-    features: [
-      "Basic AI OCR",
-      "5 smart summaries / mo",
-      "Standard support",
-    ],
+    features: ["Basic AI OCR", "5 smart summaries / mo", "Standard support"],
   },
   {
     plan: "pro",

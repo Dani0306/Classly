@@ -1,4 +1,5 @@
 import { AppUser, BillingSubscription } from "@/types";
+import type { AiUsageSummary } from "@/actions/ai/getMyAiUsage";
 import PageContainer from "../shared/PageContainer";
 import ProfileSection from "./ProfileSection";
 import PlanSection from "./PlanSection";
@@ -7,9 +8,11 @@ import AccountSection from "./AccountSection";
 const SettingsContent = ({
   profile,
   subscription,
+  usage,
 }: {
   profile: AppUser;
   subscription: BillingSubscription | null;
+  usage: AiUsageSummary | null;
 }) => {
   return (
     <PageContainer
@@ -23,6 +26,7 @@ const SettingsContent = ({
           subscription={subscription}
           userId={String(profile.id)}
           email={profile.email}
+          usage={usage}
         />
         <AccountSection profile={profile} />
       </div>

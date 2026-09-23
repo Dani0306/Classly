@@ -3,17 +3,30 @@ import React from "react";
 import ModalTitle from "../modal/ModalTitle";
 import { contentTypes } from "@/data/colors/typeColors";
 import PageButton from "../shared/PageButton";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Lock } from "lucide-react";
+import { AI_KIND_BY_CONTENT_TYPE } from "@/lib/ai/kinds";
+import type { AiUsageSummary } from "@/actions/ai/getMyAiUsage";
+import { cn } from "@/lib/utils";
 
 const SelectContentTypeView = ({
   setCurrentSection,
   contentType,
   setContentType,
+  usage,
 }: {
   contentType: ContentType;
   setCurrentSection: React.Dispatch<React.SetStateAction<number>>;
   setContentType: React.Dispatch<React.SetStateAction<ContentType>>;
+  usage: AiUsageSummary | null;
 }) => {
+  // A limit of 0 means the plan doesn't include that type at all.
+  const isLocked = (type: ContentType) => {
+    if (!usage || type === "class") return false;
+
+    const kind = AI_KIND_BY_CONTENT_TYPE[type];
+    return usage.allowances[kind]?.limit === 0;
+  };
+
   return (
     <div className="w-full h-full flex flex-col space-y-6">
       <ModalTitle
@@ -26,18 +39,33 @@ const SelectContentTypeView = ({
         <div className="grid auto-rows-fr grid-cols-2 gap-3 md:grid-cols-3">
           {contentTypes.map((item) => {
             const selected = contentType === item.type;
+            const locked = isLocked(item.type);
+
             return (
               <div
-                onClick={() => setContentType(item.type)}
+                onClick={() => {
+                  if (!locked) setContentType(item.type);
+                }}
                 title={item.description}
                 style={{
                   borderColor: selected ? item.color : `${item.color}40`,
                   backgroundColor: `${item.color}25`,
                 }}
                 key={item.label}
-                className="relative flex cursor-pointer flex-col gap-2.5 rounded-xl border-2 p-4 transition-transform duration-200 hover:scale-[1.02]"
+                className={cn(
+                  "relative flex flex-col gap-2.5 rounded-xl border-2 p-4 transition-transform duration-200",
+                  locked
+                    ? "cursor-not-allowed opacity-60"
+                    : "cursor-pointer hover:scale-[1.02]",
+                )}
               >
-                {selected && (
+                {locked && (
+                  <span className="absolute right-2 top-2 flex items-center gap-1 rounded-lg bg-foreground/80 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white">
+                    <Lock className="size-2.5" />
+                    Pro
+                  </span>
+                )}
+                {selected && !locked && (
                   <Check
                     style={{
                       backgroundColor: item.color,
@@ -66,11 +94,19 @@ const SelectContentTypeView = ({
           })}
         </div>
       </div>
-      <div className="w-full flex items-end justify-end lg:pb-0 pb-8">
+      <div className="w-full flex flex-wrap items-center justify-between gap-3 lg:pb-0 pb-8">
+        {usage?.plan === "starter" ? (
+          <p className="text-[11px] font-light text-foreground/50">
+            Quizzes and diagrams are included in Pro.
+          </p>
+        ) : (
+          <span />
+        )}
         <PageButton
           onClick={() => setCurrentSection(2)}
           text="Next"
           icon={ArrowRight}
+          disabled={isLocked(contentType)}
         />
       </div>
     </div>

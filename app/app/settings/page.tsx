@@ -1,20 +1,28 @@
 import { getMyProfile } from "@/actions/user";
 import { getMySubscription } from "@/actions/billing";
+import { getMyAiUsage } from "@/actions/ai/getMyAiUsage";
 import SettingsContent from "@/components/settings/SettingsContent";
 import ErrorScreen from "@/components/shared/ErrorScreen";
 import { AppUser } from "@/types";
 import { tryCatch } from "@/utils/tryCatch";
 
 const page = async () => {
-  const [[profile, error], [subscription]] = await Promise.all([
+  const [[profile, error], [subscription], [usage]] = await Promise.all([
     tryCatch<AppUser, Error>(getMyProfile()),
     // Billing details are secondary; Settings still renders without them.
     tryCatch(getMySubscription()),
+    tryCatch(getMyAiUsage()),
   ]);
 
   if (error) return <ErrorScreen error={error} />;
 
-  return <SettingsContent profile={profile} subscription={subscription} />;
+  return (
+    <SettingsContent
+      profile={profile}
+      subscription={subscription}
+      usage={usage}
+    />
+  );
 };
 
 export default page;

@@ -5,6 +5,8 @@ import { generateDiagram } from "@/actions/ai/generateDiagram";
 import { generateQuiz } from "@/actions/ai/generateQuiz";
 import { generateSummary } from "@/actions/ai/generateSummary";
 import { CreateContentInput, NewContent } from "@/types";
+import { consumeAiCredit, refundAiCredit } from "@/lib/ai/credits";
+import { AI_KIND_BY_CONTENT_TYPE } from "@/lib/ai/kinds";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { uploadFiles } from "../files/uploadFiles";
@@ -77,13 +79,27 @@ export const createContentByType = async (input: CreateContentInput) => {
   if (!input.title.trim() || !input.text.trim())
     throw new Error("Title and content are required.");
 
-  const content = await buildContent(input);
+  // Every type here runs an AI call, so the allowance is claimed before the
+  // call and given back if nothing was saved.
+  const usageId = await consumeAiCredit(AI_KIND_BY_CONTENT_TYPE[input.type]);
+
+  let content: NewContent;
+
+  try {
+    content = await buildContent(input);
+  } catch (aiError) {
+    await refundAiCredit(usageId);
+    throw aiError;
+  }
 
   const { error } = await supabase
     .from("contents")
     .insert({ ...content, user_id: user.id });
 
-  if (error) throw new Error("Failed creating content.");
+  if (error) {
+    await refundAiCredit(usageId);
+    throw new Error("Failed creating content.");
+  }
 
   revalidatePath("/app/class/[id]", "page");
 };

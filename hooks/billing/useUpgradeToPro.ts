@@ -103,7 +103,11 @@ export const useUpgradeToPro = ({
         // Links the subscription to this account in the webhook.
         customData: { user_id: userId },
         customer: { email },
-        settings: { displayMode: "overlay", theme: "light", allowLogout: false },
+        settings: {
+          displayMode: "overlay",
+          theme: "light",
+          allowLogout: false,
+        },
       });
     });
   };
