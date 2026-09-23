@@ -48,7 +48,7 @@ const LandingHero = ({ user }: { user: User | null }) => {
 
       <div className="flex items-center space-x-4">
         <PageButton onClick={handleRedirect} text="Start For Free" size="lg" />
-        <PageButton text="View Demo" size="lg" light />
+        <PageButton text="Explore Plans" size="lg" light />
       </div>
 
       <div className="w-full max-w-260 rounded-2xl aspect-video mx-auto mt-4">
