@@ -24,7 +24,10 @@ export async function POST(request: Request) {
 
   if (!secret) {
     console.error("PADDLE_WEBHOOK_SECRET is not set.");
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server misconfigured" },
+      { status: 500 },
+    );
   }
 
   const signature = request.headers.get("paddle-signature");
