@@ -25,7 +25,7 @@ const ModalContainer = ({
             : size === "sm"
               ? "md:w-112.5 md:h-162.5"
               : "md:w-100 md:h-100"
-      } md:rounded-xl md:border md:border-border`}
+      } paper md:rounded-[3px]`}
     >
       <X
         onClick={closeModal}

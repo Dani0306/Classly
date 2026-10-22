@@ -86,7 +86,7 @@ const ProfileSection = ({ profile }: { profile: AppUser }) => {
         <span className="text-xs font-medium text-foreground/70 tracking-wide">
           Email
         </span>
-        <div className="flex items-center gap-2 w-full rounded-2xl border border-border bg-surface-muted px-4 py-2.5">
+        <div className="flex items-center gap-2 w-full rounded-[3px] border border-border bg-surface-muted px-4 py-2.5">
           <Mail className="size-4 shrink-0 text-muted-foreground/60" />
           <span className="truncate text-sm text-muted-foreground">
             {profile.email}

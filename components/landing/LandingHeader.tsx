@@ -29,8 +29,8 @@ const LandingHeader = ({ user }: { user: User | null }) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-sm">
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 lg:px-8">
+    <header className="board sticky top-0 z-30 border-b border-border">
+      <nav className="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-10">
         <Logo />
 
         <ul className="hidden items-center gap-8 md:flex">
@@ -73,13 +73,13 @@ const LandingHeader = ({ user }: { user: User | null }) => {
 
       <div
         onClick={() => setIsOpen(false)}
-        className={`fixed inset-0 z-40 bg-foreground/30 transition-opacity duration-200 ${
+        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 ${
           isOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
 
       <div
-        className={`fixed right-0 top-0 z-50 h-full w-72 border-l border-border bg-surface shadow-xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+        className={`fixed right-0 top-0 z-50 board h-full w-72 border-l border-border shadow-xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

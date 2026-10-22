@@ -30,7 +30,7 @@ const Input = ({
     "transition-[background-color,border-color,box-shadow] duration-200",
     "hover:border-muted-foreground/25",
     "focus:bg-surface focus:border-primary/50 focus:ring-4 focus:ring-primary/10",
-    textarea ? "rounded-2xl resize-none py-3" : "rounded-2xl py-2.5",
+    textarea ? "rounded-[3px] resize-none py-3" : "rounded-[3px] py-2.5",
     Icon ? "pl-10 pr-4" : "px-4",
     className,
   );
@@ -45,7 +45,7 @@ const Input = ({
           {label}
         </label>
       )}
-      <div className="group relative w-full">
+      <div className="paper group relative w-full bg-transparent">
         {Icon && (
           <Icon
             className={cn(

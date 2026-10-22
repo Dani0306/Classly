@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-10-22T02:29:29.107Z",
+        "reason": "model: unchosen decision-round sketch, not shipped"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-specimen.html"
+        ],
+        "createdAt": "2026-10-22T02:29:29.120Z",
+        "reason": "model: unchosen decision-round sketch, not shipped"
+      }
+    ]
+  }
+}

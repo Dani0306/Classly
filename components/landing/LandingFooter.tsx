@@ -5,9 +5,9 @@ import { FOOTER_INFO } from "@/data/landing/footer";
 
 const LandingFooter = () => {
   return (
-    <footer className="mt-32 border-t border-foreground/80 bg-surface pb-10 pt-14">
-      <div className="mx-auto flex max-w-6xl flex-col px-5 lg:px-8">
-        <div className="flex flex-col gap-12 md:flex-row md:justify-between">
+    <footer className="mt-32 border-t border-border pb-10 pt-14">
+      <div className="mx-auto flex max-w-7xl flex-col px-5 lg:px-10">
+        <div className="flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
           <Logo />
           <div className="grid grid-cols-2 gap-x-12 gap-y-8 sm:grid-cols-3 md:gap-x-16">
             {FOOTER_INFO.map((item) => (

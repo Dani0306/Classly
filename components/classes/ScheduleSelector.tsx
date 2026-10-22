@@ -65,7 +65,7 @@ export const isScheduleValid = (schedule: ScheduleEntry[]) =>
   );
 
 const timeInputClasses = cn(
-  "w-full rounded-xl border border-border bg-surface px-3 py-2",
+  "w-full rounded-[3px] border border-border bg-surface px-3 py-2",
   "text-sm text-foreground outline-none",
   "transition-[background-color,border-color,box-shadow] duration-200",
   "hover:border-muted-foreground/25",
@@ -120,7 +120,7 @@ const ScheduleSelector = ({
           <button
             type="button"
             onClick={addEntry}
-            className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-surface-muted"
+            className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[3px] border border-border bg-surface px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-surface-muted"
           >
             <Plus className="size-3.5" />
             Add day
@@ -132,7 +132,7 @@ const ScheduleSelector = ({
         <button
           type="button"
           onClick={addEntry}
-          className="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-border bg-surface-muted/60 px-4 py-7 text-center transition-colors hover:border-primary/40 hover:bg-surface-muted"
+          className="flex cursor-pointer flex-col items-center gap-2 rounded-[3px] border-2 border-dashed border-border bg-surface-muted/60 px-4 py-7 text-center transition-colors hover:border-primary/40 hover:bg-surface-muted"
         >
           <CalendarDays className="size-6 text-muted-foreground/50" />
           <span className="text-xs font-medium text-foreground">
@@ -156,7 +156,7 @@ const ScheduleSelector = ({
               <li
                 key={index}
                 className={cn(
-                  "flex flex-col gap-3 rounded-2xl border bg-surface-muted p-3.5 transition-colors",
+                  "flex flex-col gap-3 rounded-[3px] border bg-surface-muted p-3.5 transition-colors",
                   backwards || clashes
                     ? "border-red-300 bg-red-50/60"
                     : "border-border",
@@ -179,7 +179,7 @@ const ScheduleSelector = ({
                           aria-pressed={selected}
                           onClick={() => updateEntry(index, "day", day.value)}
                           className={cn(
-                            "size-8 cursor-pointer rounded-lg text-[11px] font-semibold transition-colors",
+                            "size-8 cursor-pointer rounded-[3px] text-[11px] font-semibold transition-colors",
                             selected
                               ? "bg-highlight-soft text-foreground ring-2 ring-primary"
                               : "bg-surface text-muted-foreground hover:bg-black/5",
@@ -195,7 +195,7 @@ const ScheduleSelector = ({
                     type="button"
                     onClick={() => removeEntry(index)}
                     aria-label={`Remove ${DAYS[entry.day]?.label ?? ""} session`}
-                    className="grid size-8 shrink-0 cursor-pointer place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-red-50 hover:text-red-600"
+                    className="grid size-8 shrink-0 cursor-pointer place-items-center rounded-[3px] text-muted-foreground transition-colors hover:bg-red-50 hover:text-red-600"
                   >
                     <Trash2 className="size-4" />
                   </button>

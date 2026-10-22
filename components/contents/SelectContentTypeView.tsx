@@ -51,14 +51,14 @@ const SelectContentTypeView = ({
                 }}
                 key={item.label}
                 className={cn(
-                  "relative flex flex-col gap-2.5 rounded-xl border-2 p-4 transition-transform duration-200",
+                  "relative flex flex-col gap-2.5 rounded-[3px] border-2 p-4 transition-transform duration-200",
                   locked
                     ? "cursor-not-allowed opacity-60"
                     : "cursor-pointer hover:scale-[1.02]",
                 )}
               >
                 {locked && (
-                  <span className="absolute right-2 top-2 flex items-center gap-1 rounded-lg bg-foreground/80 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white">
+                  <span className="absolute right-2 top-2 flex items-center gap-1 rounded-[3px] bg-foreground/80 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white">
                     <Lock className="size-2.5" />
                     Pro
                   </span>
@@ -69,7 +69,7 @@ const SelectContentTypeView = ({
                       backgroundColor: item.color,
                       color: "white",
                     }}
-                    className="absolute size-5 top-2 right-2 p-1 rounded-lg"
+                    className="absolute size-5 top-2 right-2 p-1 rounded-[3px]"
                   />
                 )}
                 <item.icon
@@ -77,7 +77,7 @@ const SelectContentTypeView = ({
                     backgroundColor: `${item.color}40`,
                     color: item.color,
                   }}
-                  className="size-9 shrink-0 p-2 rounded-lg"
+                  className="size-9 shrink-0 p-2 rounded-[3px]"
                 />
                 <div className="flex flex-col gap-1">
                   <strong className="font-medium text-foreground text-sm leading-tight">

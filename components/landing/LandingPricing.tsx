@@ -1,8 +1,12 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { User } from "@supabase/supabase-js";
 import PageButton from "../shared/PageButton";
+import ModalContainer from "../modal/ModalContainer";
+import LoginModal from "../auth/LoginModal";
+import { useModal } from "@/providers/AppModalProvider";
 import { PRICING_INFO } from "@/data/landing/pricing";
 import { useInviewCustom } from "@/hooks/shared/useInViewCustom";
 
@@ -14,8 +18,7 @@ const PricingCard = ({
   popular,
   buttonText,
   features,
-  selected = false,
-  onClick,
+  onChoose,
 }: {
   name: string;
   price: number;
@@ -24,94 +27,83 @@ const PricingCard = ({
   popular: boolean;
   buttonText: string;
   features: string[];
-  selected: boolean;
-  onClick?: () => void;
+  onChoose: () => void;
 }) => {
   return (
     <div
-      onClick={onClick}
-      className={`lift sheet relative flex cursor-pointer flex-col justify-between gap-8 p-7 ${
-        selected
-          ? "border-primary bg-primary text-primary-foreground ring-4 ring-highlight/60"
-          : ""
-      }`}
+      className={`note tape tilt relative flex flex-col justify-between gap-8 p-8 ${popular ? "is-yellow" : ""}`}
     >
       {popular && (
-        <span className="absolute right-5 top-5 rounded-md bg-highlight px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground">
+        <span className="absolute right-6 top-6 rounded-[3px] bg-ink px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-note-yellow">
           Most popular
         </span>
       )}
 
       <div className="flex flex-col gap-2">
-        <strong className="text-sm font-semibold">{name}</strong>
+        <strong className="text-sm font-bold">{name}</strong>
         <span className="flex items-baseline gap-1">
-          <strong className="tabular text-5xl font-bold tracking-tight">
+          <strong className="tabular text-6xl font-extrabold tracking-[-0.04em]">
             {price}$
           </strong>
-          <span
-            className={`text-sm ${selected ? "text-primary-foreground/70" : "text-muted-foreground"}`}
-          >
-            / {billing}
-          </span>
+          <span className="text-sm text-ink/70">/ {billing}</span>
         </span>
-        <span
-          className={`text-sm ${selected ? "text-primary-foreground/70" : "text-muted-foreground"}`}
-        >
-          {description}
-        </span>
+        <span className="text-sm text-ink/70">{description}</span>
       </div>
 
-      <ul
-        className={`flex flex-col gap-3 border-t pt-6 ${selected ? "border-primary-foreground/20" : "border-border"}`}
-      >
+      <ul className="flex flex-col gap-3 border-t border-ink/15 pt-6">
         {features.map((item) => (
           <li key={item} className="flex items-start gap-2.5 text-sm">
-            <Check
-              className={`mt-0.5 size-4 shrink-0 ${selected ? "text-highlight" : "text-foreground"}`}
-              strokeWidth={2.25}
-            />
-            <span
-              className={
-                selected ? "text-primary-foreground/85" : "text-foreground/80"
-              }
-            >
-              {item}
-            </span>
+            <Check className="mt-0.5 size-4 shrink-0" strokeWidth={2.5} />
+            <span className="text-ink/85">{item}</span>
           </li>
         ))}
       </ul>
 
-      <div className={selected ? "[&_button]:border-highlight [&_button]:bg-highlight [&_button]:text-foreground [&_button:hover]:bg-highlight-soft" : ""}>
-        <PageButton text={buttonText} light={!selected} size="lg" />
-      </div>
+      <PageButton
+        onClick={onChoose}
+        text={buttonText}
+        light={!popular}
+        size="lg"
+      />
     </div>
   );
 };
 
-const LandingPricing = () => {
-  const [plan, setPlan] = useState<string>("Pro");
-
+const LandingPricing = ({ user }: { user: User | null }) => {
   const { inView, ref } = useInviewCustom();
+  const { openModal } = useModal();
+  const router = useRouter();
+
+  // Plans start the same way as "Start For Free": sign in, then the app.
+  // Upgrading to Pro happens in Settings once signed in.
+  const handleChoose = () => {
+    if (user) router.push("/app/settings");
+    else
+      openModal(
+        <ModalContainer size="sm">
+          <LoginModal />
+        </ModalContainer>,
+      );
+  };
 
   return (
     <section
       id="pricing"
       ref={ref}
-      className={`mx-auto mt-32 w-full max-w-6xl scroll-mt-24 px-5 lg:px-8 ${inView ? "reveal" : ""}`}
+      className={`mx-auto mt-32 grid w-full max-w-7xl scroll-mt-24 gap-14 px-5 lg:grid-cols-12 lg:gap-10 lg:px-10 ${inView ? "reveal" : ""}`}
     >
-      <div className="flex max-w-xl flex-col gap-4">
-        <h2 className="text-balance text-3xl font-bold tracking-tight md:text-4xl">
-          Simple, Transparent <span className="marker">Pricing</span>
+      <div className="flex flex-col gap-4 lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+        <h2 className="text-balance text-4xl font-extrabold tracking-[-0.03em] md:text-5xl">
+          Simple, Transparent Pricing
         </h2>
         <p className="text-base text-muted-foreground">
           Choose the plan that fits your academic journey.
         </p>
       </div>
 
-      <div className="mt-12 grid items-stretch gap-6 md:grid-cols-2 lg:max-w-4xl">
+      <div className="wall grid items-stretch gap-10 md:grid-cols-2 lg:col-span-8">
         {PRICING_INFO.map((item) => (
           <PricingCard
-            onClick={() => setPlan(item.name)}
             key={item.name}
             name={item.name}
             price={item.price}
@@ -120,7 +112,7 @@ const LandingPricing = () => {
             popular={item.popular}
             buttonText={item.buttonText}
             features={item.features}
-            selected={plan === item.name}
+            onChoose={handleChoose}
           />
         ))}
       </div>

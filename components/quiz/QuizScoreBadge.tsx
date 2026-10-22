@@ -7,7 +7,7 @@ const QuizScoreBadge = ({ questions }: { questions: QuizQuestion[] }) => {
   ).length;
 
   return (
-    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200">
+    <div className="flex items-center gap-1.5 px-3 py-1 rounded-[3px] bg-note-blue/25 border border-note-blue">
       <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
       <span className="text-xs font-medium text-blue-600">
         Score: {correct}/{total}

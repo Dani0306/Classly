@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Classly · Sticky Wall</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--board:#22252b;--y:#ffe94a;--p:#ff6fb5;--b:#49c6ff;--g:#a8f05a;--paper:#f4f4f1;--ink:#17181c}
+*{box-sizing:border-box;margin:0}
+body{font-family:Sora,sans-serif;width:1440px;height:900px;overflow:hidden;color:var(--ink);background:var(--board);
+background-image:radial-gradient(rgba(255,255,255,.035) 1px,transparent 1.2px);background-size:6px 6px;position:relative}
+header{display:flex;align-items:center;padding:30px 64px;color:#f4f4f1;gap:36px;font-size:14px}
+.logo{display:flex;gap:10px;align-items:center;font-weight:700;font-size:22px;margin-right:auto}.logo i{width:28px;height:28px;background:var(--y);border-radius:4px;display:block}
+.in{background:#f4f4f1;color:var(--ink);padding:11px 18px;border-radius:8px;font-weight:600}
+.note{position:absolute;padding:28px 30px;box-shadow:0 2px 0 rgba(0,0,0,.15),0 22px 30px -14px rgba(0,0,0,.6);border-radius:2px}
+.note:before{content:"";position:absolute;top:-10px;left:50%;width:70px;height:22px;margin-left:-35px;background:rgba(255,255,255,.35);transform:rotate(-2deg)}
+.h{font-weight:800;letter-spacing:-.035em;line-height:.95}
+.n1{left:64px;top:140px;width:470px;background:var(--y);transform:rotate(-2.5deg)}.n1 .h{font-size:92px}
+.n2{left:500px;top:300px;width:470px;background:var(--p);transform:rotate(2deg)}.n2 .h{font-size:92px}
+.n3{left:110px;top:560px;width:420px;background:var(--paper);transform:rotate(-1deg);font-size:17px;line-height:1.55}
+.cta{position:absolute;left:560px;top:600px;display:flex;gap:14px;transform:rotate(1deg)}
+.cta span{padding:20px 28px;font-weight:700;font-size:16px;border-radius:2px;box-shadow:0 18px 26px -14px rgba(0,0,0,.6)}
+.cta .a{background:var(--g)}.cta .b2{background:#f4f4f1}
+.before{left:1030px;top:150px;width:330px;background:var(--b);transform:rotate(3deg);font-size:15px;line-height:1.6}
+.before small,.after small{display:block;font-weight:700;font-size:12px;letter-spacing:.06em;margin-bottom:10px}
+.after{left:1000px;top:470px;width:360px;background:#f4f4f1;transform:rotate(-2deg);font-size:15px;line-height:1.6}
+.after b{display:block;font-size:20px;margin-bottom:8px}
+.arrow{position:absolute;left:1170px;top:405px;color:#f4f4f1;font-size:40px}
+</style></head><body>
+<header><div class="logo"><i></i>Classly</div><span>Features</span><span>Pricing</span><span>Testimonials</span><span class="in">Sign In</span></header>
+<div class="note n1"><div class="h">Turn messy notes</div></div>
+<div class="note n2"><div class="h">into mastery</div></div>
+<div class="note n3">The AI-powered workspace that transforms lectures and handwritten notes into organized study guides instantly, spend less time formatting and more time learning</div>
+<div class="cta"><span class="a">Start For Free</span><span class="b2">Explore Plans</span></div>
+<div class="note before"><small>BIOLOGY · YOUR NOTE</small>mitosis = cell divides, prophase chromosomes condense?? then metaphase line up middle, anaphase pull apart, telophase 2 nuclei</div>
+<div class="arrow">↓</div>
+<div class="note after"><small>AI SUMMARY</small><b>Mitosis in four phases</b>Prophase: chromosomes condense.<br>Metaphase: they align at the center.<br>Anaphase: sister chromatids separate.<br>Telophase: two nuclei form.</div>
+</body></html>

@@ -25,7 +25,7 @@ const QuizAnswerOption = ({
       onClick={onSelect}
       disabled={isSubmitted}
       className={cn(
-        "flex items-center space-x-3 px-4 py-3 rounded-xl border text-left transition-all duration-200",
+        "flex items-center space-x-3 px-4 py-3 rounded-[3px] border text-left transition-all duration-200",
         isSubmitted ? "cursor-default" : "cursor-pointer",
         showCorrect
           ? "border-green-500 bg-green-50"

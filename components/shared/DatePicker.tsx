@@ -107,7 +107,7 @@ const DatePicker = ({
   );
 
   return (
-    <div ref={ref} className={cn("flex flex-col gap-1.5 w-full", className)}>
+    <div ref={ref} className={cn("paper flex flex-col gap-1.5 w-full bg-transparent", className)}>
       {label && (
         <label
           htmlFor={name}
@@ -136,13 +136,13 @@ const DatePicker = ({
 
       {/* Calendar dropdown */}
       {open && (
-        <div className="absolute z-50 mt-1 bg-white border border-border rounded-2xl shadow-lg p-4 w-72">
+        <div className="absolute z-50 mt-1 bg-surface border border-border rounded-[3px] shadow-lg p-4 w-72">
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
             <button
               type="button"
               onClick={handlePrevMonth}
-              className="p-1 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+              className="p-1 rounded-[3px] hover:bg-gray-100 transition-colors cursor-pointer"
             >
               <ChevronLeft className="size-4 text-muted-foreground" />
             </button>
@@ -152,7 +152,7 @@ const DatePicker = ({
             <button
               type="button"
               onClick={handleNextMonth}
-              className="p-1 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+              className="p-1 rounded-[3px] hover:bg-gray-100 transition-colors cursor-pointer"
             >
               <ChevronRight className="size-4 text-muted-foreground" />
             </button>

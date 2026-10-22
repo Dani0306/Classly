@@ -14,11 +14,11 @@ const Home = async () => {
   } = await supabase.auth.getUser();
 
   return (
-    <div className="bg-quad flex min-h-screen w-full flex-col">
+    <div className="board flex min-h-screen w-full flex-col overflow-x-clip">
       <LandingHeader user={user} />
       <LandingHero user={user} />
       <LandingCards />
-      <LandingPricing />
+      <LandingPricing user={user} />
       <LandingTestimonials />
       <LandingFooter />
     </div>

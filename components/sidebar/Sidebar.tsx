@@ -13,7 +13,7 @@ export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
 
   return (
     <aside
-      className={`flex flex-col h-full w-70 pt-16 md:pt-4 pb-4 bg-surface`}
+      className={`flex flex-col h-full w-70 pt-16 md:pt-4 pb-4`}
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 h-14 shrink-0">
@@ -29,11 +29,11 @@ export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
               key={href}
               href={href}
               className={`
-                press flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm
+                press flex items-center gap-3 px-3.5 py-2.5 rounded-[3px] text-sm
                 group
                 ${
                   active
-                    ? "bg-primary text-primary-foreground font-medium"
+                    ? "note is-yellow font-semibold [transform:rotate(-1deg)]"
                     : "text-muted-foreground hover:text-foreground hover:bg-surface-muted"
                 }
               `}
@@ -42,7 +42,7 @@ export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
                 width={16}
                 height={16}
                 className={`shrink-0 transition-colors duration-200
-                  ${active ? "text-highlight" : "text-muted-foreground group-hover:text-foreground"}
+                  ${active ? "text-ink" : "text-muted-foreground group-hover:text-foreground"}
                 `}
               />
               {label}

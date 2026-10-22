@@ -29,9 +29,9 @@ const ClassNavbar = ({ id, plan }: { id: string; plan: Plan }) => {
         <button
           onClick={() => clearFilter({ type: "type" })}
           aria-pressed={allNotesSelected}
-          className={`press px-4 py-1.5 rounded-md border text-xs font-medium cursor-pointer ${
+          className={`press px-4 py-1.5 rounded-[3px] border text-xs font-semibold cursor-pointer ${
             allNotesSelected
-              ? "border-primary bg-primary text-primary-foreground"
+              ? "border-note-yellow bg-note-yellow text-ink"
               : "border-border bg-surface text-foreground hover:bg-surface-muted"
           }`}
         >
@@ -51,7 +51,7 @@ const ClassNavbar = ({ id, plan }: { id: string; plan: Plan }) => {
                   ? { backgroundColor: color, borderColor: color }
                   : undefined
               }
-              className={`press flex items-center gap-2 px-3.5 py-1.5 rounded-md border text-xs font-medium cursor-pointer ${
+              className={`press flex items-center gap-2 px-3.5 py-1.5 rounded-[3px] border text-xs font-semibold cursor-pointer ${
                 isSelected
                   ? "text-white"
                   : "border-border bg-surface text-foreground hover:bg-surface-muted"

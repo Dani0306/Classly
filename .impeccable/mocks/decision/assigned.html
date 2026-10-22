@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Classly · The Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--cobalt:#1d3fd6;--paper:#f6f7fb;--ink:#141726;--rule:#dfe3ef;--muted:#5a6078;--tomato:#ff5a36;--mint:#19c39b;--sun:#ffc22e;--lilac:#9b7bff}
+*{box-sizing:border-box;margin:0}
+body{font-family:Sora,sans-serif;background:var(--paper);color:var(--ink);width:1440px;height:900px;overflow:hidden;display:grid;grid-template-columns:560px 1fr}
+.cover{background:var(--cobalt);color:#fff;padding:40px 56px;display:flex;flex-direction:column;position:relative}
+.cover:after{content:"";position:absolute;right:0;top:0;bottom:0;width:18px;background:repeating-linear-gradient(#1532ad 0 10px,#2a4ce0 10px 30px)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:22px}
+.logo i{width:30px;height:30px;border-radius:8px;background:#fff;display:block}
+nav{display:flex;gap:28px;font-size:14px;opacity:.85;margin-top:28px}
+h1{font-size:76px;line-height:.98;letter-spacing:-.035em;font-weight:800;margin-top:auto}
+h1 em{font-style:normal;color:var(--sun)}
+.sub{font-size:17px;line-height:1.55;opacity:.85;margin-top:24px;max-width:420px}
+.ctas{display:flex;gap:12px;margin-top:36px}
+.btn{padding:16px 24px;border-radius:10px;font-weight:600;font-size:15px}
+.btn.p{background:var(--sun);color:var(--ink)}.btn.g{border:1.5px solid rgba(255,255,255,.6)}
+.spread{padding:40px 72px 40px 48px;position:relative}
+.top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:22px}
+.top b{font-size:30px;font-weight:700;letter-spacing:-.02em}.top span{color:var(--muted);font-size:15px}
+.week{display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border:1px solid var(--rule);border-radius:6px;box-shadow:0 20px 50px -24px rgba(20,23,38,.35);height:740px;position:relative}
+.day{border-right:1px solid var(--rule);padding:18px 14px;background:repeating-linear-gradient(transparent 0 35px,var(--rule) 35px 36px);background-position:0 56px}
+.day:last-child{border:0}
+.d{font-size:13px;color:var(--muted);font-weight:600;letter-spacing:.04em}.n{font-size:28px;font-weight:700;margin-bottom:16px}
+.today .n{color:var(--cobalt)}
+.e{border-radius:6px;padding:10px 11px;margin-bottom:10px;font-size:13px;line-height:1.35;background:#fff;border:1px solid var(--rule)}
+.e b{display:block;font-size:14px;font-weight:600;margin-bottom:3px}
+.e small{font-size:12px;color:var(--muted)}
+.c1{border-top:4px solid var(--tomato)}.c2{border-top:4px solid var(--mint)}.c3{border-top:4px solid var(--lilac)}.c4{border-top:4px solid var(--sun)}
+.ai{background:#eef1ff;border-color:#c9d1ff}
+.tabs{position:absolute;right:-30px;top:60px;display:flex;flex-direction:column;gap:8px}
+.tab{width:30px;height:110px;border-radius:0 8px 8px 0;writing-mode:vertical-rl;color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.tab.dim{opacity:.35}
+</style></head><body>
+<section class="cover">
+  <div class="logo"><i></i>Classly</div>
+  <nav><span>Features</span><span>Pricing</span><span>Testimonials</span><span style="margin-left:auto">Sign In</span></nav>
+  <h1>Turn messy notes <em>into mastery</em></h1>
+  <p class="sub">The AI-powered workspace that transforms lectures and handwritten notes into organized study guides instantly, spend less time formatting and more time learning</p>
+  <div class="ctas"><span class="btn p">Start For Free</span><span class="btn g">Explore Plans</span></div>
+</section>
+<section class="spread">
+  <div class="top"><b>Week of Oct 20</b><span>Biology · 4 contents this week</span></div>
+  <div class="week">
+    <div class="day"><div class="d">MON</div><div class="n">20</div>
+      <div class="e c1"><b>Cell membranes</b><small>Note · proofread by AI</small></div>
+      <div class="e c2"><b>Calculus II</b><small>Class · 9:00–10:30</small></div></div>
+    <div class="day today"><div class="d">TUE</div><div class="n">21</div>
+      <div class="e c1 ai"><b>Mitosis summary</b><small>Summary · 1 page, ready</small></div>
+      <div class="e c3"><b>Essay draft</b><small>Homework · due Thu · high</small></div></div>
+    <div class="day"><div class="d">WED</div><div class="n">22</div>
+      <div class="e c1"><b>Biology</b><small>Class · 11:00–12:30</small></div>
+      <div class="e c2 ai"><b>Integrals quiz</b><small>Quiz · 10 questions</small></div></div>
+    <div class="day"><div class="d">THU</div><div class="n">23</div>
+      <div class="e c3"><b>Essay draft</b><small>Due today</small></div>
+      <div class="e c4"><b>Lab partner meeting</b><small>Reminder · 4 pm</small></div></div>
+    <div class="day"><div class="d">FRI</div><div class="n">24</div>
+      <div class="e c1 ai"><b>Krebs cycle</b><small>Diagram · cycle</small></div></div>
+    <div class="tabs"><div class="tab" style="background:var(--tomato)">Biology</div><div class="tab dim" style="background:var(--mint)">Calculus</div><div class="tab dim" style="background:var(--lilac)">Literature</div><div class="tab dim" style="background:#d9a400">History</div></div>
+  </div>
+</section>
+</body></html>

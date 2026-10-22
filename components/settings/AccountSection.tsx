@@ -28,7 +28,7 @@ const AccountSection = ({ profile }: { profile: AppUser }) => {
       description="Your Classly account details and session."
       icon={ShieldCheck}
     >
-      <div className="flex items-center gap-2 rounded-2xl border border-border bg-surface-muted px-4 py-3">
+      <div className="flex items-center gap-2 rounded-[3px] border border-border bg-surface-muted px-4 py-3">
         <CalendarDays className="size-4 shrink-0 text-muted-foreground/60" />
         <span className="text-xs font-light text-foreground/70">
           Member since{" "}

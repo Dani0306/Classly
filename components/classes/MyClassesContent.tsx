@@ -78,7 +78,7 @@ const MyClassesContent = ({ classes }: { classes: Class[] }) => {
           />
         )
       ) : (
-        <div className="flex gap-8 flex-wrap justify-center md:justify-start">
+        <div className="wall flex gap-x-6 gap-y-8 pt-2 flex-wrap justify-center md:justify-start">
           {classes.map((item) => (
             <ClassCard key={item.id} item={item} />
           ))}

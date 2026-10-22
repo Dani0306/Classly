@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-21T00:00:00Z",
+  "title": "Design System: Classly",
+  "extensions": {
+    "colorMeta": {
+      "board": { "role": "neutral", "displayName": "Charcoal Board", "canonical": "#22252b", "tonalRamp": ["#0f1013", "#17191d", "#22252b", "#2f333a", "#3d414a", "#5b606a", "#8a8f99", "#c9ccd2"] },
+      "board-surface": { "role": "neutral", "displayName": "Board Surface", "canonical": "#2b2f36" },
+      "board-surface-muted": { "role": "neutral", "displayName": "Board Surface Muted", "canonical": "#30343b" },
+      "board-border": { "role": "neutral", "displayName": "Board Border", "canonical": "#3d414a" },
+      "board-muted-text": { "role": "neutral", "displayName": "Board Muted Text", "canonical": "#b4b8c0" },
+      "note-lime": { "role": "primary", "displayName": "Lime Note", "canonical": "#a8f05a", "tonalRamp": ["#1f3a06", "#33600c", "#4f8f16", "#74c42c", "#a8f05a", "#b8f774", "#d4fbaa", "#effee0"] },
+      "note-yellow": { "role": "secondary", "displayName": "Canary Note", "canonical": "#ffe94a", "tonalRamp": ["#3d3500", "#665800", "#998600", "#ccb400", "#ffe94a", "#fff07f", "#fff6b8", "#fffbe3"] },
+      "note-pink": { "role": "secondary", "displayName": "Hot Pink Note", "canonical": "#ff6fb5", "tonalRamp": ["#40001f", "#6b0636", "#a3145a", "#db3d8a", "#ff6fb5", "#ff9acb", "#ffc6e1", "#ffeaf4"] },
+      "note-blue": { "role": "tertiary", "displayName": "Sky Note", "canonical": "#49c6ff", "tonalRamp": ["#002a3d", "#004566", "#006a99", "#1c98d1", "#49c6ff", "#80d7ff", "#b8e9ff", "#e6f7ff"] },
+      "note-paper": { "role": "neutral", "displayName": "Plain Paper", "canonical": "#f4f4f1" },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#17181c" },
+      "ink-hover": { "role": "neutral", "displayName": "Ink Hover", "canonical": "#2c2e35" },
+      "paper-surface": { "role": "neutral", "displayName": "Paper Surface", "canonical": "#fbfbf8" },
+      "paper-surface-muted": { "role": "neutral", "displayName": "Paper Surface Muted", "canonical": "#ebebe6" },
+      "paper-border": { "role": "neutral", "displayName": "Paper Border", "canonical": "#d6d6cf" },
+      "paper-muted-text": { "role": "neutral", "displayName": "Paper Muted Text", "canonical": "#5b5d63" },
+      "highlight-soft": { "role": "neutral", "displayName": "Soft Highlighter", "canonical": "#fff6b8" },
+      "focus-ring-paper": { "role": "neutral", "displayName": "Focus Ring (paper)", "canonical": "#1f6feb" },
+      "focus-ring-board": { "role": "neutral", "displayName": "Focus Ring (board)", "canonical": "#49c6ff" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Landing headline only, written on notes." },
+      "headline": { "displayName": "Headline", "purpose": "Landing section headings on the wall; 2.25rem below md." },
+      "page-title": { "displayName": "Page Title", "purpose": "App page headers." },
+      "title": { "displayName": "Title", "purpose": "Note and card titles." },
+      "body": { "displayName": "Body", "purpose": "Note body copy and descriptions." },
+      "label": { "displayName": "Label", "purpose": "Buttons, type badges, metadata." }
+    },
+    "shadows": [
+      { "name": "note-rest", "value": "0 1px 0 rgba(0,0,0,0.14), 0 18px 28px -16px rgba(0,0,0,0.55)", "purpose": "Every note and sheet at rest." },
+      { "name": "note-lifted", "value": "0 1px 0 rgba(0,0,0,0.14), 0 26px 34px -18px rgba(0,0,0,0.6)", "purpose": "Interactive notes on hover (fine pointers)." },
+      { "name": "button-note", "value": "0 1px 0 rgba(0,0,0,0.14), 0 10px 18px -10px rgba(0,0,0,0.5)", "purpose": "Paper buttons; removed when disabled." },
+      { "name": "tape", "value": "0 1px 2px rgba(0,0,0,0.12)", "purpose": "Tape strip holding a note to the wall." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Default easing for tilt, press, reveal and drop-in." },
+      { "name": "ease-in-out", "value": "cubic-bezier(0.77, 0, 0.175, 1)", "purpose": "Symmetric moves." },
+      { "name": "pick-up", "value": "220ms ease-out; rotate(0deg) translateY(-3px)", "purpose": "Tilted note straightens and lifts on hover (fine pointer) or focus-visible." },
+      { "name": "press", "value": "160ms ease-out; scale(0.97) on :active", "purpose": "Instant press feedback on buttons and links." },
+      { "name": "drop-in", "value": "640ms ease-out 450ms; from translateY(-18px) rotate(-7deg) scale(1.03), opacity 0", "purpose": "The one authored landing moment: the AI summary note lands." },
+      { "name": "reveal", "value": "520ms ease-out; from translateY(12px), opacity 0", "purpose": "Landing sections entering the viewport." },
+      { "name": "reduced-motion", "value": "drop-in and reveal become a 200ms fade; tilt transforms removed", "purpose": "prefers-reduced-motion: reduce." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "A lime paper note for the one primary action.",
+      "html": "<button class=\"ds-btn-primary\">Start For Free</button>",
+      "css": ".ds-btn-primary { font-family: Sora, system-ui, sans-serif; background: #a8f05a; color: #17181c; font-size: 12px; font-weight: 600; padding: 10px 16px; border: none; border-radius: 3px; box-shadow: 0 1px 0 rgba(0,0,0,0.14), 0 10px 18px -10px rgba(0,0,0,0.5); cursor: pointer; transition: transform 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms ease; } .ds-btn-primary:hover { background: #b8f774; } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #1f6feb; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A plain paper note for every non-primary action.",
+      "html": "<button class=\"ds-btn-secondary\">Explore Plans</button>",
+      "css": ".ds-btn-secondary { font-family: Sora, system-ui, sans-serif; background: #f4f4f1; color: #17181c; font-size: 12px; font-weight: 600; padding: 10px 16px; border: 1px solid rgba(23,24,28,0.15); border-radius: 3px; box-shadow: 0 1px 0 rgba(0,0,0,0.14), 0 10px 18px -10px rgba(0,0,0,0.5); cursor: pointer; transition: transform 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms ease; } .ds-btn-secondary:hover { background: #ffffff; } .ds-btn-secondary:active { transform: scale(0.97); } .ds-btn-secondary:focus-visible { outline: 2px solid #1f6feb; outline-offset: 2px; }"
+    },
+    {
+      "name": "Note Card",
+      "kind": "card",
+      "refersTo": "note-card",
+      "description": "Taped paper note at a slight tilt that straightens and lifts when picked up. Class and content cards.",
+      "html": "<div class=\"ds-board\"><div class=\"ds-note\" tabindex=\"0\" style=\"--tape: #49c6ffd9; --tilt: -0.7deg\"><strong class=\"ds-note-title\">Mitosis in four phases</strong><p class=\"ds-note-body\">Prophase, metaphase, anaphase, telophase.</p></div></div>",
+      "css": ".ds-board { background: #22252b radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1.2px); background-size: 6px 6px; padding: 40px; } .ds-note { position: relative; width: 280px; font-family: Sora, system-ui, sans-serif; background: var(--sheet, #f4f4f1); color: #17181c; border-radius: 3px; padding: 28px 20px 20px; box-shadow: 0 1px 0 rgba(0,0,0,0.14), 0 18px 28px -16px rgba(0,0,0,0.55); transform: rotate(var(--tilt, 0deg)); transition: transform 220ms cubic-bezier(0.23,1,0.32,1), box-shadow 220ms cubic-bezier(0.23,1,0.32,1); cursor: pointer; } .ds-note::before { content: ''; position: absolute; top: -9px; left: 50%; width: 64px; height: 20px; margin-left: -32px; background: var(--tape, rgba(255,255,255,0.42)); box-shadow: 0 1px 2px rgba(0,0,0,0.12); transform: rotate(-2deg); } .ds-note:hover, .ds-note:focus-visible { transform: rotate(0deg) translateY(-3px); box-shadow: 0 1px 0 rgba(0,0,0,0.14), 0 26px 34px -18px rgba(0,0,0,0.6); } .ds-note:focus-visible { outline: 2px solid #1f6feb; outline-offset: 2px; } .ds-note-title { display: block; font-size: 16px; font-weight: 700; letter-spacing: -0.025em; } .ds-note-body { margin: 8px 0 0; font-size: 14px; line-height: 1.625; color: #5b5d63; } @media (prefers-reduced-motion: reduce) { .ds-note, .ds-note:hover, .ds-note:focus-visible { transform: none; } }"
+    },
+    {
+      "name": "Featured Note",
+      "kind": "card",
+      "refersTo": "note-card-featured",
+      "description": "Canary paper note for the featured plan or the one note that matters.",
+      "html": "<div class=\"ds-board\"><div class=\"ds-note-featured\"><strong>Pro</strong><span class=\"ds-price\">12$</span><span class=\"ds-tag\">Most popular</span></div></div>",
+      "css": ".ds-board { background: #22252b; padding: 40px; } .ds-note-featured { position: relative; width: 280px; display: flex; flex-direction: column; gap: 8px; font-family: Sora, system-ui, sans-serif; background: #ffe94a; color: #17181c; border-radius: 3px; padding: 32px; box-shadow: 0 1px 0 rgba(0,0,0,0.14), 0 18px 28px -16px rgba(0,0,0,0.55); transform: rotate(0.5deg); } .ds-price { font-size: 60px; font-weight: 800; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; } .ds-tag { position: absolute; top: 24px; right: 24px; background: #17181c; color: #ffe94a; border-radius: 3px; padding: 4px 10px; font-size: 10px; font-weight: 700; }"
+    },
+    {
+      "name": "Sidebar Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Muted links on the wall; the active link becomes a canary note at -1deg.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-item is-active\" href=\"#\">Classes</a><a class=\"ds-nav-item\" href=\"#\">All Contents</a><a class=\"ds-nav-item\" href=\"#\">Calendar</a></nav>",
+      "css": ".ds-nav { display: flex; flex-direction: column; gap: 4px; width: 248px; padding: 16px; background: #22252b; font-family: Sora, system-ui, sans-serif; } .ds-nav-item { padding: 10px 14px; border-radius: 3px; font-size: 14px; color: #b4b8c0; text-decoration: none; transition: background-color 160ms ease, color 160ms ease, transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-nav-item:hover { background: #30343b; color: #f4f4f1; } .ds-nav-item:active { transform: scale(0.97); } .ds-nav-item:focus-visible { outline: 2px solid #49c6ff; outline-offset: 2px; } .ds-nav-item.is-active { background: #ffe94a; color: #17181c; font-weight: 600; transform: rotate(-1deg); box-shadow: 0 1px 0 rgba(0,0,0,0.14), 0 18px 28px -16px rgba(0,0,0,0.55); }"
+    },
+    {
+      "name": "Highlighter",
+      "kind": "custom",
+      "refersTo": "note-yellow",
+      "description": "Canary marker swipe behind the phrases AI made clear.",
+      "html": "<p class=\"ds-hl-wrap\">Chromosomes <span class=\"ds-marker\">condense</span> and align at the <span class=\"ds-marker\">center</span>.</p>",
+      "css": ".ds-hl-wrap { font-family: Sora, system-ui, sans-serif; font-size: 15px; line-height: 1.625; color: #17181c; background: #f4f4f1; padding: 20px; border-radius: 3px; } .ds-marker { background-image: linear-gradient(transparent 56%, #ffe94a 56% 90%, transparent 90%); padding-inline: 0.1em; margin-inline: -0.1em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Sticky Wall",
+    "overview": "Every piece of study material is a paper note pinned to a dark study wall. The ground is a charcoal felt board with a faint dot texture; on it sit fluorescent sticky notes in canary, pink, sky, lime and plain paper, each held up by a strip of translucent tape and casting a soft, dropped shadow. AI is the act of turning a scribbled note into a clean one, so the mechanism itself is drawn as notes.\n\nThe system runs on two token scopes, not two themes. The wall (`.board`) reads light-on-charcoal for anything set directly on it: headings, nav links, muted copy. Every note (`.note`, `.paper`, and `:root` by default) resets the same tokens back to ink on paper, so a component dropped onto a note automatically reads dark. Components never ask which surface they are on; the scope answers for them.\n\nNotes rest slightly crooked and straighten when picked up. On the landing the tilts are expressive (up to about 3deg); in the app they shrink to under 1deg so a grid of notes still scans as a grid.",
+    "keyCharacteristics": [
+      "Charcoal board ground, fluorescent paper notes, ink text on every note.",
+      "One typeface, Sora, carried by weight: 800 for headlines, 700 for titles, 400 for body.",
+      "Near-square paper corners (3px) on every note, button and chip.",
+      "Tape strips, soft drop shadows and small rotations are the native depth language.",
+      "Lime marks the primary action; plain paper marks everything secondary."
+    ],
+    "rules": [
+      { "name": "The Ink On Paper Rule", "body": "Text on a note is always ink. Paper colors are surfaces, not type: no bright text on paper and no bright running text on the board. The one built exception is a small ink tag carrying canary letters (the \"Most popular\" pricing tag).", "section": "colors" },
+      { "name": "The Lime Means Go Rule", "body": "Lime paper is reserved for the primary action. Use it once per decision point; everything else is plain paper.", "section": "colors" },
+      { "name": "The Semantic Green Exception", "body": "Correct answers, completed homework and low priority keep conventional greens (emerald/green), with reds for wrong and destructive. They mark state, not brand, and stay distinct from lime.", "section": "colors" },
+      { "name": "The Sheet Variable Rule", "body": "A note's paper color is set through `--sheet` (via the yellow, pink, blue and lime paper classes or an inline style), never through a `--note` variable. Tailwind v4 drops `--note:` declarations because they collide with the `note-*` theme color namespace.", "section": "colors" },
+      { "name": "The Weight Not Face Rule", "body": "Hierarchy comes from Sora's weight and tracking alone. Do not introduce a second family.", "section": "typography" },
+      { "name": "The Pick It Up Rule", "body": "An interactive note rests at its tilt and, on hover (fine pointers only) or keyboard focus, straightens to 0deg, rises 3px and deepens its shadow over 220ms. This is the system's signature interaction.", "section": "elevation" },
+      { "name": "The Scannable Wall Rule", "body": "In grids, tilts cycle through -0.7, 0.5, -0.3 and 0.8deg. Larger rotations (1 to 3deg) are for single expressive notes on the landing.", "section": "elevation" }
+    ],
+    "dos": [
+      "**Do** put every piece of content on a note, and put notes on the board.",
+      "**Do** let the scope set the colors: wall content inside the board scope, note content inside a note.",
+      "**Do** set note color with `--sheet` or the paper classes, and tape color with `--tape`.",
+      "**Do** use lime paper for the one primary action and plain paper for the rest.",
+      "**Do** keep app tilts under 1deg and let them straighten on hover and focus.",
+      "**Do** keep greens and reds for correct/done and wrong/destructive states.",
+      "**Do** strip rotation and entrance motion under reduced motion."
+    ],
+    "donts": [
+      "**Don't** set lime, pink, sky or canary type on paper notes or as running text on the board.",
+      "**Don't** declare a `--note` custom property; Tailwind v4 drops it.",
+      "**Don't** round notes beyond 3px or give them outline borders.",
+      "**Don't** add a second landing entrance moment; drop-in is the only authored one.",
+      "**Don't** use lime for state; correct and done stay semantic green."
+    ]
+  }
+}

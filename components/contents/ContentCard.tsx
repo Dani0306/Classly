@@ -34,17 +34,23 @@ const ContentCard = ({ content }: { content: Content }) => {
   return (
     <div
       onClick={handleClick}
-      className="lift sheet relative flex w-85 cursor-pointer flex-col gap-5 overflow-hidden p-5 md:p-6"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.target !== e.currentTarget) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      style={
+        {
+          "--tape": `${contentTypes.find((item) => item.type === content.type)?.color ?? "#ffffff"}d9`,
+        } as React.CSSProperties
+      }
+      className="note tape tilt relative flex w-85 cursor-pointer flex-col gap-5 p-5 pt-7 md:p-6 md:pt-7"
     >
-      <span
-        aria-hidden
-        style={{
-          backgroundColor:
-            contentTypes.find((item) => item.type === content.type)?.color ??
-            "#c9d3c6",
-        }}
-        className="absolute inset-x-0 top-0 h-1.5"
-      />
+
       <div className="flex items-center justify-between">
         <ContentBadge type={content.type} />
         <div className="flex">
@@ -59,7 +65,7 @@ const ContentCard = ({ content }: { content: Content }) => {
       </div>
 
       <div className="flex flex-col gap-2">
-        <strong className="text-base font-semibold text-foreground">
+        <strong className="text-base font-bold tracking-tight">
           {content.title}
         </strong>
         {content.type === "quiz" || content.type === "diagram" ? (

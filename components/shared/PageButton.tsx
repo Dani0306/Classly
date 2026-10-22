@@ -11,6 +11,7 @@ interface PageButtonProps {
   disabled?: boolean;
 }
 
+/** A small paper note you press: lime for the main action, plain paper otherwise. */
 const PageButton = ({
   text,
   icon: Icon,
@@ -20,9 +21,9 @@ const PageButton = ({
   disabled = false,
 }: PageButtonProps) => {
   const sizeStyles = {
-    sm: "px-3 py-1.5 text-xs rounded-md",
-    md: "px-4 py-2.5 text-xs rounded-lg",
-    lg: "px-6 py-3.5 text-sm rounded-lg",
+    sm: "px-3 py-1.5 text-xs",
+    md: "px-4 py-2.5 text-xs",
+    lg: "px-6 py-4 text-sm",
   };
 
   const iconSizes = {
@@ -36,14 +37,15 @@ const PageButton = ({
       onClick={onClick}
       disabled={disabled}
       className={`
-        press flex items-center justify-center gap-2 font-medium
+        press flex items-center justify-center gap-2 rounded-[3px] font-semibold text-ink
+        shadow-[0_1px_0_rgba(0,0,0,0.14),0_10px_18px_-10px_rgba(0,0,0,0.5)]
         ${sizeStyles[size]}
         ${
           disabled
-            ? "cursor-not-allowed border border-border bg-surface-muted text-muted-foreground"
+            ? "cursor-not-allowed bg-note-paper/60 text-ink/50 shadow-none"
             : light
-              ? "cursor-pointer border border-foreground/80 bg-surface text-foreground hover:bg-highlight-soft"
-              : "cursor-pointer border border-primary bg-primary text-primary-foreground hover:bg-primary-hover"
+              ? "cursor-pointer border border-ink/15 bg-note-paper hover:bg-white"
+              : "cursor-pointer bg-note-lime hover:bg-[#b8f774]"
         }
       `}
     >

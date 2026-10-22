@@ -20,7 +20,7 @@ const SelectOptions = ({
   className?: string;
 }) => {
   return (
-    <div className="flex flex-col gap-1.5 w-full">
+    <div className="paper flex flex-col gap-1.5 w-full bg-transparent">
       {label && (
         <label
           htmlFor={name}
@@ -38,7 +38,7 @@ const SelectOptions = ({
           className={cn(
             "w-full text-sm outline-none transition-all duration-200 appearance-none",
             "bg-gray-50 border border-gray-200",
-            "rounded-2xl py-2.5 px-4 pr-10",
+            "rounded-[3px] py-2.5 px-4 pr-10",
             "focus:border-primary/60 focus:ring-2 focus:ring-primary/10",
             !value ? "text-muted-foreground/50" : "text-foreground",
             className,

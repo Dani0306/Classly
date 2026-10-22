@@ -123,7 +123,7 @@ const ClassContent = ({
           />
         )
       ) : (
-        <div className="flex flex-wrap justify-center md:justify-start gap-5">
+        <div className="wall flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-8 pt-2">
           {contents.map((content) => (
             <ContentCard key={content.id} content={content} />
           ))}

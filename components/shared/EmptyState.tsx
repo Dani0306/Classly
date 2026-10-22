@@ -11,7 +11,7 @@ const GhostCards = () => (
       <div
         key={index}
         className={cn(
-          "w-40 rounded-2xl border border-border bg-surface p-3 shadow-sm",
+          "note w-40 p-3",
           index === 1 ? "h-28" : "h-20 translate-y-3",
         )}
       >
@@ -45,20 +45,16 @@ const EmptyState = ({
   return (
     <div
       className={cn(
-        "relative w-full overflow-hidden rounded-xl border border-dashed border-foreground/30 bg-surface-muted/60",
+        "relative w-full overflow-hidden rounded-[3px] border-2 border-dashed border-border",
         compact ? "px-6 py-10" : "px-6 pb-28 pt-14",
       )}
     >
-      {/* Decoration: the quad ground, quieter. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="bg-quad absolute inset-0 opacity-60" />
-      </div>
-
+      
       {!compact && <GhostCards />}
 
       <div className="relative flex flex-col items-center gap-3 text-center">
-        <span className="grid size-14 place-items-center rounded-lg border border-border bg-surface shadow-sm">
-          <Icon className="size-6 text-foreground/50" />
+        <span className="grid size-14 place-items-center note tape is-yellow [transform:rotate(-3deg)]">
+          <Icon className="size-6 text-ink" />
         </span>
 
         <div className="flex max-w-md flex-col gap-1.5">

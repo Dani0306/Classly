@@ -26,7 +26,7 @@ const ContentFooter = ({
           <button
             onClick={markAsCompleted}
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 rounded-xl text-[13px] font-semibold py-3 transition-colors cursor-pointer",
+              "flex-1 flex items-center justify-center gap-2 rounded-[3px] text-[13px] font-semibold py-3 transition-colors cursor-pointer",
               completed
                 ? "border border-emerald-700 text-emerald-900 bg-emerald-100 hover:bg-emerald-200"
                 : "bg-black/5 text-black/70 hover:bg-black/10",
@@ -39,7 +39,7 @@ const ContentFooter = ({
           {completed && (
             <button
               onClick={markAsCompleted}
-              className="text-[13px] font-medium bg-black/5 hover:bg-black/10 rounded-lg px-4 py-3 flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="text-[13px] font-medium bg-black/5 hover:bg-black/10 rounded-[3px] px-4 py-3 flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <RefreshCcw className="size-3.5" />
               Reopen
@@ -53,7 +53,7 @@ const ContentFooter = ({
           if (!editor.isDirty) editor.startEditing();
         }}
         className={cn(
-          "text-[13px] font-medium rounded-lg px-4 py-3 transition-colors cursor-pointer",
+          "text-[13px] font-medium rounded-[3px] px-4 py-3 transition-colors cursor-pointer",
           editor.isDirty
             ? "text-emerald-900 bg-emerald-100 hover:bg-emerald-200"
             : "text-black/80 bg-black/5 hover:bg-black/10",
@@ -64,7 +64,7 @@ const ContentFooter = ({
 
       <button
         onClick={deleteContent}
-        className="text-[13px] font-medium text-red-600 hover:bg-red-50 rounded-lg px-3 py-3 transition-colors cursor-pointer"
+        className="text-[13px] font-medium text-red-600 hover:bg-red-50 rounded-[3px] px-3 py-3 transition-colors cursor-pointer"
       >
         Delete
       </button>

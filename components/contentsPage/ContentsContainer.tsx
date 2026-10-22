@@ -106,10 +106,10 @@ export const ContentsContainer = ({ contents }: { contents: Content[] }) => {
             <button
               type="button"
               onClick={handleClearAll}
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-400 px-3.5 py-1 cursor-pointer transition-opacity hover:opacity-80"
+              className="inline-flex items-center gap-1.5 rounded-[3px] border border-border px-3.5 py-1 cursor-pointer transition-opacity hover:opacity-80"
             >
-              <X className="size-3.5 shrink-0 text-black" />
-              <span className="text-[12px] font-semibold whitespace-nowrap text-black">
+              <X className="size-3.5 shrink-0" />
+              <span className="text-[12px] font-semibold whitespace-nowrap">
                 Clear all
               </span>
             </button>
@@ -141,7 +141,7 @@ export const ContentsContainer = ({ contents }: { contents: Content[] }) => {
           />
         )
       ) : (
-        <div className="flex gap-4 flex-wrap justify-center md:justify-start">
+        <div className="wall flex gap-x-6 gap-y-8 pt-2 flex-wrap justify-center md:justify-start">
           {contents.map((item) => (
             <ContentCard key={item.id} content={item} />
           ))}

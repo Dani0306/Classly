@@ -34,7 +34,7 @@ const ClassDropDownMenu = ({ item }: { item: Class }) => {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-8 z-50 w-44 bg-white rounded-xl shadow-lg border border-border overflow-hidden">
+        <div className="absolute right-0 top-8 z-50 w-44 bg-surface rounded-[3px] shadow-lg border border-border overflow-hidden">
           <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-gray-50 transition-colors">
             <Pencil className="size-4 text-muted-foreground" />
             Edit

@@ -108,7 +108,7 @@ const CreateContent = ({
   }
 
   return (
-    <div className="w-full rounded-xl flex flex-col space-y-6">
+    <div className="w-full rounded-[3px] flex flex-col space-y-6">
       <div className="flex flex-col space-y-3">
         <ModalTitle
           title={`New ${formatText(type)}`}
@@ -205,7 +205,7 @@ const CreateContent = ({
                     key={item.type}
                     onClick={() => setDiagramType(item.type)}
                     className={cn(
-                      "cursor-pointer px-4 py-1.5 text-xs font-medium rounded-xl border",
+                      "cursor-pointer px-4 py-1.5 text-xs font-medium rounded-[3px] border",
                       colors.border,
                       selected ? cn(colors.dark, "text-white") : colors.text,
                     )}
@@ -253,7 +253,7 @@ const CreateContent = ({
         onClick={handleCreate}
         disabled={!canSubmit}
         className={cn(
-          "w-full disabled:opacity-50 lg:mb-0 mb-8 py-2.5 text-white font-medium text-sm rounded-full flex space-x-1.5 items-center justify-center hover:opacity-80 transition-all duration-300 cursor-pointer",
+          "w-full disabled:opacity-50 lg:mb-0 mb-8 py-2.5 text-white font-semibold text-sm rounded-[3px] press flex space-x-1.5 items-center justify-center hover:opacity-90 cursor-pointer",
           colors.dark,
         )}
       >

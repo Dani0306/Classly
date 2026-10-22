@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 /** This month's AI usage per feature, with the plan's allowance. */
 const UsageSummary = ({ usage }: { usage: AiUsageSummary }) => {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface-muted p-4">
+    <div className="flex flex-col gap-3 rounded-[3px] border border-border bg-surface-muted p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <strong className="text-xs font-semibold text-foreground">
           AI usage this month

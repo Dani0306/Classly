@@ -43,7 +43,7 @@ const PlanSection = ({
               <div
                 key={value}
                 className={cn(
-                  "flex flex-1 flex-col space-y-4 rounded-2xl border p-5 transition-all duration-200",
+                  "flex flex-1 flex-col space-y-4 rounded-[3px] border p-5 transition-all duration-200",
                   current
                     ? "border-primary bg-highlight-soft/40 ring-4 ring-highlight/50"
                     : "border-border bg-surface-muted",
@@ -57,7 +57,7 @@ const PlanSection = ({
                     )}
                   />
                   {current && (
-                    <span className="rounded-full bg-highlight px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-foreground">
+                    <span className="rounded-[3px] bg-highlight px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-foreground">
                       Current
                     </span>
                   )}

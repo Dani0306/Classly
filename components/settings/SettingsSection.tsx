@@ -17,20 +17,20 @@ const SettingsSection = ({
   return (
     <section
       className={cn(
-        "flex flex-col space-y-6 rounded-2xl bg-surface p-6 md:p-8 shadow-xl",
+        "note flex flex-col space-y-6 p-6 md:p-8",
         className,
       )}
     >
       <div className="flex items-start gap-4">
         {Icon && (
-          <span className="grid place-items-center size-10 shrink-0 rounded-xl bg-highlight-soft">
+          <span className="grid place-items-center size-10 shrink-0 rounded-[3px] bg-note-yellow">
             <Icon className="size-4.5 text-foreground" />
           </span>
         )}
         <div className="flex flex-col gap-1">
           <h2 className="text-base font-semibold text-foreground">{title}</h2>
           {description && (
-            <p className="text-xs font-light text-foreground/60">
+            <p className="text-xs text-muted-foreground">
               {description}
             </p>
           )}

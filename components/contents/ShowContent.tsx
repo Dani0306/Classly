@@ -79,7 +79,7 @@ const ShowContent = ({ content }: { content: Content }) => {
   return (
     <div
       className={cn(
-        "w-full h-full mx-auto bg-surface rounded-xl border border-border border-t-4 py-8 px-6 lg:px-10",
+        "w-full h-full mx-auto bg-surface border-t-4 py-8 px-6 lg:px-10",
         colors.solid,
         completed && "opacity-75",
       )}

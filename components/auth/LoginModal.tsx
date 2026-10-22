@@ -37,7 +37,7 @@ const LoginModal = () => {
       <div className="w-full flex flex-col space-y-3 items-center mt-5">
         <button
           onClick={handleSignIn}
-          className="cursor-pointer w-[90%] rounded-full py-3 border border-black flex items-center justify-center space-x-3"
+          className="cursor-pointer press w-[90%] rounded-[3px] py-3 border border-ink/20 bg-note-paper shadow-[0_1px_0_rgba(0,0,0,0.14),0_10px_18px_-10px_rgba(0,0,0,0.4)] flex items-center justify-center space-x-3"
         >
           <ImageComponent
             className="size-5"
@@ -48,7 +48,7 @@ const LoginModal = () => {
             Continue with Google
           </span>
         </button>
-        <button className="cursor-pointer w-[90%] rounded-full py-3 bg-black flex items-center justify-center space-x-3">
+        <button className="cursor-pointer press w-[90%] rounded-[3px] py-3 bg-black flex items-center justify-center space-x-3">
           <ImageComponent
             className="size-5"
             src="/github.webp"
@@ -58,7 +58,7 @@ const LoginModal = () => {
             Continue with Github
           </span>
         </button>
-        <button className="cursor-pointer w-[90%] rounded-full py-3 bg-[#1877F2] flex items-center justify-center space-x-3">
+        <button className="cursor-pointer press w-[90%] rounded-[3px] py-3 bg-[#1877F2] flex items-center justify-center space-x-3">
           <ImageComponent
             className="size-5"
             src="/facebook.png"

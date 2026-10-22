@@ -12,75 +12,115 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Quad pad: cool paper ground, ink-blue type, one highlighter yellow. */
-:root {
+/* Sticky wall: a charcoal study board covered in fluorescent paper notes.
+   :root, .paper and .note carry the paper scope (ink on paper); .board
+   flips the same tokens for content that sits directly on the wall. */
+:root,
+.paper,
+.note {
   /* ========== BASE ========== */
-  --background: #edf1ea;
-  --foreground: #14202e;
+  --background: #f4f4f1;
+  --foreground: #17181c;
 
   /* ========== PRIMARY (INK) ========== */
-  --primary: #14202e;
-  --primary-hover: #243449;
-  --primary-foreground: #f7faf4;
+  --primary: #17181c;
+  --primary-hover: #2c2e35;
+  --primary-foreground: #f4f4f1;
 
   /* ========== HIGHLIGHTER ========== */
-  --highlight: #ffe14d;
-  --highlight-soft: #fff3b0;
+  --highlight: #ffe94a;
+  --highlight-soft: #fff6b8;
 
   /* ========== SURFACES ========== */
-  --surface-green: #e1eadd;
-  --surface-green-strong: #d2dfcd;
-  --surface: #fbfcf9;
-  --surface-muted: #e4eae0;
-
-  /* ========== GRID ========== */
-  --grid-minor: rgba(20, 32, 46, 0.055);
-  --grid-major: rgba(20, 32, 46, 0.09);
+  --surface-green: #e6f6d2;
+  --surface-green-strong: #d4efb4;
+  --surface: #fbfbf8;
+  --surface-muted: #ebebe6;
 
   /* ========== BORDERS ========== */
-  --border: #c9d3c6;
-  --border-soft: #dde4da;
+  --border: #d6d6cf;
+  --border-soft: #e4e4de;
 
   /* ========== MUTED TEXT ========== */
-  --muted-foreground: #55625b;
+  --muted-foreground: #5b5d63;
 
   /* ========== RING / FOCUS ========== */
-  --ring: #2d57d8;
+  --ring: #1f6feb;
+
+  /* ========== SHADCN REQUIRED ========== */
+  --card: #fbfbf8;
+  --card-foreground: #17181c;
+  --popover: #fbfbf8;
+  --popover-foreground: #17181c;
+  --secondary: #ebebe6;
+  --secondary-foreground: #17181c;
+  --muted: #ebebe6;
+  --accent: #ebebe6;
+  --accent-foreground: #17181c;
+  --input: #d6d6cf;
+}
+
+:root {
+  /* ========== NOTES ========== */
+  --board: #22252b;
+  --note-yellow: #ffe94a;
+  --note-pink: #ff6fb5;
+  --note-blue: #49c6ff;
+  --note-lime: #a8f05a;
+  --note-paper: #f4f4f1;
+  --ink: #17181c;
 
   /* ========== MOTION ========== */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 
-  /* ========== SHADCN REQUIRED ========== */
-  --card: #fbfcf9;
-  --card-foreground: #14202e;
-  --popover: #fbfcf9;
-  --popover-foreground: #14202e;
-  --secondary: #e4eae0;
-  --secondary-foreground: #14202e;
-  --muted: #e4eae0;
-  --accent: #e4eae0;
-  --accent-foreground: #14202e;
   --destructive: oklch(0.577 0.245 27.325);
-  --input: #c9d3c6;
-  --radius: 0.5rem;
+  --radius: 0.25rem;
 
   /* ========== SIDEBAR ========== */
-  --sidebar: #fbfcf9;
-  --sidebar-foreground: #14202e;
-  --sidebar-primary: #14202e;
-  --sidebar-primary-foreground: #f7faf4;
-  --sidebar-accent: #e4eae0;
-  --sidebar-accent-foreground: #14202e;
-  --sidebar-border: #c9d3c6;
-  --sidebar-ring: #2d57d8;
+  --sidebar: #22252b;
+  --sidebar-foreground: #f4f4f1;
+  --sidebar-primary: #ffe94a;
+  --sidebar-primary-foreground: #17181c;
+  --sidebar-accent: #2f333a;
+  --sidebar-accent-foreground: #f4f4f1;
+  --sidebar-border: #3a3e46;
+  --sidebar-ring: #49c6ff;
 
   /* ========== CHARTS ========== */
-  --chart-1: #14202e;
-  --chart-2: #2d57d8;
-  --chart-3: #e0a800;
-  --chart-4: #55625b;
-  --chart-5: #c9d3c6;
+  --chart-1: #ffe94a;
+  --chart-2: #ff6fb5;
+  --chart-3: #49c6ff;
+  --chart-4: #a8f05a;
+  --chart-5: #f4f4f1;
+}
+
+/* The wall itself. Text set directly on it reads light. */
+.board {
+  --background: #22252b;
+  --foreground: #f4f4f1;
+  --primary: #f4f4f1;
+  --primary-hover: #ffffff;
+  --primary-foreground: #17181c;
+  --surface: #2b2f36;
+  --surface-muted: #30343b;
+  --border: #3d414a;
+  --border-soft: #31353c;
+  --muted-foreground: #b4b8c0;
+  --ring: #49c6ff;
+  --secondary: #30343b;
+  --secondary-foreground: #f4f4f1;
+  --muted: #30343b;
+  --accent: #30343b;
+  --accent-foreground: #f4f4f1;
+  --input: #3d414a;
+  color: var(--foreground);
+  background-color: var(--background);
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1.2px
+  );
+  background-size: 6px 6px;
 }
 
 /* Tailwind Theme Mapping */
@@ -97,6 +137,13 @@
   --color-highlight: var(--highlight);
   --color-highlight-soft: var(--highlight-soft);
   --color-border-soft: var(--border-soft);
+  --color-board: var(--board);
+  --color-ink: var(--ink);
+  --color-note-yellow: var(--note-yellow);
+  --color-note-pink: var(--note-pink);
+  --color-note-blue: var(--note-blue);
+  --color-note-lime: var(--note-lime);
+  --color-note-paper: var(--note-paper);
 
   --color-border: var(--border);
   --color-muted-foreground: var(--muted-foreground);
@@ -167,50 +214,104 @@ body {
     sans-serif;
 }
 
-/* ========== PAPER ========== */
+/* ========== NOTES ========== */
 
-.bg-quad {
-  background-color: var(--background);
-  background-image:
-    linear-gradient(var(--grid-major) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
-    linear-gradient(var(--grid-minor) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
-  background-size:
-    120px 120px,
-    120px 120px,
-    24px 24px,
-    24px 24px;
+/* A paper note: square corners, ink text, an offset soft shadow. Set the
+   paper colour with --sheet (defaults to plain paper). */
+.note,
+.sheet {
+  background-color: var(--sheet, var(--note-paper));
+  color: var(--ink);
+  border-radius: 3px;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.14),
+    0 18px 28px -16px rgba(0, 0, 0, 0.55);
 }
 
-/* Highlighter swipe behind a phrase; emphasis without gradient text. */
+/* Paper colours, unlayered so they beat the note's own default. */
+.is-yellow {
+  --sheet: var(--note-yellow);
+}
+.is-pink {
+  --sheet: var(--note-pink);
+}
+.is-blue {
+  --sheet: var(--note-blue);
+}
+.is-lime {
+  --sheet: var(--note-lime);
+}
+
+/* Translucent tape holding the note to the wall. */
+.tape {
+  position: relative;
+}
+.tape::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 64px;
+  height: 20px;
+  margin-left: -32px;
+  background: var(--tape, rgba(255, 255, 255, 0.42));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  transform: rotate(-2deg);
+  pointer-events: none;
+}
+
+/* Rest a note at its tilt; it straightens and lifts when picked up. */
+.tilt {
+  transform: rotate(var(--tilt, 0deg));
+  transition:
+    transform 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out);
+}
+.tilt:focus-visible {
+  transform: rotate(0deg) translateY(-3px);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tilt:hover {
+    transform: rotate(0deg) translateY(-3px);
+    box-shadow:
+      0 1px 0 rgba(0, 0, 0, 0.14),
+      0 26px 34px -18px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* A grid of notes: small alternating tilts so the wall still scans. */
+.wall > :nth-child(4n + 1) {
+  --tilt: -0.7deg;
+}
+.wall > :nth-child(4n + 2) {
+  --tilt: 0.5deg;
+}
+.wall > :nth-child(4n + 3) {
+  --tilt: -0.3deg;
+}
+.wall > :nth-child(4n + 4) {
+  --tilt: 0.8deg;
+}
+
+/* Highlighter swipe behind a phrase. */
 .marker {
   background-image: linear-gradient(
     transparent 56%,
-    var(--highlight) 56% 90%,
+    var(--note-yellow) 56% 90%,
     transparent 90%
   );
+  color: inherit;
   padding-inline: 0.1em;
   margin-inline: -0.1em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
 
-/* Sheet: a page lifted off the pad. Offset plus soft blur, never a halo. */
-.sheet {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow:
-    0 1px 0 rgba(20, 32, 46, 0.04),
-    0 8px 24px -12px rgba(20, 32, 46, 0.18);
-}
-
 /* ========== BROWSER SURFACES ========== */
 
 ::selection {
-  background: var(--highlight);
-  color: var(--foreground);
+  background: var(--note-yellow);
+  color: var(--ink);
 }
 
 :focus-visible {
@@ -282,22 +383,21 @@ textarea {
   transform: scale(0.97);
 }
 
-.lift {
-  transition:
-    transform 200ms var(--ease-out),
-    box-shadow 200ms var(--ease-out),
-    border-color 200ms ease;
-}
-@media (hover: hover) and (pointer: fine) {
-  .lift:hover {
-    transform: translateY(-2px);
-    box-shadow:
-      0 1px 0 rgba(20, 32, 46, 0.04),
-      0 14px 28px -14px rgba(20, 32, 46, 0.28);
+/* The one authored landing moment: the AI summary lands on the wall. */
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) rotate(-7deg) scale(1.03);
   }
+}
+.drop-in {
+  animation: dropIn 640ms var(--ease-out) 450ms both;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .drop-in {
+    animation: fadeIn 200ms ease 200ms both;
+  }
   .reveal,
   .slide-up,
   .slide-left,
@@ -305,7 +405,9 @@ textarea {
   .slide-top {
     animation: fadeIn 200ms ease both;
   }
-  .lift:hover {
+  .tilt,
+  .tilt:hover,
+  .tilt:focus-visible {
     transform: none;
   }
 }

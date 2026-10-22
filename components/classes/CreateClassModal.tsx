@@ -146,7 +146,7 @@ const CreateClassModal = ({ classContent }: { classContent?: Class }) => {
                 onClick={() => setIcon(item.name)}
                 key={index}
                 className={cn(
-                  "size-14 p-4 rounded-xl cursor-pointer",
+                  "size-14 p-4 rounded-[3px] cursor-pointer",
                   selected
                     ? "bg-highlight-soft border-2 border-primary"
                     : "bg-foreground/20",
