@@ -19,14 +19,13 @@ There is no test runner. Verify changes with `tsc`, `eslint` and `next build`.
 Classly is an AI study app for students. After signing in with Google, a user:
 
 1. Creates **classes** (name, description, icon + color, optional weekly schedule).
-2. Inside a class, creates **contents**. Every creatable type runs an AI call:
-   - `note`: AI proofreads the text (grammar/spelling only, markdown converted to plain text).
-   - `summarize`: AI writes a titled markdown summary at a chosen length.
-   - `reminder` / `homework`: proofread like notes, plus `due_date` and `priority`; can be marked complete.
-   - `quiz`: AI generates up to 10 multiple-choice questions, answered in-app; submitting saves the answers and sets `is_completed`.
-   - `diagram`: AI generates a PNG diagram (8 layouts) stored in Supabase Storage.
+2. Inside a class, creates **notes** and **tasks** (the New button offers only these two):
+   - `note`: free text; optionally AI-proofread ("Fix spelling and grammar", spends a `grammar` credit only when ticked).
+   - `task`: homework or a reminder: `due_date` + `priority`, optional details, no AI. Can be ticked off.
+   - From an open note, **study tools** make AI study aids saved to the same class: `summarize` (markdown summary at a chosen length), `quiz` (up to 10 multiple-choice questions, answered in-app; submitting saves answers and sets `is_completed`), `diagram` (AI PNG, 8 layouts, stored in Supabase Storage).
+   - Legacy rows with `type` `homework` or `reminder` are read as tasks by `normalizeContent` (`lib/contenttypes.ts`). Once this code is deployed, run `update contents set type = 'task' where type in ('homework','reminder')` to retire them.
 3. Attaches files (images, PDF, Word) to any content.
-4. Browses everything on **All Contents** (search / type / due-date filters) and sees class sessions plus homework and reminder due dates on the **Calendar**.
+4. Starts on **Today** (`/app/today`, the app home): overdue, due today, next 7 days, today's class timetable, and a quick-add task form. Browses everything on **All Contents** (search, filter All / Notes / Tasks / Study aids, due date) and sees class sessions plus task due dates on the **Calendar**.
 5. Manages profile, plan and AI usage in **Settings**, and upgrades to **Pro** through Paddle.
 
 Plans: **Starter** (free) and **Pro** ($12/mo). Limits are enforced in the database (see "AI usage and plan limits").
@@ -59,12 +58,14 @@ Plans: **Starter** (free) and **Pro** ($12/mo). Limits are enforced in the datab
 | Route | File | What it does |
 |---|---|---|
 | `/` | `app/page.tsx` | Landing (header, hero, feature cards, pricing, testimonials, footer; content in `data/landing/`). Login opens `components/auth/LoginModal.tsx` → `signInWithOAuth({ provider: "google", redirectTo: <origin>/auth/callback })`. |
-| `/auth/callback` | `app/auth/callback/route.ts` | Exchanges the OAuth code, creates the `public.users` row (`createUser`, `id = auth uid`, `plan: "starter"`), redirects to `?next` or `/app/classes`. |
+| `/auth/callback` | `app/auth/callback/route.ts` | Exchanges the OAuth code, creates the `public.users` row (`createUser`, `id = auth uid`, `plan: "starter"`), redirects to `?next` or `/app/today`. |
+| `/app` | `app/app/page.tsx` | Redirects to `/app/today`. |
+| `/app/today` | `app/app/today/page.tsx` | Today screen (`actions/today/getToday.ts` → `components/today/`). Day grouping happens in the browser (`hooks/shared/useNow.ts`) because "today" depends on the student's timezone. |
 | `/app/*` layout | `app/app/layout.tsx` | `Aside` shell: collapsible sidebar (`components/sidebar/`, links in `data/sidebar/links.ts`) + `UserCard`. |
 | `/app/classes` | `app/app/classes/page.tsx` | Class grid. `?search=` filter. |
-| `/app/class/[id]` | `app/app/class/[id]/page.tsx` | One class's contents, with type pills (`?type=`) and the "New" content modal. |
-| `/app/contents` | `app/app/contents/page.tsx` | All contents across classes. `?search=`, `?type=`, `?dueDate=YYYY-MM-DD`. |
-| `/app/calendar` | `app/app/calendar/page.tsx` | Day / week / month calendar. `?type=class\|homework\|reminder\|all`. |
+| `/app/class/[id]` | `app/app/class/[id]/page.tsx` | One class's contents, with filter pills (`?type=note\|task\|study`, `CONTENT_FILTERS`) and the "New" content modal. |
+| `/app/contents` | `app/app/contents/page.tsx` | All contents across classes. `?search=`, `?type=note\|task\|study`, `?dueDate=YYYY-MM-DD`. |
+| `/app/calendar` | `app/app/calendar/page.tsx` | Day / week / month calendar. `?type=class\|task\|all`. |
 | `/app/settings` | `app/app/settings/page.tsx` | Profile, plan (usage, upgrade / manage subscription), account (sign out). |
 | `/app/dashboard` | `app/app/dashboard/page.tsx` | Static "Ask Classly AI" placeholder. Not linked in the sidebar, no logic. |
 | `POST /api/paddle/webhook` | `app/api/paddle/webhook/route.ts` | Paddle notifications (see Billing). |
@@ -114,10 +115,10 @@ Policies: owner-only select/insert/update/delete (`auth.uid() = user_id`).
 | `type` | text not null | `ContentType`, no DB check constraint |
 | `title` | text not null | AI may correct it on creation |
 | `content` | text not null | raw user input |
-| `ai_output` | text null | AI result: corrected text (note/reminder/homework), markdown summary (summarize), JSON `QuizQuestion[]` (quiz), public image URL (diagram) |
+| `ai_output` | text null | AI result: proofread text (polished notes; null for unpolished notes and tasks), markdown summary (summarize), JSON `QuizQuestion[]` (quiz), public image URL (diagram) |
 | `due_date` | timestamp (no tz) null | a calendar day, not a moment. Compare on the `YYYY-MM-DD` part. |
 | `priority` | text null | `'low' \| 'medium' \| 'high'` |
-| `is_completed` | bool default false | homework/reminder done; quiz submitted |
+| `is_completed` | bool default false | task done; quiz submitted |
 | `status` | text null | **unused** |
 | `files_urls` | text[] null | public URLs in the `content-files` bucket |
 | `created_at` / `updated_at` | timestamptz | |
@@ -181,11 +182,11 @@ Policy: select own only. No write policies; writes go through the service-role R
 - `Plan = "starter" | "pro"`; `AppUser` (users row); `UpdateProfile = Pick<AppUser, "name" | "image_url">`.
 - `SubscriptionStatus`, `BillingSubscription` (subset of `paddle_subscriptions`).
 - `ScheduleEntry`, `Class`, `NewClass`, `UpdateClass`.
-- `ContentType = "note" | "summarize" | "reminder" | "homework" | "quiz" | "diagram" | "class"`. `"class"` is not a real content type; it exists only so colors, labels and descriptions can style classes. `CreatableContentType = Exclude<ContentType, "class">`.
+- `ContentType = "note" | "task" | "summarize" | "quiz" | "diagram" | "class"` (legacy rows may say `homework`/`reminder`; see `normalizeContent`). `"class"` is not a real content type; it exists only so colors, labels and descriptions can style classes. `CreatableContentType = Exclude<ContentType, "class">`. `TodayTask` / `TodayData` feed the Today screen.
 - `ContentPriority`, `Content`, `NewContent`, `UpdateContent`, `CreateContentInput` (form payload: `type, classId, title, text, dueDate?, priority?, size?, diagramType?, constraints?, files: File[]`).
 - `QuizQuestion = { question, answers: string[4], correct_answer, selected_answer? }`.
 - `DiagramType = flowchart | mindmap | orgchart | venn | timeline | comparison | cycle | pyramid` (labels in `data/diagram/diagramTypes.ts`).
-- Calendar: `EventKind = class | homework | reminder`, `EventData` (server → client, plain strings), `Event` (client, real `Date`s).
+- Calendar: `EventKind = class | task`, `EventData` (server → client, plain strings), `Event` (client, real `Date`s).
 - `ViewType = "content" | "attachments"` (tab inside a content modal), `DropDownMenuOptions`, `SearchParamProps`.
 
 There are no generated Supabase types. Query results are cast to these types by hand.
@@ -204,7 +205,8 @@ All are `"use server"`, and all call `auth.getUser()` first and throw if there i
 
 - **ai/**: `correctGrammar.ts` (`grammarCorrection(title, text)` → `{ title, description }`), `generateSummary.ts` (→ `{ title, text }`), `generateQuiz.ts` (→ `QuizQuestion[]`), `generateDiagram.ts` (uploads the PNG to `diagrams/<uid>/<ts>.png` and returns a public URL), `getMyAiUsage.ts` (`AiUsageSummary`: plan, per-kind `{ used, limit }` for this UTC month, `resetsOn`). These do **not** consume credits themselves; `createContentByType` does.
 - **billing/**: `getMySubscription` (the active subscription, else the most recently updated, else null), `createPortalSession` (Paddle customer portal URL, created per click).
-- **calendar/**: `getMyEvents(type?)` → `EventData[]`: one entry per class schedule slot plus homework/reminders that have a `due_date` (`dueDate` = first 10 chars).
+- **calendar/**: `getMyEvents(type?)` → `EventData[]`: one entry per class schedule slot plus tasks that have a `due_date` (`dueDate` = first 10 chars).
+- **today/**: `getToday()` → `TodayData`: classes with schedules, plus tasks (with `classes(name, color)`) that are open or due from two days ago on.
 - **classes/**: `createClass`, `getMyClasses(search?)` (ilike on name/description/icon/color), `getClass(id, type?)` (class + its contents, newest first), `modifyClass`, `deleteClass`.
 - **contents/**: `createContentByType(input)` (the main creation pipeline, below), `getAllContents(search?, type?, dueDate?)` (quotes the search term for PostgREST `.or()`), `modifyContent(partial, id)`, `deleteContent(id)`, `attachFiles(contentId, files)`.
 - **files/**: `uploadFiles(files)` (validates size/MIME, uploads to `content-files`, rolls back the batch on failure, returns public URLs), `deleteFiles(url | urls)` (only keys in the caller's folder; detaches via `remove_content_files` first, then removes objects).
@@ -213,16 +215,16 @@ All are `"use server"`, and all call `auth.getUser()` first and throw if there i
 ### Content creation pipeline (`actions/contents/createContentByType.ts`)
 
 1. Require a non-empty title and text.
-2. `consumeAiCredit(AI_KIND_BY_CONTENT_TYPE[type])` (`lib/ai/credits.ts`, `server-only`). This maps note/reminder/homework → `grammar`, summarize → `summary`, quiz → `quiz`, diagram → `diagram`. RPC error codes become friendly messages.
-3. `buildContent`: uploads attachments, then runs the type's AI call and fills `ai_output` (and `title` for grammar/summary, `due_date`/`priority` for reminder/homework).
+2. `consumeAiCredit(kind)` (`lib/ai/credits.ts`, `server-only`) unless the kind is null: note (only with `polish: true`) → `grammar`, summarize → `summary`, quiz → `quiz`, diagram → `diagram`, task → nothing. RPC error codes become friendly messages. Text is required for everything except tasks; tasks require `dueDate` and `priority`.
+3. `buildContent`: uploads attachments, then runs the type's AI call when there is one and fills `ai_output` (and `title` for grammar/summary); tasks store `due_date`/`priority`.
 4. Insert into `contents`. If step 3 or 4 fails, `refundAiCredit(usageId)` runs and the error is rethrown. Uploaded files are not rolled back in that case.
 5. `revalidatePath("/app/class/[id]", "page")`.
 
-The client side is `CreateContentModal` → `SelectContentTypeView` (type picker; quiz/diagram show a "Pro" lock for Starter) → `CreateContent` (form driven by `CONTENT_FORMS`, `AllowanceNote` shows remaining credits from `useAiUsage`) → `useCreateContent`.
+The client side is `CreateContentModal` → `SelectContentTypeView` (Note or Task) → `CreateContent` (form driven by `CONTENT_FORMS`; the note's AI checkbox shows `AllowanceNote`) → `useCreateContent`. Study aids go `ShowContent` → `StudyTools` → `useCreateContent` with the note's text. The Today quick-add calls `createContentByType` directly.
 
 ## AI usage and plan limits
 
-- Limits live in `plan_limits` and are enforced only by `consume_ai_credit`. The UI hints (`AllowanceNote`, `UsageSummary`, the Pro locks in `SelectContentTypeView`) are advisory. The type-picker lock is hardcoded (`plan === "starter"` for quiz/diagram), so update it if `plan_limits` changes.
+- Limits live in `plan_limits` and are enforced only by `consume_ai_credit`. The UI hints (`AllowanceNote`, `UsageSummary`, the Pro locks in `StudyTools`) are advisory. `StudyTools` shows a Pro lock when the plan's `monthly_limit` for that kind is 0, read from `getMyAiUsage`, so it follows `plan_limits`.
 - Kinds and labels: `lib/ai/kinds.ts` (`AiKind`, `AI_KINDS`, `AI_KIND_BY_CONTENT_TYPE`, `AI_KIND_LABELS`).
 - To change allowances, update `plan_limits` rows (migration). Also keep the marketing copy in `data/settings/plans.ts` and `data/landing/pricing.ts` roughly in sync; it is not enforced.
 - Any new AI feature must call `consumeAiCredit` before the model call and `refundAiCredit` on failure.
@@ -237,16 +239,18 @@ The client side is `CreateContentModal` → `SelectContentTypeView` (type picker
 
 ## Content model
 
-- `contents.type` is the `ContentType` union in `types/index.ts`. Adding or removing a type means updating several exhaustive records, and `tsc` points to each one: `data/colors/typeColors.ts` (drives the New Content picker and the class type pills), `lib/contentcolors.ts`, `ContentBadge`'s `TYPE_ICONS`/`TYPE_LABELS`, `lib/contentdescriptions.ts`, `lib/contentforms.ts` (`CONTENT_FORMS` sets which form fields appear and which are required), `lib/ai/kinds.ts` (`AI_KIND_BY_CONTENT_TYPE`), and the `switch` in `actions/contents/createContentByType.ts`. The `FILTER_TYPES` list in `components/contentsPage/ContentsContainer.tsx` is not type-checked for exhaustiveness.
+- `contents.type` is the `ContentType` union in `types/index.ts`. Type metadata lives in `lib/contenttypes.ts` (`NEW_CONTENT_TYPES`, `STUDY_AID_TYPES`, `TASK_DB_TYPES`, `CONTENT_LABELS`, `CONTENT_FILTERS`, `normalizeContent`) and `lib/contentoptions.ts` (palette color, icon, description). Exhaustive records `tsc` points to: `ContentBadge`'s `TYPE_ICONS`, `lib/contentdescriptions.ts`, `lib/ai/kinds.ts` (`AI_KIND_BY_CONTENT_TYPE`, `null` = no credit) and the `switch` in `createContentByType`. `CONTENT_FORMS` covers only notes and tasks.
+- Every action that reads `contents` must map rows through `normalizeContent` and match tasks with `.in("type", TASK_DB_TYPES)` until the legacy rows are migrated.
+- `data/colors/typeColors.ts` is superseded by `lib/contentoptions.ts` and imported nowhere; it still lists `homework`/`reminder` and fails `tsc` until deleted. The Today nav link is prepended in `Sidebar.tsx` (`navLinks`), not in `data/sidebar/links.ts`.
 - **`ai_output` always wins over `content`** for display and editing. `content` is the raw user text and is only the fallback. Compare with `!= null`, not truthiness, because an empty string is a valid saved value (`hooks/contents/useContentText.ts` picks which column an edit writes to).
 - Diagrams store their generated image's public URL in `ai_output`. Quizzes store `JSON.stringify(QuizQuestion[])`. On submit, `useQuiz` writes back the questions with `selected_answer` filled and `is_completed: true`, which locks the quiz.
 - Summaries are markdown with `**bold**` and `- ` bullets. The grammar prompt strips markdown to plain text on purpose.
-- `CONTENT_FORMS` fields: `description` (main textarea), `dueDate` + `priority` (required for reminder/homework), `size` (summary length, `SUMMARY_SIZES`), `diagramType` (required for diagram) and `constraints` (optional diagram instructions).
+- `CONTENT_FORMS` fields: `description` (main textarea; required for notes, optional for tasks), `dueDate` + `priority` (required for tasks). Summary size (`SUMMARY_SIZES`) and diagram layout are picked in `StudyTools`.
 
 ### How contents are shown
 
 - `ContentCard` (grid card) opens a modal: `QuizComponent` for quizzes, otherwise `ShowContent`.
-- `ShowContent` = `ContentHeader` (title, type badge, Attachments tab, due date/priority) + `ContentBody` (`DiagramPreview` for diagrams, otherwise `TextToEdit`, an inline textarea that saves on blur) or `Attachments` + `ContentFooter` (complete/reopen for homework and reminders, Edit/Save, Delete).
+- `ShowContent` is a paper sheet: type badge, class, created date, title, a due line for tasks (`describeDue` in `lib/dates.ts`), `SheetTabs` (content / Attachments), then the text read-only (summaries render markdown via the `.reading` CSS) or a textarea after Edit (Save, Cancel, Ctrl/⌘+Enter), `StudyTools` for notes, and a sticky footer (Delete with an inline confirm, Edit, Mark as done / Reopen for tasks, Study tools for notes). Ticking a task uses `useToggleComplete` (optimistic, keeps the modal open).
 - Card previews use `AIOutputSmall` (`ai_output ?? content`); quiz and diagram cards show the truncated raw `content`.
 
 ## Files and storage
@@ -262,9 +266,9 @@ The client side is `CreateContentModal` → `SelectContentTypeView` (type picker
 
 ## Calendar
 
-- The server sends `EventData` with plain strings; `components/calendar/utils.ts` `buildEvents` turns it into `Date`s **in the browser** so days and times aren't shifted by the server's UTC timezone. Classes repeat on every visible day matching `day`; homework and reminders are all-day on `dueDate` (parsed as local midnight).
+- The server sends `EventData` with plain strings; `components/calendar/utils.ts` `buildEvents` turns it into `Date`s **in the browser** so days and times aren't shifted by the server's UTC timezone. Classes repeat on every visible day matching `day`; tasks are all-day on `dueDate` (parsed as local midnight).
 - Views: `full-calendar.tsx` (header, filter, Day/Week/Month tabs; weeks start Monday), `week-view.tsx`, `month-view.tsx`, `event-block.tsx`, `event-details.tsx`. Visible hours are 5–23, 64 px per hour.
-- Event colors come from `KIND_COLORS` in `components/calendar/utils.ts`. `lib/kindcolors.ts` is an unused duplicate with different colors.
+- Event colors come from `KIND_COLORS` in `components/calendar/utils.ts` (`class`, `task`).
 
 ## Code layout conventions
 
@@ -294,7 +298,7 @@ utils/                supabase clients, tryCatch, misc helpers (utils/fn.ts)
 
 - Use theme tokens (`bg-surface`, `bg-surface-muted`, `border-border`, `text-muted-foreground`) rather than hardcoded grays. `.dark` tokens exist, but many components still hardcode light colors, and the root layout forces light mode.
 - `--primary` is neon green `#35f527`. It works for fills, glows and rings, but has poor contrast as text or small icons. Helper classes: `.border-neon`, `.border-neon-no-hover`, `.text-neon`, `.text-neon-soft`; landing animations `.slide-up/-left/-right/-top`, `.fade-in`; utility `scrollbar-hide`.
-- Per-type colors: hex in `data/colors/typeColors.ts` (inline styles), Tailwind class sets in `lib/contentcolors.ts` (`bg`, `dark`, `border`, `text`, `icon`, `solid`).
+- Per-type colors: palette hex in `lib/contentoptions.ts` (tape, dots). Badges are ink chips with a colored dot; text stays ink on paper.
 - The React 19 hooks lint rules are enforced, including `react-hooks/set-state-in-effect` (an error). Don't call `setState` directly inside an effect body: derive the value, key the component, or run the logic in an event handler.
 
 ## Known gaps and quirks
@@ -302,9 +306,8 @@ utils/                supabase clients, tryCatch, misc helpers (utils/fn.ts)
 Check these before assuming a feature works:
 
 - `generateDiagram` uploads to the `diagrams` bucket but builds the returned URL with `storage.from("content-files").getPublicUrl(...)`, so the stored `ai_output` points at the wrong bucket. Its key also lacks the random segment.
-- `QuizComponent`'s Delete button has no `onClick` (the `useDeleteContent` result is unused).
 - `ClassContent`'s dropdown options (View Details, Edit, View Notes, Share, Delete) are no-op stubs.
 - `createClass` calls `revalidatePath("app/classes")` without the leading slash.
 - `getMyClasses` interpolates the search term into `.or()` unquoted (unlike `getAllContents`), so commas or parentheses in a search break the filter.
-- Unused code: `components/ai/AIOutput.tsx`, `components/contents/AIToolsPanel.tsx` + `data/noteModal/noteModalCards.ts`, `components/mermaid/MermaidComponent.tsx`, `ai/prompts/generateImagePrompt.ts`, `components/shared/DueDate.tsx`, `lib/kindcolors.ts`, `getFileUrl` in `utils/fn.ts`, and the `contents.status` column.
+- Unused code: `components/ai/AIOutput.tsx`, `components/contents/AIToolsPanel.tsx` + `data/noteModal/noteModalCards.ts`, `components/mermaid/MermaidComponent.tsx`, `ai/prompts/generateImagePrompt.ts`, `components/shared/DueDate.tsx`, `getFileUrl` in `utils/fn.ts`, and the `contents.status` column.
 - Marketing copy (`data/settings/plans.ts`, landing pricing) mentions "AI OCR", which doesn't exist.

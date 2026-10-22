@@ -144,8 +144,7 @@ export const COURSE_COLORS: Record<
 
 export const KIND_LABEL: Record<Event["kind"], string> = {
   class: "Class",
-  homework: "Homework",
-  reminder: "Reminder",
+  task: "Task",
 };
 
 import { EventKind } from "@/types";
@@ -160,16 +159,10 @@ export const KIND_COLORS: Record<
     border: "border-violet-300 dark:border-violet-800",
     text: "text-violet-900 dark:text-violet-200",
   },
-  homework: {
-    dot: "bg-red-500",
-    bg: "bg-red-50 dark:bg-red-950/40",
-    border: "border-red-300 dark:border-red-800",
-    text: "text-red-900 dark:text-red-200",
-  },
-  reminder: {
-    dot: "bg-amber-500",
-    bg: "bg-amber-50 dark:bg-amber-950/40",
-    border: "border-amber-300 dark:border-amber-800",
-    text: "text-amber-900 dark:text-amber-200",
+  task: {
+    dot: "bg-rose-500",
+    bg: "bg-rose-50 dark:bg-rose-950/40",
+    border: "border-rose-300 dark:border-rose-800",
+    text: "text-rose-900 dark:text-rose-200",
   },
 };

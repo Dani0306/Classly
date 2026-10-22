@@ -7,8 +7,8 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
 
-  let next = searchParams.get("next") ?? "/app/classes";
-  if (!next.startsWith("/")) next = "/app/classes";
+  let next = searchParams.get("next") ?? "/app/today";
+  if (!next.startsWith("/")) next = "/app/today";
 
   if (!code) {
     return NextResponse.redirect(`${origin}/`);

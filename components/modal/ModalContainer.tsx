@@ -27,10 +27,14 @@ const ModalContainer = ({
               : "md:w-100 md:h-100"
       } paper md:rounded-[3px]`}
     >
-      <X
+      <button
+        type="button"
         onClick={closeModal}
-        className="cursor-pointer z-50 text-foreground/70 hover:text-foreground transition-colors size-5 absolute top-4 right-4"
-      />
+        aria-label="Close"
+        className="press absolute top-3 right-3 z-50 grid size-9 cursor-pointer place-items-center rounded-[3px] text-foreground/70 hover:bg-foreground/5 hover:text-foreground"
+      >
+        <X className="size-5" />
+      </button>
       {children}
     </div>
   );

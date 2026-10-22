@@ -1,9 +1,11 @@
 "use server";
 
-import { ContentType } from "@/types";
+import { Class, Content } from "@/types";
+import { normalizeContent, typesForFilter } from "@/lib/contenttypes";
 import { createServerSupabase } from "@/utils/supabase/server";
 
-export const getClass = async (id: string, noteType?: ContentType) => {
+/** `filter` is a CONTENT_FILTERS value: "note", "task" or "study". */
+export const getClass = async (id: string, filter?: string) => {
   const supabase = await createServerSupabase();
 
   const {
@@ -18,7 +20,8 @@ export const getClass = async (id: string, noteType?: ContentType) => {
     .eq("class_id", id)
     .eq("user_id", user.id);
 
-  if (noteType) query = query.eq("type", noteType);
+  const types = typesForFilter(filter);
+  if (types) query = query.in("type", types);
 
   const [
     { data: classItem, error: classError },
@@ -36,5 +39,8 @@ export const getClass = async (id: string, noteType?: ContentType) => {
   if (classError) throw new Error("Failed getting class.");
   if (notesError) throw new Error("Failed getting notes from class.");
 
-  return { classItem, contents };
+  return {
+    classItem: classItem as Class,
+    contents: (contents as Content[]).map(normalizeContent),
+  };
 };

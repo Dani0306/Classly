@@ -13,7 +13,7 @@ const LandingHero = ({ user }: { user: User | null }) => {
   const router = useRouter();
 
   const handleRedirect = () => {
-    if (user) router.push("/app/classes");
+    if (user) router.push("/app/today");
     else
       openModal(
         <ModalContainer>

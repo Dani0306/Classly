@@ -1,6 +1,7 @@
 "use server";
 
-import { Content, ContentType } from "@/types";
+import { Content } from "@/types";
+import { normalizeContent, typesForFilter } from "@/lib/contenttypes";
 import { createServerSupabase } from "@/utils/supabase/server";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -12,7 +13,8 @@ const quoteFilterValue = (value: string) =>
 
 export const getAllContents = async (
   search?: string,
-  type?: ContentType,
+  /** A CONTENT_FILTERS value: "note", "task" or "study". */
+  type?: string,
   dueDate?: string,
 ): Promise<Content[]> => {
   const supabase = await createServerSupabase();
@@ -34,7 +36,8 @@ export const getAllContents = async (
     );
   }
 
-  if (type) query = query.eq("type", type);
+  const types = typesForFilter(type);
+  if (types) query = query.in("type", types);
 
   if (dueDate && DATE_PATTERN.test(dueDate)) {
     const nextDay = new Date(`${dueDate}T00:00:00Z`);
@@ -56,5 +59,5 @@ export const getAllContents = async (
 
   if (error) throw new Error("Failed getting contents.");
 
-  return data;
+  return (data as Content[]).map(normalizeContent);
 };

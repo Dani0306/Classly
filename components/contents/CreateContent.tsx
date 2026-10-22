@@ -1,30 +1,20 @@
 import { useState } from "react";
-import { CloudUpload, Plus } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
 import LoadingScreen from "../loading/LoadingScreen";
 import Input from "../shared/Input";
 import ModalTitle from "../modal/ModalTitle";
 import DatePicker from "../shared/DatePicker";
 import SelectOptions from "../shared/SelectOptions";
-import ContentBadge from "./ContentBadge";
-import { ContentPriority, ContentType, DiagramType, ViewType } from "@/types";
+import { ContentPriority, ViewType } from "@/types";
 import { useCreateContent } from "@/hooks/contents/useCreateContent";
-import { formatText } from "@/utils/fn";
 import { cn } from "@/lib/utils";
-import { CONTENT_TYPE_COLORS } from "@/lib/contentcolors";
 import { CONTENT_DESCRIPTIONS } from "@/lib/contentdescriptions";
-import {
-  CONTENT_FORMS,
-  ContentFormField,
-  PRIORITIES,
-  SUMMARY_SIZES,
-} from "@/lib/contentforms";
-import { diagramTypes } from "@/data/diagram/diagramTypes";
+import { CONTENT_LABELS, NewContentType } from "@/lib/contenttypes";
+import { CONTENT_FORMS, ContentFormField, PRIORITIES } from "@/lib/contentforms";
 import FileInput from "../files/FileInput";
-import { AttachmentsBadge } from "./ContentHeader";
 import LocalFilePreview from "../files/LocalFilePreview";
-import PageButton from "../shared/PageButton";
 import AllowanceNote from "./AllowanceNote";
-import { AI_KIND_BY_CONTENT_TYPE } from "@/lib/ai/kinds";
+import SheetTabs from "./SheetTabs";
 import type { AiUsageSummary } from "@/actions/ai/getMyAiUsage";
 import { useModal } from "@/providers/AppModalProvider";
 import AddFilesButton from "../files/AddFilesButton";
@@ -32,11 +22,11 @@ import NoFilesContent from "../files/NoFilesContent";
 
 const CreateContent = ({
   classId,
-  contentType,
+  contentType: type,
   usage,
 }: {
   classId: string;
-  contentType: ContentType;
+  contentType: NewContentType;
   usage: AiUsageSummary | null;
 }) => {
   const { createContentFn, isPending } = useCreateContent();
@@ -46,40 +36,29 @@ const CreateContent = ({
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState("");
-  const [size, setSize] = useState("");
-  const [diagramType, setDiagramType] = useState<DiagramType>("flowchart");
-  const [constraints, setConstraints] = useState("");
+  const [priority, setPriority] = useState("medium");
+  const [polish, setPolish] = useState(true);
   const [files, setFiles] = useState<Array<File>>([]);
 
-  if (contentType === "class") return null;
-
-  const type = contentType;
   const form = CONTENT_FORMS[type];
-  const colors = CONTENT_TYPE_COLORS[type];
+  const label = CONTENT_LABELS[type];
 
-  const kind = AI_KIND_BY_CONTENT_TYPE[type];
-  const allowance = usage?.allowances[kind];
-  // The server enforces this too; here it only avoids a wasted form.
+  // Only a note can spend an AI credit, and only when it is polished.
+  const allowance = usage?.allowances.grammar;
   const outOfCredits =
     allowance?.limit != null && allowance.used >= allowance.limit;
+  const spendsCredit = type === "note" && polish && !outOfCredits;
 
   const values: Record<ContentFormField, string> = {
     description: text,
     dueDate,
     priority,
-    size,
-    diagramType,
-    constraints,
   };
 
   const shows = (field: ContentFormField) => form.fields.includes(field);
 
   const canSubmit =
-    !outOfCredits &&
-    title.trim() !== "" &&
-    text.trim() !== "" &&
-    form.required.every((field) => values[field] !== "");
+    title.trim() !== "" && form.required.every((field) => values[field] !== "");
 
   const handleCreate = () => {
     if (!canSubmit) return;
@@ -90,75 +69,50 @@ const CreateContent = ({
       classId,
       title,
       text,
-      // * files_urls: files, --> todo
+      ...(type === "note" && { polish: spendsCredit }),
       ...(shows("dueDate") && { dueDate }),
       ...(shows("priority") && { priority: priority as ContentPriority }),
-      ...(shows("size") && { size }),
-      ...(shows("diagramType") && { diagramType }),
-      ...(shows("constraints") && { constraints }),
     });
   };
 
   if (isPending) {
     return (
-      <div className="flex items-center justify-center w-full h-full">
-        <LoadingScreen message={form.loadingMessage} />
+      <div className="flex h-full w-full items-center justify-center">
+        <LoadingScreen
+          message={spendsCredit ? "Polishing your note ..." : form.loadingMessage}
+        />
       </div>
     );
   }
 
   return (
-    <div className="w-full rounded-[3px] flex flex-col space-y-6">
-      <div className="flex flex-col space-y-3">
-        <ModalTitle
-          title={`New ${formatText(type)}`}
-          description={CONTENT_DESCRIPTIONS[type]}
-        />
+    <div className="flex w-full flex-col gap-6">
+      <ModalTitle title={`New ${label}`} description={CONTENT_DESCRIPTIONS[type]} />
 
-        <AllowanceNote
-          kind={kind}
-          allowance={allowance}
-          onNavigate={closeModal}
-        />
-
-        <div className="flex space-x-3">
-          <ContentBadge onClick={() => setCurrentView("content")} type={type} />
-          <AttachmentsBadge
-            onClick={() => setCurrentView("attachments")}
-            text="Add Atachments"
-          />
-        </div>
-      </div>
+      <SheetTabs
+        value={currentView}
+        onChange={setCurrentView}
+        contentLabel={label}
+        attachments={files.length}
+      />
 
       {currentView === "content" ? (
-        <div className="flex flex-1 flex-col space-y-4 px-0">
+        <div className="flex flex-1 flex-col gap-4">
           <Input
             value={title}
             setValue={setTitle}
             label="Title"
-            placeholder="Title ..."
+            placeholder={type === "task" ? "e.g. Lab report" : "Title ..."}
             name="title"
           />
 
-          {shows("description") && (
-            <Input
-              value={text}
-              setValue={setText}
-              label={form.textLabel}
-              placeholder={`${form.textLabel} ...`}
-              name="text"
-              textarea
-              rows={shows("constraints") ? 4 : 8}
-            />
-          )}
-
           {shows("dueDate") && shows("priority") && (
-            <div className="flex flex-col space-y-3 lg:space-y-0 lg:flex-row items-center space-x-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
               <DatePicker
                 value={dueDate}
                 setValue={setDueDate}
-                placeholder={type === "homework" ? "Due date" : "Reminder date"}
-                label={type === "homework" ? "Due date" : "Reminder date"}
+                placeholder="Pick a day"
+                label="Due date"
               />
               <SelectOptions
                 name="priority"
@@ -171,94 +125,81 @@ const CreateContent = ({
             </div>
           )}
 
-          {shows("size") && (
-            <SelectOptions
-              name="size"
-              placeholder="Medium (150-250 words)"
-              options={SUMMARY_SIZES}
-              label="Summary size"
-              value={size}
-              setValue={setSize}
-            />
-          )}
-
-          {shows("constraints") && (
+          {shows("description") && (
             <Input
-              value={constraints}
-              setValue={setConstraints}
-              label="Instructions (optional)"
-              placeholder="e.g. focus only on the main steps ..."
-              name="constraints"
+              value={text}
+              setValue={setText}
+              label={form.textLabel}
+              placeholder={
+                type === "task"
+                  ? "Pages, steps, links ..."
+                  : "Write or paste your note ..."
+              }
+              name="text"
               textarea
-              rows={3}
+              rows={type === "task" ? 4 : 8}
             />
           )}
 
-          {shows("diagramType") && (
-            <div className="flex flex-wrap gap-2">
-              {diagramTypes.map((item) => {
-                const selected = diagramType === item.type;
-
-                return (
-                  <button
-                    type="button"
-                    key={item.type}
-                    onClick={() => setDiagramType(item.type)}
-                    className={cn(
-                      "cursor-pointer px-4 py-1.5 text-xs font-medium rounded-[3px] border",
-                      colors.border,
-                      selected ? cn(colors.dark, "text-white") : colors.text,
-                    )}
-                  >
-                    {item.label}
-                  </button>
-                );
-              })}
+          {type === "note" && (
+            <div className="flex flex-col gap-1.5">
+              <label
+                className={cn(
+                  "flex w-fit items-center gap-2.5 text-sm font-medium text-foreground",
+                  outOfCredits ? "cursor-not-allowed opacity-60" : "cursor-pointer",
+                )}
+              >
+                <input
+                  type="checkbox"
+                  checked={spendsCredit}
+                  disabled={outOfCredits}
+                  onChange={(e) => setPolish(e.target.checked)}
+                  className="size-4 accent-ink"
+                />
+                <Sparkles className="size-3.5" />
+                Fix spelling and grammar with AI
+              </label>
+              {(polish || outOfCredits) && (
+                <div className="pl-6.5">
+                  <AllowanceNote
+                    kind="grammar"
+                    allowance={allowance}
+                    onNavigate={closeModal}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
-      ) : (
-        <div className="flex flex-col flex-1 space-y-3">
-          <div className="flex flex-col space-y-3">
-            {files.length > 0 ? (
-              <>
-                <strong>Files uploaded: </strong>
-                <div className="flex flex-wrap gap-2">
-                  {files.map((file, index) => (
-                    <LocalFilePreview
-                      onRemove={() =>
-                        setFiles(files.filter((_, i) => i !== index))
-                      }
-                      key={index}
-                      deletable
-                      small
-                      file={file}
-                    />
-                  ))}
-                  <FileInput setFiles={setFiles}>
-                    <AddFilesButton />
-                  </FileInput>
-                </div>
-              </>
-            ) : (
-              <FileInput setFiles={setFiles}>
-                <NoFilesContent />
-              </FileInput>
-            )}
-          </div>
+      ) : files.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {files.map((file, index) => (
+            <LocalFilePreview
+              onRemove={() => setFiles(files.filter((_, i) => i !== index))}
+              key={index}
+              deletable
+              small
+              file={file}
+            />
+          ))}
+          <FileInput setFiles={setFiles}>
+            <AddFilesButton />
+          </FileInput>
         </div>
+      ) : (
+        <FileInput setFiles={setFiles}>
+          <NoFilesContent />
+        </FileInput>
       )}
 
       <button
+        type="button"
         onClick={handleCreate}
         disabled={!canSubmit}
-        className={cn(
-          "w-full disabled:opacity-50 lg:mb-0 mb-8 py-2.5 text-white font-semibold text-sm rounded-[3px] press flex space-x-1.5 items-center justify-center hover:opacity-90 cursor-pointer",
-          colors.dark,
-        )}
+        className="press mb-8 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-[3px] bg-note-lime py-3 text-sm font-semibold text-ink shadow-[0_1px_0_rgba(0,0,0,0.14),0_10px_18px_-10px_rgba(0,0,0,0.5)] hover:bg-[#b8f774] disabled:cursor-not-allowed disabled:bg-note-paper/60 disabled:text-ink/50 disabled:shadow-none lg:mb-0"
       >
-        <Plus className="size-4 text-white" />
-        <span>Create {formatText(type)}</span>
+        <Plus className="size-4" />
+        <span>Add {label.toLowerCase()}</span>
       </button>
     </div>
   );

@@ -12,7 +12,7 @@ import {
   NotebookPen,
 } from "lucide-react";
 import PageContainer from "../shared/PageContainer";
-import { AppUser, Class, Content, DropDownMenuOptions } from "@/types";
+import { Class, Content, DropDownMenuOptions } from "@/types";
 import ClassNavbar from "./ClassNavbar";
 import ContentCard from "../contents/ContentCard";
 import { useModal } from "@/providers/AppModalProvider";
@@ -27,21 +27,17 @@ import { useFilters } from "@/hooks/shared/useFilters";
 const ClassContent = ({
   classItem,
   contents,
-  user,
 }: {
   classItem: Class;
   contents: Content[];
-  user: AppUser;
 }) => {
   const { openModal } = useModal();
   const { hasAnyFilter } = useFilters();
 
-  const plan = user.plan ?? "starter";
-
   const handleOpenCreateContentModal = () => {
     openModal(
       <ModalContainer size="md">
-        <CreateContentModal plan={plan} classId={classItem.id} />
+        <CreateContentModal classId={classItem.id} />
       </ModalContainer>,
     );
   };
@@ -97,7 +93,7 @@ const ClassContent = ({
         </div>
       }
     >
-      <ClassNavbar plan={plan} id={classItem.id} />
+      <ClassNavbar id={classItem.id} />
 
       {contents.length === 0 ? (
         hasAnyFilter() ? (
@@ -105,13 +101,13 @@ const ClassContent = ({
             compact
             icon={SearchX}
             title="Nothing of this type yet"
-            description="This class has no content of the type you picked. Choose another type, or select All Contents."
+            description="This class has nothing of the type you picked. Choose another filter, or select All."
           />
         ) : (
           <EmptyState
             icon={NotebookPen}
             title={`${classItem.name} is empty`}
-            description="Add a note, summary, quiz, diagram, homework or reminder, and AI will turn what you write into study material."
+            description="Add a note or a task. Open a note later to turn it into a summary, quiz or diagram."
             action={
               <PageButton
                 onClick={handleOpenCreateContentModal}

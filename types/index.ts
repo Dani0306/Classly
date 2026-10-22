@@ -64,11 +64,15 @@ export type UpdateClass = Partial<
 
 // * CONTENT TYPE
 
+/**
+ * Students create notes and tasks. Summaries, quizzes and diagrams are made
+ * from a note. Rows saved before tasks existed say "homework" or "reminder";
+ * `normalizeContent` (lib/contenttypes.ts) reads them as tasks.
+ */
 export type ContentType =
   | "note"
+  | "task"
   | "summarize"
-  | "reminder"
-  | "homework"
   | "quiz"
   | "diagram"
   | "class";
@@ -108,6 +112,8 @@ export type CreateContentInput = {
   size?: string;
   diagramType?: DiagramType;
   constraints?: string;
+  /** Notes only: run the AI proofread (spends one writing credit). */
+  polish?: boolean;
   files: File[];
 };
 
@@ -152,7 +158,7 @@ export type DropDownMenuOptions = Array<{
 
 //* EVENT TYPES
 
-export type EventKind = "class" | "homework" | "reminder";
+export type EventKind = "class" | "task";
 
 export interface Event {
   id: string;
@@ -176,7 +182,7 @@ export type EventData = {
   title: string;
   kind: EventKind;
   description?: string;
-  /** Homework and reminders: the day it is due, as "YYYY-MM-DD". */
+  /** Tasks: the day it is due, as "YYYY-MM-DD". */
   dueDate?: string;
   /** Classes: weekly slot. day is 0 = Sunday ... 6 = Saturday. */
   day?: number;
@@ -189,3 +195,15 @@ export type EventData = {
 // * section type
 
 export type ViewType = "content" | "attachments";
+
+// * TODAY
+
+/** A task with the class it belongs to, for the Today screen. */
+export type TodayTask = Content & {
+  classes: { name: string; color: string | null } | null;
+};
+
+export type TodayData = {
+  classes: Pick<Class, "id" | "name" | "color" | "schedule">[];
+  tasks: TodayTask[];
+};

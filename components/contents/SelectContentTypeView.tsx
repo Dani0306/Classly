@@ -1,110 +1,85 @@
-import { ContentType, Plan } from "@/types";
 import React from "react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import ModalTitle from "../modal/ModalTitle";
-import { contentTypes } from "@/data/colors/typeColors";
 import PageButton from "../shared/PageButton";
-import { ArrowRight, Check, Lock } from "lucide-react";
+import { contentOption } from "@/lib/contentoptions";
+import { NEW_CONTENT_TYPES, NewContentType } from "@/lib/contenttypes";
 import { cn } from "@/lib/utils";
 
 const SelectContentTypeView = ({
   setCurrentSection,
   contentType,
   setContentType,
-  plan,
 }: {
-  contentType: ContentType;
+  contentType: NewContentType;
   setCurrentSection: React.Dispatch<React.SetStateAction<number>>;
-  setContentType: React.Dispatch<React.SetStateAction<ContentType>>;
-  plan: Plan;
+  setContentType: React.Dispatch<React.SetStateAction<NewContentType>>;
 }) => {
-  // A limit of 0 means the plan doesn't include that type at all.
-  const isLocked = (type: ContentType) => {
-    if (type === "diagram" || type === "quiz") {
-      if (plan === "starter") return true;
-    }
-    return false;
-  };
-
   return (
-    <div className="w-full h-full flex flex-col space-y-6">
+    <div className="flex h-full w-full flex-col gap-8">
       <ModalTitle
         title="New Content"
-        description="What type of content do you want to create?"
+        description="What do you want to add to this class?"
       />
-      <div className="flex-1">
-        {/* Auto-fitting columns keep every type on screen as the list grows,
-            instead of wrapping fixed-width cards into a scrolling stack. */}
-        <div className="grid auto-rows-fr grid-cols-2 gap-3 md:grid-cols-3">
-          {contentTypes.map((item) => {
-            const selected = contentType === item.type;
-            const locked = isLocked(item.type);
 
-            return (
-              <div
-                onClick={() => {
-                  if (!locked) setContentType(item.type);
-                }}
-                title={item.description}
-                style={{
-                  borderColor: selected ? item.color : `${item.color}40`,
-                  backgroundColor: `${item.color}25`,
-                }}
-                key={item.label}
-                className={cn(
-                  "relative flex flex-col gap-2.5 rounded-[3px] border-2 p-4 transition-transform duration-200",
-                  locked
-                    ? "cursor-not-allowed opacity-60"
-                    : "cursor-pointer hover:scale-[1.02]",
-                )}
-              >
-                {locked && (
-                  <span className="absolute right-2 top-2 flex items-center gap-1 rounded-[3px] bg-foreground/80 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white">
-                    <Lock className="size-2.5" />
-                    Pro
-                  </span>
-                )}
-                {selected && !locked && (
-                  <Check
-                    style={{
-                      backgroundColor: item.color,
-                      color: "white",
-                    }}
-                    className="absolute size-5 top-2 right-2 p-1 rounded-[3px]"
-                  />
-                )}
-                <item.icon
-                  style={{
-                    backgroundColor: `${item.color}40`,
-                    color: item.color,
-                  }}
-                  className="size-9 shrink-0 p-2 rounded-[3px]"
-                />
-                <div className="flex flex-col gap-1">
-                  <strong className="font-medium text-foreground text-sm leading-tight">
-                    {item.label}
-                  </strong>
-                  <p className="text-[11px] font-light leading-snug text-foreground/60 line-clamp-2">
-                    {item.description}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      <div
+        role="radiogroup"
+        aria-label="Content type"
+        className="grid gap-4 sm:grid-cols-2"
+      >
+        {NEW_CONTENT_TYPES.map((type, index) => {
+          const option = contentOption(type)!;
+          const selected = contentType === type;
+
+          return (
+            <button
+              key={type}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => setContentType(type)}
+              onDoubleClick={() => setCurrentSection(2)}
+              style={
+                {
+                  "--tape": `${option.color}d9`,
+                  "--tilt": index === 0 ? "-0.6deg" : "0.5deg",
+                } as React.CSSProperties
+              }
+              className={cn(
+                // An outline, not a ring: the note's own shadow would hide a ring.
+                "note tape tilt flex cursor-pointer flex-col gap-4 p-6 pt-8 text-left outline-offset-4",
+                selected
+                  ? "outline-2 outline-ink"
+                  : "opacity-75 hover:opacity-100",
+              )}
+            >
+              <option.icon className="size-6" strokeWidth={2} />
+              <span className="flex flex-col gap-1.5">
+                <strong className="text-lg font-bold tracking-tight">
+                  {option.label}
+                </strong>
+                <span className="text-[13px] leading-relaxed text-ink/70">
+                  {option.description}
+                </span>
+              </span>
+            </button>
+          );
+        })}
       </div>
-      <div className="w-full flex flex-wrap items-center justify-between gap-3 lg:pb-0 pb-8">
-        {plan === "starter" ? (
-          <p className="text-[11px] font-light text-foreground/50">
-            Quizzes and diagrams are included in Pro.
-          </p>
-        ) : (
-          <span />
-        )}
+
+      <p className="flex items-start gap-2.5 text-xs leading-relaxed text-muted-foreground">
+        <Sparkles className="mt-0.5 size-3.5 shrink-0 text-foreground/80" />
+        <span>
+          Summaries, quizzes and diagrams are made from a note: open one and
+          use its study tools.
+        </span>
+      </p>
+
+      <div className="mt-auto flex justify-end pb-8 lg:pb-0">
         <PageButton
           onClick={() => setCurrentSection(2)}
           text="Next"
           icon={ArrowRight}
-          disabled={isLocked(contentType)}
         />
       </div>
     </div>

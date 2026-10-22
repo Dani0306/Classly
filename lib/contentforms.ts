@@ -1,12 +1,6 @@
-import { CreatableContentType } from "@/types";
+import { NewContentType } from "@/lib/contenttypes";
 
-export type ContentFormField =
-  | "dueDate"
-  | "priority"
-  | "size"
-  | "diagramType"
-  | "constraints"
-  | "description";
+export type ContentFormField = "dueDate" | "priority" | "description";
 
 type ContentFormConfig = {
   fields: ContentFormField[];
@@ -15,42 +9,19 @@ type ContentFormConfig = {
   loadingMessage: string;
 };
 
-export const CONTENT_FORMS: Record<CreatableContentType, ContentFormConfig> = {
+/** The New content form. Only notes and tasks are created from it. */
+export const CONTENT_FORMS: Record<NewContentType, ContentFormConfig> = {
   note: {
     fields: ["description"],
-    required: [],
+    required: ["description"],
     textLabel: "Content",
-    loadingMessage: "Correcting your note ...",
+    loadingMessage: "Saving your note ...",
   },
-  summarize: {
-    fields: ["size", "description"],
-    required: [],
-    textLabel: "Content to summarize",
-    loadingMessage: "Summarizing your content ...",
-  },
-  reminder: {
+  task: {
     fields: ["dueDate", "priority", "description"],
     required: ["dueDate", "priority"],
-    textLabel: "Description",
-    loadingMessage: "Creating reminder ...",
-  },
-  homework: {
-    fields: ["dueDate", "priority", "description"],
-    required: ["dueDate", "priority"],
-    textLabel: "Description",
-    loadingMessage: "Creating homework ...",
-  },
-  quiz: {
-    fields: ["description"],
-    required: [],
-    textLabel: "Content to quiz yourself on",
-    loadingMessage: "Generating quiz ...",
-  },
-  diagram: {
-    fields: ["diagramType", "constraints", "description"],
-    required: ["diagramType"],
-    textLabel: "Topic",
-    loadingMessage: "Drawing diagram ...",
+    textLabel: "Details (optional)",
+    loadingMessage: "Saving task ...",
   },
 };
 

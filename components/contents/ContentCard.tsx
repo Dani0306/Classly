@@ -1,6 +1,6 @@
 "use client";
 
-import { contentTypes } from "@/data/colors/typeColors";
+import { typeColor } from "@/lib/contentoptions";
 import { useModal } from "@/providers/AppModalProvider";
 import { Content } from "@/types";
 import { cutText } from "@/utils/fn";
@@ -45,7 +45,7 @@ const ContentCard = ({ content }: { content: Content }) => {
       }}
       style={
         {
-          "--tape": `${contentTypes.find((item) => item.type === content.type)?.color ?? "#ffffff"}d9`,
+          "--tape": `${typeColor(content.type)}d9`,
         } as React.CSSProperties
       }
       className="note tape tilt relative flex w-85 cursor-pointer flex-col gap-5 p-5 pt-7 md:p-6 md:pt-7"
@@ -65,7 +65,9 @@ const ContentCard = ({ content }: { content: Content }) => {
       </div>
 
       <div className="flex flex-col gap-2">
-        <strong className="text-base font-bold tracking-tight">
+        <strong
+          className={`text-base font-bold tracking-tight ${content.type === "task" && content.is_completed ? "text-ink/50 line-through decoration-1" : ""}`}
+        >
           {content.title}
         </strong>
         {content.type === "quiz" || content.type === "diagram" ? (

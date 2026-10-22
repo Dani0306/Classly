@@ -394,9 +394,174 @@ textarea {
   animation: dropIn 640ms var(--ease-out) 450ms both;
 }
 
+/* ========== APP SHEETS ========== */
+
+/* A modal opens like a sheet set down on the desk: a short settle from
+   slightly small, never from nothing. Closing is instant. */
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+.modal-backdrop {
+  animation: fadeIn 180ms ease both;
+}
+.modal-backdrop > * {
+  animation: sheetIn 240ms var(--ease-out) both;
+}
+
+/* Tape holding an open sheet. The scroll edge clips its top, so it reads as
+   tape folded over the paper's edge. */
+.sheet-tape {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 92px;
+  height: 22px;
+  background: var(--tape, rgba(23, 24, 28, 0.08));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  transform: translate(-50%, -38%) rotate(-2deg);
+  pointer-events: none;
+}
+
+/* Long-form text on a sheet: a readable measure and quiet markdown. */
+.reading {
+  max-width: 68ch;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.reading > * + * {
+  margin-top: 0.9em;
+}
+.reading h1,
+.reading h2,
+.reading h3 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin-top: 1.6em;
+}
+.reading h1 {
+  font-size: 1.25rem;
+}
+.reading h2 {
+  font-size: 1.125rem;
+}
+.reading h3 {
+  font-size: 1rem;
+}
+.reading :is(h1, h2, h3):first-child {
+  margin-top: 0;
+}
+.reading ul,
+.reading ol {
+  padding-left: 1.25em;
+}
+.reading ul {
+  list-style: disc;
+}
+.reading ol {
+  list-style: decimal;
+}
+.reading li + li {
+  margin-top: 0.35em;
+}
+.reading li::marker {
+  color: color-mix(in srgb, var(--ink) 45%, transparent);
+}
+.reading strong {
+  font-weight: 700;
+}
+.reading a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Options that open under a choice: a quick settle downward. */
+.unfold {
+  animation: unfold 200ms var(--ease-out) both;
+}
+@keyframes unfold {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* The Done stamp lands when a task is ticked off in its sheet. */
+.stamp {
+  animation: stamp 260ms var(--ease-out) both;
+}
+@keyframes stamp {
+  from {
+    opacity: 0;
+    transform: scale(0.9) rotate(-4deg);
+  }
+}
+
+/* ========== TASK CHECKBOX ========== */
+
+/* Ticking a task is the Today screen's one authored moment: the check draws
+   itself and a pen line strikes the title through. */
+/* .check is the hit area, .check-box the drawn square inside it. */
+.check-box {
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+.check:active .check-box {
+  transform: scale(0.9);
+}
+.check[aria-checked="true"] .check-box {
+  background-color: #1f8a4c;
+  border-color: #1f8a4c;
+  color: #fff;
+}
+.check-path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 16;
+  stroke-dashoffset: 16;
+  transition: stroke-dashoffset 220ms var(--ease-out);
+}
+.check[aria-checked="true"] .check-path {
+  stroke-dashoffset: 0;
+}
+.strike {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 58%;
+  background-size: 0% 1.5px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition:
+    background-size 280ms var(--ease-out),
+    color 200ms ease;
+}
+.strike[data-done="true"] {
+  background-size: 100% 1.5px;
+  color: color-mix(in srgb, var(--ink) 50%, transparent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .drop-in {
     animation: fadeIn 200ms ease 200ms both;
+  }
+  .modal-backdrop > *,
+  .unfold,
+  .stamp {
+    animation: fadeIn 160ms ease both;
+  }
+  .check-path,
+  .strike {
+    transition: none;
   }
   .reveal,
   .slide-up,

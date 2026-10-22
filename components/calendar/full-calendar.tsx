@@ -142,8 +142,7 @@ export function FullCalendar({ events }: { events: EventData[] }) {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Filter By Events</SelectLabel>
-                <SelectItem value="reminder">Reminders</SelectItem>
-                <SelectItem value="homework">Homeworks</SelectItem>
+                <SelectItem value="task">Tasks</SelectItem>
                 <SelectItem value="class">Classes</SelectItem>
                 <SelectItem value="all">All</SelectItem>
               </SelectGroup>

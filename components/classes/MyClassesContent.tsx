@@ -35,7 +35,7 @@ const MyClassesContent = ({ classes }: { classes: Class[] }) => {
   return (
     <PageContainer
       title="My Classes"
-      description="Create and manage your classes to organize your notes, homework and reminders."
+      description="Create and manage your classes to organize your notes and tasks."
       action={
         <PageButton
           onClick={handleOpenNewClassModal}
@@ -66,7 +66,7 @@ const MyClassesContent = ({ classes }: { classes: Class[] }) => {
           <EmptyState
             icon={GraduationCap}
             title="Your classes live here"
-            description="A class holds its notes, summaries, quizzes and homework in one place. Create your first one to get started."
+            description="A class holds its notes, tasks and study aids in one place. Create your first one to get started."
             action={
               <PageButton
                 onClick={handleOpenNewClassModal}

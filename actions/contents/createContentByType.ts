@@ -23,20 +23,19 @@ const buildContent = async (input: CreateContentInput): Promise<NewContent> => {
   const base = { type, class_id: classId, title, content: text, files_urls };
 
   switch (type) {
-    case "note":
-    case "reminder":
-    case "homework": {
+    case "note": {
+      if (!input.polish) return base;
+
       const corrected = await grammarCorrection(title, text);
       return {
         ...base,
         title: corrected.title || title,
         ai_output: corrected.description || text,
-        ...(type !== "note" && {
-          due_date: input.dueDate,
-          priority: input.priority,
-        }),
       };
     }
+
+    case "task":
+      return { ...base, due_date: input.dueDate, priority: input.priority };
 
     case "summarize": {
       const summary = await generateSummary(title, text, input.size);
@@ -76,19 +75,28 @@ export const createContentByType = async (input: CreateContentInput) => {
 
   if (!user) throw new Error("User not found.");
 
-  if (!input.title.trim() || !input.text.trim())
+  // A task's details are optional; everything else needs text to work from.
+  if (!input.title.trim() || (input.type !== "task" && !input.text.trim()))
     throw new Error("Title and content are required.");
 
-  // Every type here runs an AI call, so the allowance is claimed before the
-  // call and given back if nothing was saved.
-  const usageId = await consumeAiCredit(AI_KIND_BY_CONTENT_TYPE[input.type]);
+  if (input.type === "task" && (!input.dueDate || !input.priority))
+    throw new Error("A task needs a due date and a priority.");
+
+  // AI work claims the allowance before the call and gives it back if
+  // nothing was saved. Tasks and unpolished notes spend nothing.
+  const kind =
+    input.type === "note" && !input.polish
+      ? null
+      : AI_KIND_BY_CONTENT_TYPE[input.type];
+
+  const usageId = kind ? await consumeAiCredit(kind) : null;
 
   let content: NewContent;
 
   try {
     content = await buildContent(input);
   } catch (aiError) {
-    await refundAiCredit(usageId);
+    if (usageId) await refundAiCredit(usageId);
     throw aiError;
   }
 
@@ -97,9 +105,10 @@ export const createContentByType = async (input: CreateContentInput) => {
     .insert({ ...content, user_id: user.id });
 
   if (error) {
-    await refundAiCredit(usageId);
+    if (usageId) await refundAiCredit(usageId);
     throw new Error("Failed creating content.");
   }
 
   revalidatePath("/app/class/[id]", "page");
+  revalidatePath("/app/today");
 };

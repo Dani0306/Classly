@@ -24,6 +24,7 @@ export const modifyContent = async (content: UpdateContent, id: string) => {
   if (error) throw new Error("Failed updating note.");
 
   revalidatePath("/app/class/[id]");
+  revalidatePath("/app/today");
 
   return data;
 };

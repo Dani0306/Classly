@@ -1,6 +1,7 @@
 "use server";
 
 import { Class, Content, EventData, EventKind } from "@/types";
+import { TASK_DB_TYPES } from "@/lib/contenttypes";
 import { createServerSupabase } from "@/utils/supabase/server";
 
 export const getMyEvents = async (
@@ -15,8 +16,7 @@ export const getMyEvents = async (
   if (!user) throw new Error("No user found.");
 
   const wantsClasses = !type || type === "class" || type === "all";
-  const wantsContents =
-    !type || type === "homework" || type === "reminder" || type === "all";
+  const wantsTasks = !type || type === "task" || type === "all";
 
   let classesEvents: EventData[] = [];
 
@@ -44,37 +44,33 @@ export const getMyEvents = async (
       ) ?? [];
   }
 
-  //* reminders + homework
+  //* tasks (legacy homework and reminders included)
 
-  let contentEvents: EventData[] = [];
+  let taskEvents: EventData[] = [];
 
-  if (wantsContents) {
-    let query = supabase.from("contents").select("*").eq("user_id", user.id);
-
-    if (type === "homework" || type === "reminder") {
-      query = query.eq("type", type); // narrowed to exactly one kind
-    } else {
-      query = query.in("type", ["reminder", "homework"]); // "all" case
-    }
-
-    const { data: contents, error: contentsError } =
-      await query.returns<Content[]>();
+  if (wantsTasks) {
+    const { data: contents, error: contentsError } = await supabase
+      .from("contents")
+      .select("*")
+      .eq("user_id", user.id)
+      .in("type", TASK_DB_TYPES)
+      .returns<Content[]>();
 
     if (contentsError)
       throw new Error("Something went wrong fetching the contents");
 
-    contentEvents = (contents ?? [])
+    taskEvents = (contents ?? [])
       .filter((item) => item.due_date)
       // due_date is a timestamp without a timezone — a calendar day, not a
       // moment — so keep only the date part and let the browser place it.
       .map((item) => ({
         id: item.id,
         title: item.title,
-        kind: item.type as EventData["kind"],
+        kind: "task" as const,
         description: item.ai_output ?? item.content ?? "",
         dueDate: item.due_date!.slice(0, 10),
       }));
   }
 
-  return [...classesEvents, ...contentEvents];
+  return [...classesEvents, ...taskEvents];
 };

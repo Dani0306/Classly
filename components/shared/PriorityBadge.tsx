@@ -16,11 +16,11 @@ const PRIORITY_LABELS: Record<ContentPriority, string> = {
 
 const PriorityBadge = ({ priority }: { priority: ContentPriority }) => {
   return (
-    <div className="inline-flex items-center gap-1.5 rounded-md px-3.5 py-1">
+    <div className="inline-flex items-center gap-1.5 rounded-[3px] px-3.5 py-1">
       <Flag
         className={cn("size-3.5 shrink-0", PRIORITY_ICON_COLORS[priority])}
       />
-      <span className="text-[12px] font-semibold text-black/70 whitespace-nowrap">
+      <span className="text-[12px] font-semibold text-ink/75 whitespace-nowrap">
         {PRIORITY_LABELS[priority]} priority
       </span>
     </div>

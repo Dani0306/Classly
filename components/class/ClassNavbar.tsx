@@ -1,74 +1,26 @@
 "use client";
 
-import { useFilters } from "@/hooks/shared/useFilters";
-import { contentTypes } from "@/data/colors/typeColors";
 import PageButton from "../shared/PageButton";
 import { Plus } from "lucide-react";
 import { useModal } from "@/providers/AppModalProvider";
 import ModalContainer from "../modal/ModalContainer";
 import CreateContentModal from "../contents/CreateContentModal";
-import { Plan } from "@/types";
+import TypeFilters from "../shared/TypeFilters";
 
-const ClassNavbar = ({ id, plan }: { id: string; plan: Plan }) => {
-  const { handleFilter, hasFilter, hasAnyFilter, clearFilter } = useFilters();
+const ClassNavbar = ({ id }: { id: string }) => {
   const { openModal } = useModal();
 
   const handleOpenCreateContentModal = () => {
     openModal(
       <ModalContainer size="md">
-        <CreateContentModal plan={plan} classId={id} />
+        <CreateContentModal classId={id} />
       </ModalContainer>,
     );
   };
 
-  const allNotesSelected = !hasAnyFilter();
-
   return (
-    <div className="flex space-y-6 flex-col xl:justify-between xl:items-center xl:flex-row">
-      <div className="flex flex-wrap gap-3 items-center">
-        <button
-          onClick={() => clearFilter({ type: "type" })}
-          aria-pressed={allNotesSelected}
-          className={`press px-4 py-1.5 rounded-[3px] border text-xs font-semibold cursor-pointer ${
-            allNotesSelected
-              ? "border-note-yellow bg-note-yellow text-ink"
-              : "border-border bg-surface text-foreground hover:bg-surface-muted"
-          }`}
-        >
-          All Contents
-        </button>
-
-        {/* Note type pills */}
-        {contentTypes.map(({ type, label, color }) => {
-          const isSelected = hasFilter({ type: "type", value: type });
-          return (
-            <button
-              key={type}
-              onClick={() => handleFilter({ type: "type", value: type })}
-              aria-pressed={isSelected}
-              style={
-                isSelected
-                  ? { backgroundColor: color, borderColor: color }
-                  : undefined
-              }
-              className={`press flex items-center gap-2 px-3.5 py-1.5 rounded-[3px] border text-xs font-semibold cursor-pointer ${
-                isSelected
-                  ? "text-white"
-                  : "border-border bg-surface text-foreground hover:bg-surface-muted"
-              }`}
-            >
-              {!isSelected && (
-                <span
-                  aria-hidden
-                  style={{ backgroundColor: color }}
-                  className="size-2 rounded-full"
-                />
-              )}
-              {label}
-            </button>
-          );
-        })}
-      </div>
+    <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
+      <TypeFilters />
 
       <PageButton
         onClick={handleOpenCreateContentModal}

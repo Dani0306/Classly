@@ -7,6 +7,13 @@ import Logo from "../shared/Logo";
 import { UserCard } from "../user/UserCard";
 import { User } from "@supabase/supabase-js";
 import { pathnameIncludes } from "@/utils/fn";
+import { ListTodo } from "lucide-react";
+
+// Today leads the nav: it's the app's home.
+const navLinks = [
+  { label: "Today", href: "/app/today", icon: ListTodo, keywords: ["today"] },
+  ...links,
+];
 
 export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
   const pathname = usePathname();
@@ -22,7 +29,7 @@ export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
 
       {/* Nav links */}
       <nav className="flex flex-col gap-1 px-4 mt-4 flex-1">
-        {links.map(({ label, href, icon: Icon, keywords }) => {
+        {navLinks.map(({ label, href, icon: Icon, keywords }) => {
           const active = pathnameIncludes(pathname, keywords);
           return (
             <Link

@@ -1,7 +1,7 @@
 "use client";
 
 import PageContainer from "../shared/PageContainer";
-import { Content, CreatableContentType } from "@/types";
+import { Content } from "@/types";
 import Input from "../shared/Input";
 import ContentCard from "../contents/ContentCard";
 import { useDebounce } from "@/hooks/shared/useDebounce";
@@ -10,41 +10,8 @@ import { useEffect, useState } from "react";
 import DatePicker from "../shared/DatePicker";
 import { useSearchParams } from "next/navigation";
 import { useFilters } from "@/hooks/shared/useFilters";
-import ContentBadge from "../contents/ContentBadge";
 import EmptyState from "../shared/EmptyState";
-import { cn } from "@/lib/utils";
-
-const FILTER_TYPES: CreatableContentType[] = [
-  "homework",
-  "reminder",
-  "summarize",
-  "note",
-  "quiz",
-  "diagram",
-];
-
-const ContentFilterButton = ({ type }: { type: CreatableContentType }) => {
-  const { handleFilter, hasFilter, clearFilter } = useFilters();
-  const selected = hasFilter({ type: "type", value: type });
-
-  return (
-    <button
-      type="button"
-      aria-pressed={selected}
-      onClick={() =>
-        selected
-          ? clearFilter({ type: "type" })
-          : handleFilter({ type: "type", value: type })
-      }
-      className={cn(
-        "cursor-pointer transition-opacity",
-        !selected && "opacity-60 hover:opacity-100",
-      )}
-    >
-      <ContentBadge type={type} />
-    </button>
-  );
-};
+import TypeFilters from "../shared/TypeFilters";
 
 export const ContentsContainer = ({ contents }: { contents: Content[] }) => {
   const searchParams = useSearchParams();
@@ -75,7 +42,7 @@ export const ContentsContainer = ({ contents }: { contents: Content[] }) => {
   return (
     <PageContainer
       title="All Contents"
-      description="Browse, search, and filter all the notes, summaries, quizzes, and diagrams you've created across your classes."
+      description="Browse, search and filter every note, task and study aid across your classes."
     >
       <div className="flex w-full flex-col gap-3 md:w-150 md:flex-row md:items-center">
         <div className="flex-1">
@@ -97,10 +64,8 @@ export const ContentsContainer = ({ contents }: { contents: Content[] }) => {
       </div>
       <div className="flex flex-col space-y-3">
         <span className="font-semibold text-sm">Filter by</span>
-        <div className="flex flex-wrap gap-3">
-          {FILTER_TYPES.map((type) => (
-            <ContentFilterButton key={type} type={type} />
-          ))}
+        <div className="flex flex-wrap items-center gap-3">
+          <TypeFilters />
 
           {hasActiveFilters && (
             <button
@@ -137,7 +102,7 @@ export const ContentsContainer = ({ contents }: { contents: Content[] }) => {
           <EmptyState
             icon={Sparkles}
             title="Nothing here yet"
-            description="Everything you create inside your classes — notes, summaries, quizzes and diagrams — shows up here. Open a class and add your first one."
+            description="Everything you add inside your classes, notes, tasks and the study aids made from notes, shows up here. Open a class and add your first one."
           />
         )
       ) : (

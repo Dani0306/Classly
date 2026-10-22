@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { format, parseISO } from "date-fns";
 
 const MONTHS = [
   "January",
@@ -40,7 +41,9 @@ const DatePicker = ({
   const [viewDate, setViewDate] = useState(new Date());
   const ref = useRef<HTMLDivElement>(null);
 
-  const selected = value ? new Date(value) : null;
+  // "YYYY-MM-DD" is a calendar day: read and write it in local time, never
+  // through toISOString, which shifts it a day for anyone off UTC.
+  const selected = value ? parseISO(value) : null;
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -60,7 +63,7 @@ const DatePicker = ({
 
   const handleSelectDay = (day: number) => {
     const date = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
-    setValue(date.toISOString().split("T")[0]);
+    setValue(format(date, "yyyy-MM-dd"));
     setOpen(false);
   };
 
@@ -71,7 +74,7 @@ const DatePicker = ({
     setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1));
 
   const formatDisplay = (iso: string) => {
-    const d = new Date(iso + "T00:00:00");
+    const d = parseISO(iso);
     return d.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
@@ -122,10 +125,10 @@ const DatePicker = ({
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         className={cn(
-          "w-full flex items-center gap-2 px-4 py-2.5 rounded-full text-sm outline-none transition-all duration-200 text-left",
-          "bg-zinc-100 border border-zinc-200",
-          "focus:border-primary/60 focus:ring-2 focus:ring-primary/10",
-          value ? "text-foreground" : "text-muted-foreground/50",
+          "w-full flex items-center gap-2 px-4 py-2.5 rounded-[3px] text-sm outline-none transition-[background-color,border-color,box-shadow] duration-200 text-left cursor-pointer",
+          "bg-surface-muted border border-border hover:border-muted-foreground/25",
+          "focus-visible:bg-surface focus-visible:border-ink/40 focus-visible:ring-4 focus-visible:ring-ring/10",
+          value ? "text-foreground" : "text-muted-foreground/70",
         )}
       >
         <Calendar className="size-4 text-muted-foreground/60 shrink-0" />
@@ -142,7 +145,7 @@ const DatePicker = ({
             <button
               type="button"
               onClick={handlePrevMonth}
-              className="p-1 rounded-[3px] hover:bg-gray-100 transition-colors cursor-pointer"
+              className="p-1 rounded-[3px] hover:bg-surface-muted transition-colors cursor-pointer"
             >
               <ChevronLeft className="size-4 text-muted-foreground" />
             </button>
@@ -152,7 +155,7 @@ const DatePicker = ({
             <button
               type="button"
               onClick={handleNextMonth}
-              className="p-1 rounded-[3px] hover:bg-gray-100 transition-colors cursor-pointer"
+              className="p-1 rounded-[3px] hover:bg-surface-muted transition-colors cursor-pointer"
             >
               <ChevronRight className="size-4 text-muted-foreground" />
             </button>
@@ -183,12 +186,12 @@ const DatePicker = ({
                   type="button"
                   onClick={() => handleSelectDay(day)}
                   className={cn(
-                    "h-8 w-8 mx-auto rounded-full text-xs font-medium transition-all duration-150 cursor-pointer",
+                    "h-8 w-8 mx-auto rounded-[3px] text-xs font-medium tabular transition-colors duration-150 cursor-pointer",
                     isSelected(day)
-                      ? "bg-primary text-white"
+                      ? "bg-ink text-note-paper"
                       : isToday(day)
-                        ? "border border-primary text-primary"
-                        : "hover:bg-gray-100 text-foreground",
+                        ? "border border-ink text-ink font-semibold"
+                        : "hover:bg-surface-muted text-foreground",
                   )}
                 >
                   {day}
@@ -213,11 +216,11 @@ const DatePicker = ({
               type="button"
               onClick={() => {
                 const today = new Date();
-                setValue(today.toISOString().split("T")[0]);
+                setValue(format(today, "yyyy-MM-dd"));
                 setViewDate(today);
                 setOpen(false);
               }}
-              className="text-xs font-medium text-primary hover:underline cursor-pointer"
+              className="text-xs font-semibold text-ink underline-offset-4 hover:underline cursor-pointer"
             >
               Today
             </button>

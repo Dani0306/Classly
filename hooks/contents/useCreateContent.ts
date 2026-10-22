@@ -2,7 +2,7 @@ import { createContentByType } from "@/actions/contents/createContentByType";
 import { useModal } from "@/providers/AppModalProvider";
 import { useToast } from "@/providers/ToastProvider";
 import { CreateContentInput } from "@/types";
-import { formatText } from "@/utils/fn";
+import { CONTENT_LABELS } from "@/lib/contenttypes";
 import { useTransition } from "react";
 
 export const useCreateContent = () => {
@@ -11,12 +11,14 @@ export const useCreateContent = () => {
   const { toast } = useToast();
 
   const createContentFn = (input: CreateContentInput) => {
+    const label = CONTENT_LABELS[input.type];
+
     startTransition(async () => {
       try {
         await createContentByType(input);
 
         toast({
-          title: `${formatText(input.type)} created successfully!`,
+          title: `${label} added`,
           type: "success",
         });
         closeModal();
@@ -24,7 +26,7 @@ export const useCreateContent = () => {
         // Plan limits explain themselves, so show the action's message when
         // there is one.
         toast({
-          title: `Failed creating ${formatText(input.type)}`,
+          title: `Couldn't add the ${label.toLowerCase()}`,
           description:
             err instanceof Error
               ? err.message

@@ -5,7 +5,7 @@ import { useQuiz } from "./useQuiz";
 import QuizProgress from "./QuizProgress";
 import QuizAnswerOption from "./QuizAnswerOption";
 import QuizNavigation from "./QuizNavigation";
-import { contentTypes } from "@/data/colors/typeColors";
+import { contentOption } from "@/lib/contentoptions";
 import DateBadge from "../shared/DateBadge";
 import PriorityBadge from "../shared/PriorityBadge";
 import { Trash2 } from "lucide-react";
@@ -14,7 +14,7 @@ import { useDeleteContent } from "@/hooks/contents/useDeleteContent";
 import ContentBadge from "../contents/ContentBadge";
 
 const QuizComponent = ({ content }: { content: Content }) => {
-  const itemContent = contentTypes.find((item) => item.type === content.type)!;
+  const itemContent = contentOption(content.type)!;
 
   const { closeModal } = useModal();
   const {
@@ -112,7 +112,12 @@ const QuizComponent = ({ content }: { content: Content }) => {
         </div>
       </div>
       <div className="flex items-center justify-between p-6">
-        <button className="cursor-pointer rounded-xl text-sm hover:bg-orange-50 transition-all duration-500 font-medium text-red-600 flex items-center space-x-3 justify-center h-full px-6 py-2 border border-red-600">
+        <button
+          type="button"
+          onClick={deleteContent}
+          disabled={loading}
+          className="press cursor-pointer rounded-[3px] text-sm hover:bg-red-600/10 font-medium text-red-700 flex items-center space-x-3 justify-center h-full px-6 py-2 border border-red-600 disabled:opacity-50"
+        >
           <Trash2 className="size-4" />
           <span>Delete</span>
         </button>
