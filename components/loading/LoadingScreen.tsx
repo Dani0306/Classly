@@ -21,10 +21,9 @@ const LoadingScreen = ({ message }: { message?: string }) => {
         .classly-bar {
           width: 5px;
           border-radius: 999px;
-          background: #35f527;
+          background: #14202e;
           transform-origin: bottom;
           animation: classlyBarPulse 1.1s ease-in-out infinite;
-          box-shadow: 0 0 6px rgba(53, 245, 39, 0.5);
         }
 
         @keyframes classlyFadeIn {

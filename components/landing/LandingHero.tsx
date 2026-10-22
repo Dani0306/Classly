@@ -1,6 +1,5 @@
 "use client";
 
-import { Rocket } from "lucide-react";
 import PageButton from "../shared/PageButton";
 import ImageComponent from "../shared/ImageComponent";
 import { useInviewCustom } from "@/hooks/shared/useInViewCustom";
@@ -26,39 +25,50 @@ const LandingHero = ({ user }: { user: User | null }) => {
   };
 
   return (
-    <div
+    <section
       ref={ref}
-      className={`flex flex-col items-center space-y-9 mt-18 ${inView && "slide-up"} opacity-0`}
+      className={`mx-auto w-full max-w-6xl px-5 pb-8 pt-16 md:pt-24 lg:px-8 ${inView ? "reveal" : ""}`}
     >
-      <div className="rounded-3xl items-center flex space-x-2 py-2 px-4 text-xs font-medium text-[#1e9014] bg-green-300/60">
-        <Rocket className="size-4" />
-        <span>NEXT-GEN LEARNING</span>
-      </div>
-
-      <h1 className="text-4xl md:text-6xl font-bold text-center text-black">
-        Turn messy notes <br />
-        <span className="text-primary">into mastery</span>
+      <h1 className="max-w-4xl text-balance text-5xl font-bold leading-[1.02] tracking-tight text-foreground md:text-7xl">
+        Turn messy notes <span className="marker">into mastery</span>
       </h1>
 
-      <p className="font-light text-gray-600 text-sm md:text-base text-center max-w-150 px-6">
-        The AI-powered workspace that transforms lectures and handwritten notes
-        into organized study guides instantly, spend less time formatting and
-        more time learning
-      </p>
+      <div className="mt-8 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+        <p className="max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          The AI-powered workspace that transforms lectures and handwritten
+          notes into organized study guides instantly, spend less time
+          formatting and more time learning
+        </p>
 
-      <div className="flex items-center space-x-4">
-        <PageButton onClick={handleRedirect} text="Start For Free" size="lg" />
-        <PageButton text="Explore Plans" size="lg" light />
+        <div className="flex shrink-0 items-center gap-3">
+          <PageButton
+            onClick={handleRedirect}
+            text="Start For Free"
+            size="lg"
+          />
+          <PageButton
+            onClick={() =>
+              document
+                .getElementById("pricing")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+            text="Explore Plans"
+            size="lg"
+            light
+          />
+        </div>
       </div>
 
-      <div className="w-full max-w-260 rounded-2xl aspect-video mx-auto mt-4">
-        <ImageComponent
-          src="/screen.png"
-          alt="screen"
-          className="w-full h-full object-contain rounded-2xl"
-        />
+      <div className="sheet mt-14 overflow-hidden p-2 md:p-3">
+        <div className="aspect-video w-full overflow-hidden rounded-md border border-border-soft bg-surface-muted">
+          <ImageComponent
+            src="/screen.png"
+            alt="Classly workspace showing a class and its contents"
+            className="h-full w-full object-contain"
+          />
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

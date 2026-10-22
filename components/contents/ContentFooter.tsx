@@ -28,7 +28,7 @@ const ContentFooter = ({
             className={cn(
               "flex-1 flex items-center justify-center gap-2 rounded-xl text-[13px] font-semibold py-3 transition-colors cursor-pointer",
               completed
-                ? "border border-emerald-600 text-green-900 bg-emerald-200 hover:bg-emerald-300"
+                ? "border border-emerald-700 text-emerald-900 bg-emerald-100 hover:bg-emerald-200"
                 : "bg-black/5 text-black/70 hover:bg-black/10",
             )}
           >

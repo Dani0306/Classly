@@ -14,7 +14,7 @@ const Home = async () => {
   } = await supabase.auth.getUser();
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="bg-quad flex min-h-screen w-full flex-col">
       <LandingHeader user={user} />
       <LandingHero user={user} />
       <LandingCards />

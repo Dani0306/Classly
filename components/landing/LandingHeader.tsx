@@ -1,21 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
-import ImageComponent from "../shared/ImageComponent";
 import PageButton from "../shared/PageButton";
+import Logo from "../shared/Logo";
 import { LogIn, User as UserIcon, Menu, X } from "lucide-react";
-import { useInviewCustom } from "@/hooks/shared/useInViewCustom";
 import { useModal } from "@/providers/AppModalProvider";
 import ModalContainer from "../modal/ModalContainer";
 import LoginModal from "../auth/LoginModal";
 import { User } from "@supabase/supabase-js";
 
+const NAV_LINKS = [
+  { label: "Features", href: "#features" },
+  { label: "Pricing", href: "#pricing" },
+  { label: "Testimonials", href: "#testimonials" },
+];
+
 const LandingHeader = ({ user }: { user: User | null }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { openModal } = useModal();
-
-  const { ref, inView } = useInviewCustom();
 
   const showLoginModal = () => {
     openModal(
@@ -26,32 +29,24 @@ const LandingHeader = ({ user }: { user: User | null }) => {
   };
 
   return (
-    <header ref={ref} className="relative">
-      <nav
-        className={`flex items-center py-6 justify-between px-4 lg:px-8 ${inView && "fade-in"} opacity-0`}
-      >
-        {/* Logo */}
-        <div className="md:min-w-50">
-          <ImageComponent className="w-10 h-12" alt="Logo" src="/logo.png" />
-        </div>
+    <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-sm">
+      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 lg:px-8">
+        <Logo />
 
-        {/* Desktop Menu */}
-        <div className="hidden md:inline">
-          <ul className="flex space-x-6">
-            <li className="cursor-pointer hover:scale-105 transition-all duration-200 font-light text-sm">
-              Features
+        <ul className="hidden items-center gap-8 md:flex">
+          {NAV_LINKS.map(({ label, href }) => (
+            <li key={href}>
+              <a
+                href={href}
+                className="text-sm text-muted-foreground transition-colors duration-150 hover:text-foreground"
+              >
+                {label}
+              </a>
             </li>
-            <li className="cursor-pointer hover:scale-105 transition-all duration-200 font-light text-sm">
-              Pricing
-            </li>
-            <li className="cursor-pointer hover:scale-105 transition-all duration-200 font-light text-sm">
-              Testimonials
-            </li>
-          </ul>
-        </div>
+          ))}
+        </ul>
 
-        {/* Desktop Buttons */}
-        <div className="hidden md:flex space-x-3">
+        <div className="hidden gap-2 md:flex">
           <PageButton
             onClick={showLoginModal}
             text="Sign In"
@@ -59,60 +54,72 @@ const LandingHeader = ({ user }: { user: User | null }) => {
             light
             size="md"
           />
-          <PageButton text="Get Started" icon={LogIn} size="md" />
+          <PageButton
+            onClick={user ? undefined : showLoginModal}
+            text="Get Started"
+            icon={LogIn}
+            size="md"
+          />
         </div>
 
-        <div className="md:hidden">
-          <span className="text-xl font-bold">Classly</span>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button onClick={() => setIsOpen(true)} className="md:hidden p-2">
-          <Menu size={24} />
+        <button
+          onClick={() => setIsOpen(true)}
+          aria-label="Open menu"
+          className="press -mr-2 cursor-pointer rounded-md p-2 md:hidden"
+        >
+          <Menu size={22} />
         </button>
       </nav>
 
-      {/* Overlay */}
-      {isOpen && (
-        <div
-          onClick={() => setIsOpen(false)}
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
-        />
-      )}
-
-      {/* Sidebar */}
       <div
-        className={`fixed top-0 right-0 h-full w-72 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+        onClick={() => setIsOpen(false)}
+        className={`fixed inset-0 z-40 bg-foreground/30 transition-opacity duration-200 ${
+          isOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
+
+      <div
+        className={`fixed right-0 top-0 z-50 h-full w-72 border-l border-border bg-surface shadow-xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex justify-between items-center p-4 border-b">
-          <ImageComponent className="w-8 h-10" alt="Logo" src="/logo.png" />
-          <button onClick={() => setIsOpen(false)}>
-            <X size={22} />
+        <div className="flex h-16 items-center justify-between border-b border-border px-5">
+          <Logo size="sm" />
+          <button
+            onClick={() => setIsOpen(false)}
+            aria-label="Close menu"
+            className="press -mr-2 cursor-pointer rounded-md p-2"
+          >
+            <X size={20} />
           </button>
         </div>
 
-        <ul className="flex flex-col space-y-6 p-6 text-sm font-light">
-          <li className="cursor-pointer hover:text-green-500 transition-colors">
-            Features
-          </li>
-          <li className="cursor-pointer hover:text-green-500 transition-colors">
-            Pricing
-          </li>
-          <li className="cursor-pointer hover:text-green-500 transition-colors">
-            Testimonials
-          </li>
+        <ul className="flex flex-col gap-1 p-4 text-sm">
+          {NAV_LINKS.map(({ label, href }) => (
+            <li key={href}>
+              <a
+                href={href}
+                onClick={() => setIsOpen(false)}
+                className="block rounded-md px-3 py-2.5 transition-colors hover:bg-surface-muted"
+              >
+                {label}
+              </a>
+            </li>
+          ))}
         </ul>
 
-        <div className="p-6 flex flex-col space-y-4">
+        <div className="flex flex-col gap-3 p-5">
           <PageButton
             onClick={showLoginModal}
             text="Sign In"
             icon={UserIcon}
             light
           />
-          <PageButton text="Get Started" icon={LogIn} />
+          <PageButton
+            onClick={user ? undefined : showLoginModal}
+            text="Get Started"
+            icon={LogIn}
+          />
         </div>
       </div>
     </header>

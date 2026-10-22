@@ -23,8 +23,8 @@ const SettingsSection = ({
     >
       <div className="flex items-start gap-4">
         {Icon && (
-          <span className="grid place-items-center size-10 shrink-0 rounded-xl bg-surface-green">
-            <Icon className="size-4.5 text-green-700" />
+          <span className="grid place-items-center size-10 shrink-0 rounded-xl bg-highlight-soft">
+            <Icon className="size-4.5 text-foreground" />
           </span>
         )}
         <div className="flex flex-col gap-1">

@@ -20,15 +20,15 @@ const PageButton = ({
   disabled = false,
 }: PageButtonProps) => {
   const sizeStyles = {
-    sm: "px-3 py-1.5 text-xs rounded-xl",
-    md: "px-5 py-2.5 text-xs rounded-2xl",
-    lg: "px-6 py-3 text-sm rounded-2xl",
+    sm: "px-3 py-1.5 text-xs rounded-md",
+    md: "px-4 py-2.5 text-xs rounded-lg",
+    lg: "px-6 py-3.5 text-sm rounded-lg",
   };
 
   const iconSizes = {
     sm: "size-3",
     md: "size-4",
-    lg: "size-5",
+    lg: "size-4.5",
   };
 
   return (
@@ -36,20 +36,18 @@ const PageButton = ({
       onClick={onClick}
       disabled={disabled}
       className={`
-        transition-all duration-300 ease-out
-        flex items-center gap-2
-        justify-center
+        press flex items-center justify-center gap-2 font-medium
         ${sizeStyles[size]}
         ${
           disabled
-            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+            ? "cursor-not-allowed border border-border bg-surface-muted text-muted-foreground"
             : light
-              ? "bg-white border border-black text-black hover:bg-gray-50 hover:scale-[1.03] cursor-pointer"
-              : "bg-primary hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] hover:bg-primary hover:scale-[1.03] cursor-pointer"
+              ? "cursor-pointer border border-foreground/80 bg-surface text-foreground hover:bg-highlight-soft"
+              : "cursor-pointer border border-primary bg-primary text-primary-foreground hover:bg-primary-hover"
         }
       `}
     >
-      <span className="font-medium">{text}</span>
+      <span>{text}</span>
       {Icon && <Icon className={iconSizes[size]} />}
     </button>
   );

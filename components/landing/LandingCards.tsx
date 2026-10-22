@@ -2,57 +2,45 @@
 
 import { CARDS_INFO } from "@/data/landing/features";
 import { useInviewCustom } from "@/hooks/shared/useInViewCustom";
-import { LucideIcon } from "lucide-react";
-
-const LandingCard = ({
-  title,
-  description,
-  icon: Icon,
-}: {
-  title: string;
-  description: string;
-  icon: LucideIcon;
-}) => {
-  return (
-    <div className="flex flex-col space-y-5 w-75 h-65  border border-gray-300 shadow-xl p-6 rounded-xl">
-      <div className="bg-primary/20 rounded-full p-2 w-max">
-        <Icon className="size-5 text-green-500" />
-      </div>
-      <h3 className="text-black font-medium text-base">{title}</h3>
-      <p className="text-sm text-gray-600 font-extralight">{description}</p>
-    </div>
-  );
-};
 
 const LandingCards = () => {
   const { inView, ref } = useInviewCustom();
 
   return (
-    <div
+    <section
+      id="features"
       ref={ref}
-      className={`flex flex-col space-y-8 mt-24 ${inView && "slide-left"} opacity-0`}
+      className={`mx-auto mt-28 grid w-full max-w-6xl scroll-mt-24 gap-12 px-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:px-8 ${inView ? "reveal" : ""}`}
     >
-      <div className="flex flex-col space-y-3 max-w-150 px-6 text-center mx-auto mb-12">
-        <h2 className="text-black font-semibold text-3xl">
-          Streamline Your Learning
+      <div className="flex flex-col gap-4 lg:sticky lg:top-28 lg:self-start">
+        <h2 className="text-balance text-3xl font-bold tracking-tight md:text-4xl">
+          Streamline Your <span className="marker">Learning</span>
         </h2>
-        <p className="text-sm text-gray-600 font-extralight">
+        <p className="max-w-md text-base leading-relaxed text-muted-foreground">
           Powerful AI tools designed to help students excel without the
           busywork. Focus on concepts, and let Classly handle the structure.
         </p>
       </div>
 
-      <div className="flex gap-8 flex-wrap items-center justify-center mx-auto mt-12">
+      <ul className="flex flex-col border-t border-foreground/80">
         {CARDS_INFO.map((item) => (
-          <LandingCard
+          <li
             key={item.title}
-            title={item.title}
-            description={item.description}
-            icon={item.icon}
-          />
+            className="flex gap-5 border-b border-border py-7"
+          >
+            <span className="grid size-11 shrink-0 place-items-center rounded-lg border border-foreground/80 bg-surface">
+              <item.icon className="size-5" strokeWidth={1.75} />
+            </span>
+            <div className="flex flex-col gap-1.5">
+              <h3 className="text-base font-semibold">{item.title}</h3>
+              <p className="max-w-lg text-sm leading-relaxed text-muted-foreground">
+                {item.description}
+              </p>
+            </div>
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </section>
   );
 };
 

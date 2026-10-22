@@ -26,15 +26,14 @@ const ClassNavbar = ({ id, plan }: { id: string; plan: Plan }) => {
   return (
     <div className="flex space-y-6 flex-col xl:justify-between xl:items-center xl:flex-row">
       <div className="flex flex-wrap gap-3 items-center">
-        {/* All Notes pill — uses primary green */}
         <button
           onClick={() => clearFilter({ type: "type" })}
-          style={{
-            backgroundColor: allNotesSelected ? "#35f527" : "#35f52730",
-            borderColor: "#35f527",
-            color: allNotesSelected ? "#ffffff" : "#35f527",
-          }}
-          className="px-4 py-1.5 rounded-full border text-xs font-medium transition-all duration-200 cursor-pointer"
+          aria-pressed={allNotesSelected}
+          className={`press px-4 py-1.5 rounded-md border text-xs font-medium cursor-pointer ${
+            allNotesSelected
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-surface text-foreground hover:bg-surface-muted"
+          }`}
         >
           All Contents
         </button>
@@ -46,13 +45,25 @@ const ClassNavbar = ({ id, plan }: { id: string; plan: Plan }) => {
             <button
               key={type}
               onClick={() => handleFilter({ type: "type", value: type })}
-              style={{
-                backgroundColor: isSelected ? color : `${color}30`,
-                borderColor: color,
-                color: isSelected ? "#ffffff" : color,
-              }}
-              className="px-4 py-1.5 rounded-full border text-xs font-medium transition-all duration-200 cursor-pointer"
+              aria-pressed={isSelected}
+              style={
+                isSelected
+                  ? { backgroundColor: color, borderColor: color }
+                  : undefined
+              }
+              className={`press flex items-center gap-2 px-3.5 py-1.5 rounded-md border text-xs font-medium cursor-pointer ${
+                isSelected
+                  ? "text-white"
+                  : "border-border bg-surface text-foreground hover:bg-surface-muted"
+              }`}
             >
+              {!isSelected && (
+                <span
+                  aria-hidden
+                  style={{ backgroundColor: color }}
+                  className="size-2 rounded-full"
+                />
+              )}
               {label}
             </button>
           );

@@ -133,8 +133,8 @@ function Toast({
 }) {
   const isSuccess = type === "success";
 
-  const accent = isSuccess ? "#35f527" : "#ef4444";
-  const iconBg = isSuccess ? "#e8f5ec" : "#fef2f2";
+  const accent = isSuccess ? "#1f8a4c" : "#d92d20";
+  const iconBg = isSuccess ? "#e1f2e6" : "#fdeceb";
 
   return (
     <div

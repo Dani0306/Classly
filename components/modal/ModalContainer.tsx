@@ -17,7 +17,7 @@ const ModalContainer = ({
 
   return (
     <div
-      className={`w-full h-screen ${defaultPadding && "p-6 pt-10 md:p-12"} relative overflow-y-auto no-scrollbar bg-white shadow-xl ${
+      className={`w-full h-screen ${defaultPadding && "p-6 pt-10 md:p-12"} relative overflow-y-auto no-scrollbar bg-surface shadow-xl ${
         size === "lg"
           ? "md:w-200 lg:w-275 md:h-180"
           : size === "md"
@@ -25,11 +25,11 @@ const ModalContainer = ({
             : size === "sm"
               ? "md:w-112.5 md:h-162.5"
               : "md:w-100 md:h-100"
-      } glassmorphism md:rounded-2xl`}
+      } md:rounded-xl md:border md:border-border`}
     >
       <X
         onClick={closeModal}
-        className="cursor-pointer z-50 text-black size-5 absolute top-4 right-4"
+        className="cursor-pointer z-50 text-foreground/70 hover:text-foreground transition-colors size-5 absolute top-4 right-4"
       />
       {children}
     </div>

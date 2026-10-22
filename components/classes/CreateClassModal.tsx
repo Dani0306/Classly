@@ -148,7 +148,7 @@ const CreateClassModal = ({ classContent }: { classContent?: Class }) => {
                 className={cn(
                   "size-14 p-4 rounded-xl cursor-pointer",
                   selected
-                    ? "bg-primary/30 border-2 border-primary"
+                    ? "bg-highlight-soft border-2 border-primary"
                     : "bg-foreground/20",
                 )}
               />

@@ -181,7 +181,7 @@ const ScheduleSelector = ({
                           className={cn(
                             "size-8 cursor-pointer rounded-lg text-[11px] font-semibold transition-colors",
                             selected
-                              ? "bg-primary/30 text-foreground ring-2 ring-primary"
+                              ? "bg-highlight-soft text-foreground ring-2 ring-primary"
                               : "bg-surface text-muted-foreground hover:bg-black/5",
                           )}
                         >

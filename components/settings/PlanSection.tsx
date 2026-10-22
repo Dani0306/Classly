@@ -45,7 +45,7 @@ const PlanSection = ({
                 className={cn(
                   "flex flex-1 flex-col space-y-4 rounded-2xl border p-5 transition-all duration-200",
                   current
-                    ? "border-primary/50 bg-surface-green/50 ring-4 ring-primary/10"
+                    ? "border-primary bg-highlight-soft/40 ring-4 ring-highlight/50"
                     : "border-border bg-surface-muted",
                 )}
               >
@@ -53,11 +53,11 @@ const PlanSection = ({
                   <Icon
                     className={cn(
                       "size-5",
-                      current ? "text-green-700" : "text-muted-foreground/60",
+                      current ? "text-foreground" : "text-muted-foreground/60",
                     )}
                   />
                   {current && (
-                    <span className="rounded-full bg-primary/20 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-green-700">
+                    <span className="rounded-full bg-highlight px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-foreground">
                       Current
                     </span>
                   )}
@@ -86,7 +86,7 @@ const PlanSection = ({
                       key={feature}
                       className="flex items-start gap-2 text-xs font-light text-foreground/70"
                     >
-                      <Check className="mt-0.5 size-3 shrink-0 text-green-700" />
+                      <Check className="mt-0.5 size-3 shrink-0 text-foreground" />
                       {feature}
                     </li>
                   ))}

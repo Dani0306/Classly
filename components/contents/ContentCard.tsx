@@ -34,18 +34,22 @@ const ContentCard = ({ content }: { content: Content }) => {
   return (
     <div
       onClick={handleClick}
-      style={{
-        borderColor:
-          contentTypes.find((item) => item.type === content.type)?.color ??
-          "#ccc",
-      }}
-      className="border-t-3 rounded-xl flex flex-col space-y-6 p-5 md:p-6 w-85 shadow-xl hover:scale-[1.03] transition-all duration-200 cursor-pointer"
+      className="lift sheet relative flex w-85 cursor-pointer flex-col gap-5 overflow-hidden p-5 md:p-6"
     >
+      <span
+        aria-hidden
+        style={{
+          backgroundColor:
+            contentTypes.find((item) => item.type === content.type)?.color ??
+            "#c9d3c6",
+        }}
+        className="absolute inset-x-0 top-0 h-1.5"
+      />
       <div className="flex items-center justify-between">
         <ContentBadge type={content.type} />
         <div className="flex">
           {attachments.length > 0 && (
-            <div className="flex space-x-1 items-center justify-center text-blue-800">
+            <div className="flex space-x-1 items-center justify-center text-muted-foreground">
               <Paperclip className="size-4" />
               <span>{attachments.length}</span>
             </div>
@@ -54,7 +58,7 @@ const ContentCard = ({ content }: { content: Content }) => {
         </div>
       </div>
 
-      <div className="flex flex-col space-y-3">
+      <div className="flex flex-col gap-2">
         <strong className="text-base font-semibold text-foreground">
           {content.title}
         </strong>

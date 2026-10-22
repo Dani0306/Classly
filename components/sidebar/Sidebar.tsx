@@ -13,7 +13,7 @@ export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
 
   return (
     <aside
-      className={`flex flex-col h-full w-70 pt-16 md:pt-4 pb-4 bg-[#ccc]/30`}
+      className={`flex flex-col h-full w-70 pt-16 md:pt-4 pb-4 bg-surface`}
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 h-14 shrink-0">
@@ -29,12 +29,12 @@ export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
               key={href}
               href={href}
               className={`
-                flex items-center gap-3 px-4 py-2.5 rounded-3xl text-sm
-                transition-all duration-200 group
+                press flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm
+                group
                 ${
                   active
-                    ? "bg-primary/20 text-green-700 font-medium"
-                    : "text-foreground-muted hover:text-foreground hover:bg-background-muted"
+                    ? "bg-primary text-primary-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-surface-muted"
                 }
               `}
             >
@@ -42,13 +42,10 @@ export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
                 width={16}
                 height={16}
                 className={`shrink-0 transition-colors duration-200
-                  ${active ? "text-gold" : "text-foreground-faint group-hover:text-foreground-muted"}
+                  ${active ? "text-highlight" : "text-muted-foreground group-hover:text-foreground"}
                 `}
               />
               {label}
-              {active && (
-                <span className="ml-auto w-1 h-4 rounded-full bg-gold" />
-              )}
             </Link>
           );
         })}

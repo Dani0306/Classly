@@ -9,75 +9,62 @@ import React from "react";
 const LandingTestimonials = () => {
   const { ref, inView } = useInviewCustom();
   return (
-    <div
+    <section
+      id="testimonials"
       ref={ref}
-      className={`${
-        inView && "slide-up"
-      } flex flex-col space-y-4 w-full items-center p-6`}
+      className={`mx-auto mt-32 w-full max-w-6xl scroll-mt-24 px-5 lg:px-8 ${inView ? "reveal" : ""}`}
     >
-      <div className="flex flex-col space-y-3 max-w-150 px-6 text-center mx-auto">
-        <h2 className="text-black font-semibold text-3xl">
-          What our users say.
+      <div className="flex max-w-xl flex-col gap-4">
+        <h2 className="text-balance text-3xl font-bold tracking-tight md:text-4xl">
+          What our users <span className="marker">say.</span>
         </h2>
-        <p className="text-sm text-gray-600 font-extralight">
+        <p className="text-base text-muted-foreground">
           Discover how our users have experienced the platform firsthand.
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-6 px-6 mt-6 items-center justify-center">
+      <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {testimonials.map((item) => (
-          <div
-            key={item.name}
-            className="border-gray-300 border rounded-xl flex flex-col w-87 h-75 p-6 space-y-5 shadow-xl"
-          >
-            <div className="flex space-x-3 items-center">
-              <div className="w-15 h-15 relative">
-                <Image
-                  fill
-                  src={item.image}
-                  alt="Customer image"
-                  className="rounded-full object-cover"
-                />
-              </div>
-              <div className="flex flex-col space-y-1">
-                <strong className="text-black font-medium">{item.name}</strong>
-                <p className="text-gray-600 text-sm">{item.role}</p>
-              </div>
-            </div>
-            <div className="flex space-x-0.5">
+          <figure key={item.name} className="sheet flex flex-col gap-5 p-6">
+            <div className="flex gap-0.5">
               {calculateStarFillPercentages(item.rating).map(
                 (rating, index) => (
-                  <div key={index}>
-                    {rating === 100 ? (
-                      <div className="relative w-5 h-5">
-                        <Image
-                          src={"/ratingStar1.png"}
-                          fill
-                          className="object-cover"
-                          alt="Rating star"
-                        />
-                      </div>
-                    ) : (
-                      <div className="relative w-5 h-5">
-                        <Image
-                          src={"/noStar.png"}
-                          fill
-                          className="object-cover"
-                          alt="Rating star"
-                        />
-                      </div>
-                    )}
+                  <div key={index} className="relative size-5">
+                    <Image
+                      src={rating === 100 ? "/ratingStar1.png" : "/noStar.png"}
+                      fill
+                      className="object-cover"
+                      alt="Rating star"
+                    />
                   </div>
                 ),
               )}
             </div>
-            <p className="text-gray-600 text-sm font-light">
+
+            <blockquote className="flex-1 text-sm leading-relaxed text-foreground/85">
               {item.testimonial}
-            </p>
-          </div>
+            </blockquote>
+
+            <figcaption className="flex items-center gap-3 border-t border-border-soft pt-5">
+              <div className="relative size-11 shrink-0">
+                <Image
+                  fill
+                  src={item.image}
+                  alt={`Photo of ${item.name}`}
+                  className="rounded-full object-cover"
+                />
+              </div>
+              <div className="flex flex-col">
+                <strong className="text-sm font-semibold">{item.name}</strong>
+                <span className="text-xs text-muted-foreground">
+                  {item.role}
+                </span>
+              </div>
+            </figcaption>
+          </figure>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

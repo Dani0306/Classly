@@ -30,57 +30,85 @@ const PricingCard = ({
   return (
     <div
       onClick={onClick}
-      className={`h-85 transition-all justify-between duration-200 relative cursor-pointer p-6 flex flex-col space-y-6 w-80 shadow-xl border border-gray-300 rounded-2xl ${selected && "scale-105 border-2 border-primary"}`}
+      className={`lift sheet relative flex cursor-pointer flex-col justify-between gap-8 p-7 ${
+        selected
+          ? "border-primary bg-primary text-primary-foreground ring-4 ring-highlight/60"
+          : ""
+      }`}
     >
       {popular && (
-        <div className=" rounded-bl-2xl rounded-tr-2xl right-0 top-0 px-4 py-1 absolute bg-primary text-[7px] font-semibold text-black">
-          MOST POPULAR
-        </div>
-      )}
-      <div className="flex flex-col space-y-2">
-        <strong className="text-sm font-medium text-black">{name}</strong>
-        <span>
-          <strong className="text-2xl font-bold text-black">{price}$</strong>
-          <span className="text-xs font-light text-gray-600"> / {billing}</span>
+        <span className="absolute right-5 top-5 rounded-md bg-highlight px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground">
+          Most popular
         </span>
-        <span className="text-[10px] font-light text-gray-600">
+      )}
+
+      <div className="flex flex-col gap-2">
+        <strong className="text-sm font-semibold">{name}</strong>
+        <span className="flex items-baseline gap-1">
+          <strong className="tabular text-5xl font-bold tracking-tight">
+            {price}$
+          </strong>
+          <span
+            className={`text-sm ${selected ? "text-primary-foreground/70" : "text-muted-foreground"}`}
+          >
+            / {billing}
+          </span>
+        </span>
+        <span
+          className={`text-sm ${selected ? "text-primary-foreground/70" : "text-muted-foreground"}`}
+        >
           {description}
         </span>
       </div>
-      <div className="flex flex-col space-y-3">
+
+      <ul
+        className={`flex flex-col gap-3 border-t pt-6 ${selected ? "border-primary-foreground/20" : "border-border"}`}
+      >
         {features.map((item) => (
-          <div key={item} className="flex space-x-2">
-            <div className="bg-primary p-0.5 rounded-full flex items-center justify-center">
-              <Check className="size-3 text-white" />
-            </div>
-            <span className="text-xs font-light text-gray-600">{item}</span>
-          </div>
+          <li key={item} className="flex items-start gap-2.5 text-sm">
+            <Check
+              className={`mt-0.5 size-4 shrink-0 ${selected ? "text-highlight" : "text-foreground"}`}
+              strokeWidth={2.25}
+            />
+            <span
+              className={
+                selected ? "text-primary-foreground/85" : "text-foreground/80"
+              }
+            >
+              {item}
+            </span>
+          </li>
         ))}
+      </ul>
+
+      <div className={selected ? "[&_button]:border-highlight [&_button]:bg-highlight [&_button]:text-foreground [&_button:hover]:bg-highlight-soft" : ""}>
+        <PageButton text={buttonText} light={!selected} size="lg" />
       </div>
-      <PageButton text={buttonText} light={!selected} />
     </div>
   );
 };
 
 const LandingPricing = () => {
-  const [plan, setPlan] = useState<string>("Starter");
+  const [plan, setPlan] = useState<string>("Pro");
 
   const { inView, ref } = useInviewCustom();
 
   return (
-    <div
+    <section
+      id="pricing"
       ref={ref}
-      className={`flex flex-col my-24 opacity-0 ${inView && "slide-right"}`}
+      className={`mx-auto mt-32 w-full max-w-6xl scroll-mt-24 px-5 lg:px-8 ${inView ? "reveal" : ""}`}
     >
-      <div className="flex flex-col space-y-3 max-w-150 px-6 text-center mx-auto">
-        <h2 className="text-black font-semibold text-3xl">
-          Simple, Transparent Pricing
+      <div className="flex max-w-xl flex-col gap-4">
+        <h2 className="text-balance text-3xl font-bold tracking-tight md:text-4xl">
+          Simple, Transparent <span className="marker">Pricing</span>
         </h2>
-        <p className="text-sm text-gray-600 font-extralight">
+        <p className="text-base text-muted-foreground">
           Choose the plan that fits your academic journey.
         </p>
       </div>
-      <div className="mx-auto flex-wrap justify-center items-center flex gap-8 mt-12">
+
+      <div className="mt-12 grid items-stretch gap-6 md:grid-cols-2 lg:max-w-4xl">
         {PRICING_INFO.map((item) => (
           <PricingCard
             onClick={() => setPlan(item.name)}
@@ -96,7 +124,7 @@ const LandingPricing = () => {
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 
