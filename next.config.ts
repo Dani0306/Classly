@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // "Contents" was renamed to "Materials"; keep old links and bookmarks working.
+  async redirects() {
+    return [
+      { source: "/app/contents", destination: "/app/materials", permanent: true },
+    ];
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: "5mb",

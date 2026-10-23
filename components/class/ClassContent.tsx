@@ -111,7 +111,7 @@ const ClassContent = ({
             action={
               <PageButton
                 onClick={handleOpenCreateContentModal}
-                text="Add your first content"
+                text="Add your first material"
                 icon={Plus}
                 size="md"
               />
@@ -121,7 +121,11 @@ const ClassContent = ({
       ) : (
         <div className="wall flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-8 pt-2">
           {contents.map((content) => (
-            <ContentCard key={content.id} content={content} />
+            <ContentCard
+              key={content.id}
+              content={content}
+              classLabel={classItem.name}
+            />
           ))}
         </div>
       )}

@@ -17,7 +17,7 @@ export const useDeleteContent = (id: string) => {
         closeModal();
 
         toast({
-          title: "Content deleted successfully!",
+          title: "Material deleted successfully!",
           type: "success",
         });
       } catch (err) {
@@ -25,7 +25,7 @@ export const useDeleteContent = (id: string) => {
 
         toast({
           title: "Something went wrong",
-          description: "Failed to delete content.",
+          description: "Failed to delete material.",
           type: "error",
         });
       }

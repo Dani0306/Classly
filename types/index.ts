@@ -93,6 +93,8 @@ export type Content = {
   is_completed?: boolean;
   created_at: string;
   updated_at: string;
+  /** Only present when the query joined `classes(name, color)`. */
+  classes?: { name: string; color: string | null } | null;
 };
 
 export type NewContent = Omit<

@@ -27,12 +27,19 @@ export const CONTENT_LABELS: Record<ContentType, string> = {
   class: "Class",
 };
 
-/** The `?type=` filter on class pages and All Contents. */
+/** The `?type=` filter on class pages and All Materials. */
 export const CONTENT_FILTERS = [
   { value: "note", label: "Notes", types: ["note"] },
   { value: "task", label: "Tasks", types: TASK_DB_TYPES },
+  { value: "pending", label: "Pending", types: TASK_DB_TYPES },
   { value: "study", label: "Study aids", types: [...STUDY_AID_TYPES] },
 ] as const;
+
+/** "pending" is tasks not marked as done, soonest due first. */
+export const isPendingFilter = (value?: string) => value === "pending";
+
+/** PostgREST `.or()` for tasks not marked as done; old rows may hold null. */
+export const PENDING_CONDITION = "is_completed.is.false,is_completed.is.null";
 
 /** The `contents.type` values a filter matches, or undefined for no filter. */
 export const typesForFilter = (value?: string) =>

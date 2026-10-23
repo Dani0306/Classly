@@ -9,13 +9,14 @@ import { cn } from "@/lib/utils";
 const DOTS: Record<string, ContentType[]> = {
   note: ["note"],
   task: ["task"],
+  pending: ["task"],
   study: ["summarize", "quiz", "diagram"],
 };
 
 const pill =
   "press flex cursor-pointer items-center gap-2 rounded-[3px] border px-3.5 py-1.5 text-xs font-semibold";
 
-/** All · Notes · Tasks · Study aids, kept in the `?type=` search param. */
+/** All · Notes · Tasks · Pending · Study aids, kept in the `?type=` search param. */
 const TypeFilters = () => {
   const { handleFilter, hasFilter, clearFilter } = useFilters();
 

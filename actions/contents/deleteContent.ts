@@ -14,19 +14,19 @@ export const deleteContent = async (id: string) => {
   if (!user) throw new Error("No user found.");
 
   const { data: content } = await supabase
-    .from("contents")
+    .from("materials")
     .select("files_urls")
     .eq("id", id)
     .eq("user_id", user.id)
     .maybeSingle();
 
   const { error } = await supabase
-    .from("contents")
+    .from("materials")
     .delete()
     .eq("id", id)
     .eq("user_id", user.id);
 
-  if (error) throw new Error("Error deleting content.");
+  if (error) throw new Error("Error deleting material.");
 
   // Attachments can sit on any content type in files_urls.
   const urls: string[] = [...(content?.files_urls ?? [])];
@@ -43,6 +43,7 @@ export const deleteContent = async (id: string) => {
   }
 
   revalidatePath("/app/class/[id]");
+  revalidatePath("/app/materials");
 
   return true;
 };

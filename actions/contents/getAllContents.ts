@@ -1,7 +1,12 @@
 "use server";
 
 import { Content } from "@/types";
-import { normalizeContent, typesForFilter } from "@/lib/contenttypes";
+import {
+  isPendingFilter,
+  normalizeContent,
+  PENDING_CONDITION,
+  typesForFilter,
+} from "@/lib/contenttypes";
 import { createServerSupabase } from "@/utils/supabase/server";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -13,7 +18,7 @@ const quoteFilterValue = (value: string) =>
 
 export const getAllContents = async (
   search?: string,
-  /** A CONTENT_FILTERS value: "note", "task" or "study". */
+  /** A CONTENT_FILTERS value: "note", "task", "pending" or "study". */
   type?: string,
   dueDate?: string,
 ): Promise<Content[]> => {
@@ -25,7 +30,9 @@ export const getAllContents = async (
 
   if (!user) throw new Error("User not found.");
 
-  let query = supabase.from("contents").select("*").eq("user_id", user.id);
+  let query = supabase
+    .from("materials")
+    .select("*, classes(name, color)").eq("user_id", user.id);
 
   const term = search?.trim();
 
@@ -38,6 +45,9 @@ export const getAllContents = async (
 
   const types = typesForFilter(type);
   if (types) query = query.in("type", types);
+
+  const pending = isPendingFilter(type);
+  if (pending) query = query.or(PENDING_CONDITION);
 
   if (dueDate && DATE_PATTERN.test(dueDate)) {
     const nextDay = new Date(`${dueDate}T00:00:00Z`);
@@ -53,11 +63,13 @@ export const getAllContents = async (
     }
   }
 
-  const { data, error } = await query.order("created_at", {
-    ascending: false,
-  });
+  const { data, error } = await (
+    pending
+      ? query.order("due_date", { ascending: true, nullsFirst: false })
+      : query
+  ).order("created_at", { ascending: false });
 
-  if (error) throw new Error("Failed getting contents.");
+  if (error) throw new Error("Failed getting materials.");
 
   return (data as Content[]).map(normalizeContent);
 };

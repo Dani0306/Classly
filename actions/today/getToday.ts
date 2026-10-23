@@ -34,7 +34,7 @@ export const getToday = async (): Promise<TodayData> => {
       .eq("user_id", user.id)
       .order("name"),
     supabase
-      .from("contents")
+      .from("materials")
       .select("*, classes(name, color)")
       .eq("user_id", user.id)
       .in("type", TASK_DB_TYPES)

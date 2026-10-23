@@ -14,7 +14,7 @@ export const modifyContent = async (content: UpdateContent, id: string) => {
   if (!user) throw new Error("No user found.");
 
   const { data, error } = await supabase
-    .from("contents")
+    .from("materials")
     .update({ ...content, updated_at: new Date().toISOString() })
     .eq("id", id)
     .eq("user_id", user.id)
@@ -25,6 +25,7 @@ export const modifyContent = async (content: UpdateContent, id: string) => {
 
   revalidatePath("/app/class/[id]");
   revalidatePath("/app/today");
+  revalidatePath("/app/materials");
 
   return data;
 };

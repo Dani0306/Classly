@@ -10,7 +10,14 @@ const SelectContentTypeView = ({
   setCurrentSection,
   contentType,
   setContentType,
+  classes,
+  classId,
+  setClassId,
 }: {
+  /** Only passed when the class isn't already known. */
+  classes?: { id: string; name: string }[];
+  classId: string;
+  setClassId: (id: string) => void;
   contentType: NewContentType;
   setCurrentSection: React.Dispatch<React.SetStateAction<number>>;
   setContentType: React.Dispatch<React.SetStateAction<NewContentType>>;
@@ -18,9 +25,33 @@ const SelectContentTypeView = ({
   return (
     <div className="flex h-full w-full flex-col gap-8">
       <ModalTitle
-        title="New Content"
-        description="What do you want to add to this class?"
+        title="New Material"
+        description={
+          classes
+            ? "Pick a class and what you want to add to it."
+            : "What do you want to add to this class?"
+        }
       />
+
+      {classes && (
+        <div className="flex flex-col gap-2">
+          <label htmlFor="material-class" className="text-xs font-semibold">
+            Class
+          </label>
+          <select
+            id="material-class"
+            value={classId}
+            onChange={(e) => setClassId(e.target.value)}
+            className="w-full cursor-pointer rounded-[3px] border border-ink/20 bg-transparent px-3 py-2.5 text-sm font-medium text-ink outline-none focus:border-ink/45 focus:ring-4 focus:ring-ring/15"
+          >
+            {classes.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div
         role="radiogroup"

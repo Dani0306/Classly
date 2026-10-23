@@ -16,7 +16,7 @@ export const useUpdateContentText = (
       } catch {
         toast({
           type: "error",
-          title: "Failed to update content.",
+          title: "Failed to update material.",
         });
       }
     });

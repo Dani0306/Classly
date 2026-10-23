@@ -14,7 +14,10 @@ export const grammarCorrection = async (title: string, text: string) => {
   if (!user) throw new Error("User not found.");
 
   const { error, output_text } = await client.responses.create({
-    model: "gpt-5-mini",
+    // The cheapest model. "minimal" reasoning left typos like "tis" and
+    // "taskck" untouched; "low" catches them and is still fast.
+    model: "gpt-5-nano",
+    reasoning: { effort: "low" },
     input: correctGrammarPrompt(title, text),
   });
 

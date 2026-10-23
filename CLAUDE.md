@@ -21,11 +21,11 @@ Classly is an AI study app for students. After signing in with Google, a user:
 1. Creates **classes** (name, description, icon + color, optional weekly schedule).
 2. Inside a class, creates **notes** and **tasks** (the New button offers only these two):
    - `note`: free text; optionally AI-proofread ("Fix spelling and grammar", spends a `grammar` credit only when ticked).
-   - `task`: homework or a reminder: `due_date` + `priority`, optional details, no AI. Can be ticked off.
+   - `task`: homework or a reminder: `due_date` + `priority`, optional details. Title and details are always proofread with the nano grammar model at no credit cost (saved as written if the call fails or the text is over 500 characters). Can be ticked off.
    - From an open note, **study tools** make AI study aids saved to the same class: `summarize` (markdown summary at a chosen length), `quiz` (up to 10 multiple-choice questions, answered in-app; submitting saves answers and sets `is_completed`), `diagram` (AI PNG, 8 layouts, stored in Supabase Storage).
-   - Legacy rows with `type` `homework` or `reminder` are read as tasks by `normalizeContent` (`lib/contenttypes.ts`). Once this code is deployed, run `update contents set type = 'task' where type in ('homework','reminder')` to retire them.
+   - Legacy rows with `type` `homework` or `reminder` are read as tasks by `normalizeContent` (`lib/contenttypes.ts`). Once this code is deployed, run `update materials set type = 'task' where type in ('homework','reminder')` to retire them.
 3. Attaches files (images, PDF, Word) to any content.
-4. Starts on **Today** (`/app/today`, the app home): overdue, due today, next 7 days, today's class timetable, and a quick-add task form. Browses everything on **All Contents** (search, filter All / Notes / Tasks / Study aids, due date) and sees class sessions plus task due dates on the **Calendar**.
+4. Starts on **Today** (`/app/today`, the app home): overdue, due today, next 7 days, today's class timetable, and a quick-add task form. Browses everything on **All Materials** (search, filter All / Notes / Tasks / Pending (open tasks, soonest due first) / Study aids, due date) and sees class sessions plus task due dates on the **Calendar**.
 5. Manages profile, plan and AI usage in **Settings**, and upgrades to **Pro** through Paddle.
 
 Plans: **Starter** (free) and **Pro** ($12/mo). Limits are enforced in the database (see "AI usage and plan limits").
@@ -35,7 +35,7 @@ Plans: **Starter** (free) and **Pro** ($12/mo). Limits are enforced in the datab
 - Next.js 16.1 App Router, React 19.2, TypeScript strict. Path alias `@/*` points to the repo root.
 - `proxy.ts` at the root is Next 16's renamed middleware. It redirects unauthenticated `/app/*` requests to `/` and refreshes the Supabase session (`utils/supabase/middleware.ts`).
 - Supabase (`@supabase/ssr`) for auth (Google OAuth only), Postgres and Storage. Project ref `disdpqeogqiwjupnryqp`, reachable through the Supabase MCP server in `.mcp.json`. **There is no local `supabase/` folder.** Migrations exist only in the remote project, so make schema changes with the MCP `apply_migration` tool.
-- OpenAI Responses API (`openai` SDK, `ai/client.ts`, prompts in `ai/prompts/`). Models: `gpt-5-mini` for text, `gpt-4.1-mini` with the `image_generation` tool for diagrams. The text actions `JSON.parse` the `output_text`, so prompts must request raw JSON.
+- OpenAI Responses API (`openai` SDK, `ai/client.ts`, prompts in `ai/prompts/`). Models: `gpt-5-nano` (low reasoning; minimal misses typos) for grammar, `gpt-5-mini` for summaries and quizzes, `gpt-4.1-mini` with the `image_generation` tool for diagrams. The text actions `JSON.parse` the `output_text`, so prompts must request raw JSON.
 - Paddle Billing (`@paddle/paddle-js` for checkout, `@paddle/paddle-node-sdk` on the server).
 - Tailwind v4 with a CSS-first theme in `app/globals.css` (shadcn-style tokens). shadcn components (`components.json`, style `radix-nova`) live in `components/ui/`.
 - Other libs: `lucide-react` icons, `date-fns`, `react-day-picker`, `react-dropzone` (file input), `react-markdown` (summaries), `docx-preview` (Word thumbnails), `react-intersection-observer` (landing animations), `mermaid` (installed, currently unused).
@@ -63,8 +63,8 @@ Plans: **Starter** (free) and **Pro** ($12/mo). Limits are enforced in the datab
 | `/app/today` | `app/app/today/page.tsx` | Today screen (`actions/today/getToday.ts` → `components/today/`). Day grouping happens in the browser (`hooks/shared/useNow.ts`) because "today" depends on the student's timezone. |
 | `/app/*` layout | `app/app/layout.tsx` | `Aside` shell: collapsible sidebar (`components/sidebar/`, links in `data/sidebar/links.ts`) + `UserCard`. |
 | `/app/classes` | `app/app/classes/page.tsx` | Class grid. `?search=` filter. |
-| `/app/class/[id]` | `app/app/class/[id]/page.tsx` | One class's contents, with filter pills (`?type=note\|task\|study`, `CONTENT_FILTERS`) and the "New" content modal. |
-| `/app/contents` | `app/app/contents/page.tsx` | All contents across classes. `?search=`, `?type=note\|task\|study`, `?dueDate=YYYY-MM-DD`. |
+| `/app/class/[id]` | `app/app/class/[id]/page.tsx` | One class's contents, with filter pills (`?type=note\|task\|pending\|study`, `CONTENT_FILTERS`) and the "New" content modal. |
+| `/app/materials` | `app/app/materials/page.tsx` | All Materials across classes (`/app/contents` redirects here via `next.config.ts`; the sidebar label is overridden in `Sidebar.tsx` because `data/sidebar/links.ts` still says Contents). `?search=`, `?type=note\|task\|pending\|study`, `?dueDate=YYYY-MM-DD`. |
 | `/app/calendar` | `app/app/calendar/page.tsx` | Day / week / month calendar. `?type=class\|task\|all`. |
 | `/app/settings` | `app/app/settings/page.tsx` | Profile, plan (usage, upgrade / manage subscription), account (sign out). |
 | `/app/dashboard` | `app/app/dashboard/page.tsx` | Static "Ask Classly AI" placeholder. Not linked in the sidebar, no logic. |
@@ -105,7 +105,9 @@ RLS is enabled on every table. All policies are for the `authenticated` role; `a
 
 Policies: owner-only select/insert/update/delete (`auth.uid() = user_id`).
 
-### `contents`: everything created inside a class (renamed from `notes`; constraint names still say `notes_*`)
+### `materials`: everything created inside a class (renamed `notes` → `contents` → `materials`; constraint names still say `notes_*`)
+
+Shown to students as **Materials**. In code the row type is still `Content` and the folders are `actions/contents`, `components/contents`, `hooks/contents`. A temporary `public.contents` view (`security_invoker = true`, so RLS on `materials` applies) keeps the previous deployment working; drop it (`drop view public.contents;`) once the materials code is live. Migration: `rename_contents_to_materials`.
 
 | column | type | notes |
 |---|---|---|
@@ -168,7 +170,7 @@ Policy: select own only. No write policies; writes go through the service-role R
 
 ### Migrations applied (remote only)
 
-`enable_owner_rls_policies`, `create_content_files_bucket`, `append_content_files_fn`, `remove_content_files`, `remove_content_files_by_url`, `content_files_allow_word`, `remove_content_files_revoke_anon`, `lock_users_plan`, `users_insert_starter_only`, `paddle_subscriptions`, `ai_usage_and_plan_limits`, `ai_credit_functions`.
+`enable_owner_rls_policies`, `create_content_files_bucket`, `append_content_files_fn`, `remove_content_files`, `remove_content_files_by_url`, `content_files_allow_word`, `remove_content_files_revoke_anon`, `lock_users_plan`, `rename_contents_to_materials`, `users_insert_starter_only`, `paddle_subscriptions`, `ai_usage_and_plan_limits`, `ai_credit_functions`.
 
 ### Storage buckets
 
@@ -217,7 +219,7 @@ All are `"use server"`, and all call `auth.getUser()` first and throw if there i
 1. Require a non-empty title and text.
 2. `consumeAiCredit(kind)` (`lib/ai/credits.ts`, `server-only`) unless the kind is null: note (only with `polish: true`) → `grammar`, summarize → `summary`, quiz → `quiz`, diagram → `diagram`, task → nothing. RPC error codes become friendly messages. Text is required for everything except tasks; tasks require `dueDate` and `priority`.
 3. `buildContent`: uploads attachments, then runs the type's AI call when there is one and fills `ai_output` (and `title` for grammar/summary); tasks store `due_date`/`priority`.
-4. Insert into `contents`. If step 3 or 4 fails, `refundAiCredit(usageId)` runs and the error is rethrown. Uploaded files are not rolled back in that case.
+4. Insert into `materials`. If step 3 or 4 fails, `refundAiCredit(usageId)` runs and the error is rethrown. Uploaded files are not rolled back in that case.
 5. `revalidatePath("/app/class/[id]", "page")`.
 
 The client side is `CreateContentModal` → `SelectContentTypeView` (Note or Task) → `CreateContent` (form driven by `CONTENT_FORMS`; the note's AI checkbox shows `AllowanceNote`) → `useCreateContent`. Study aids go `ShowContent` → `StudyTools` → `useCreateContent` with the note's text. The Today quick-add calls `createContentByType` directly.
@@ -241,7 +243,7 @@ The client side is `CreateContentModal` → `SelectContentTypeView` (Note or Tas
 
 - `contents.type` is the `ContentType` union in `types/index.ts`. Type metadata lives in `lib/contenttypes.ts` (`NEW_CONTENT_TYPES`, `STUDY_AID_TYPES`, `TASK_DB_TYPES`, `CONTENT_LABELS`, `CONTENT_FILTERS`, `normalizeContent`) and `lib/contentoptions.ts` (palette color, icon, description). Exhaustive records `tsc` points to: `ContentBadge`'s `TYPE_ICONS`, `lib/contentdescriptions.ts`, `lib/ai/kinds.ts` (`AI_KIND_BY_CONTENT_TYPE`, `null` = no credit) and the `switch` in `createContentByType`. `CONTENT_FORMS` covers only notes and tasks.
 - Every action that reads `contents` must map rows through `normalizeContent` and match tasks with `.in("type", TASK_DB_TYPES)` until the legacy rows are migrated.
-- `data/colors/typeColors.ts` is superseded by `lib/contentoptions.ts` and imported nowhere; it still lists `homework`/`reminder` and fails `tsc` until deleted. The Today nav link is prepended in `Sidebar.tsx` (`navLinks`), not in `data/sidebar/links.ts`.
+- The Today nav link is prepended in `Sidebar.tsx` (`navLinks`), not in `data/sidebar/links.ts`.
 - **`ai_output` always wins over `content`** for display and editing. `content` is the raw user text and is only the fallback. Compare with `!= null`, not truthiness, because an empty string is a valid saved value (`hooks/contents/useContentText.ts` picks which column an edit writes to).
 - Diagrams store their generated image's public URL in `ai_output`. Quizzes store `JSON.stringify(QuizQuestion[])`. On submit, `useQuiz` writes back the questions with `selected_answer` filled and `is_completed: true`, which locks the quiz.
 - Summaries are markdown with `**bold**` and `- ` bullets. The grammar prompt strips markdown to plain text on purpose.

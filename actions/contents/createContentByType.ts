@@ -11,6 +11,9 @@ import { createServerSupabase } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { uploadFiles } from "../files/uploadFiles";
 
+/** Longest task title or details that get proofread, in characters. */
+const TASK_PROOFREAD_LIMIT = 500;
+
 const buildContent = async (input: CreateContentInput): Promise<NewContent> => {
   const { type, classId, title, text, files } = input;
 
@@ -34,8 +37,26 @@ const buildContent = async (input: CreateContentInput): Promise<NewContent> => {
       };
     }
 
-    case "task":
-      return { ...base, due_date: input.dueDate, priority: input.priority };
+    case "task": {
+      const task = { ...base, due_date: input.dueDate, priority: input.priority };
+
+      // Free for everyone, so only short text goes to the model, and a failed
+      // call never blocks the task: it is saved as written.
+      if (title.length > TASK_PROOFREAD_LIMIT || text.length > TASK_PROOFREAD_LIMIT)
+        return task;
+
+      try {
+        const corrected = await grammarCorrection(title, text);
+        return {
+          ...task,
+          title: corrected.title?.trim() || title,
+          content: text.trim() ? corrected.description || text : text,
+        };
+      } catch (err) {
+        console.error(err);
+        return task;
+      }
+    }
 
     case "summarize": {
       const summary = await generateSummary(title, text, input.size);
@@ -101,14 +122,15 @@ export const createContentByType = async (input: CreateContentInput) => {
   }
 
   const { error } = await supabase
-    .from("contents")
+    .from("materials")
     .insert({ ...content, user_id: user.id });
 
   if (error) {
     if (usageId) await refundAiCredit(usageId);
-    throw new Error("Failed creating content.");
+    throw new Error("Failed creating material.");
   }
 
   revalidatePath("/app/class/[id]", "page");
   revalidatePath("/app/today");
+  revalidatePath("/app/materials");
 };

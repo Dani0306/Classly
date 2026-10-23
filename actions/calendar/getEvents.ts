@@ -50,14 +50,14 @@ export const getMyEvents = async (
 
   if (wantsTasks) {
     const { data: contents, error: contentsError } = await supabase
-      .from("contents")
+      .from("materials")
       .select("*")
       .eq("user_id", user.id)
       .in("type", TASK_DB_TYPES)
       .returns<Content[]>();
 
     if (contentsError)
-      throw new Error("Something went wrong fetching the contents");
+      throw new Error("Something went wrong fetching your tasks.");
 
     taskEvents = (contents ?? [])
       .filter((item) => item.due_date)

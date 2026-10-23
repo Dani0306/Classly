@@ -12,7 +12,14 @@ import ContentBadge from "./ContentBadge";
 import { Paperclip } from "lucide-react";
 import DateBadge from "../shared/DateBadge";
 
-const ContentCard = ({ content }: { content: Content }) => {
+const ContentCard = ({
+  content,
+  classLabel = content.classes?.name,
+}: {
+  content: Content;
+  /** The class name; defaults to the joined class when the list has one. */
+  classLabel?: string;
+}) => {
   const { openModal } = useModal();
 
   const attachments = content.files_urls ?? [];
@@ -24,7 +31,7 @@ const ContentCard = ({ content }: { content: Content }) => {
           {content.type === "quiz" ? (
             <QuizComponent content={content} />
           ) : (
-            <ShowContent content={content} />
+            <ShowContent content={content} classLabel={classLabel} />
           )}
         </>
       </ModalContainer>,

@@ -5,16 +5,50 @@ import { Content } from "@/types";
 import Input from "../shared/Input";
 import ContentCard from "../contents/ContentCard";
 import { useDebounce } from "@/hooks/shared/useDebounce";
-import { Search, SearchX, Sparkles, X } from "lucide-react";
+import { Plus, Search, SearchX, Sparkles, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import DatePicker from "../shared/DatePicker";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useModal } from "@/providers/AppModalProvider";
+import { useToast } from "@/providers/ToastProvider";
+import PageButton from "../shared/PageButton";
+import ModalContainer from "../modal/ModalContainer";
+import CreateContentModal from "../contents/CreateContentModal";
 import { useFilters } from "@/hooks/shared/useFilters";
 import EmptyState from "../shared/EmptyState";
 import TypeFilters from "../shared/TypeFilters";
 
-export const ContentsContainer = ({ contents }: { contents: Content[] }) => {
+export const ContentsContainer = ({
+  contents,
+  classes,
+}: {
+  contents: Content[];
+  classes: { id: string; name: string }[];
+}) => {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { openModal } = useModal();
+  const { toast } = useToast();
+
+  // Materials live inside a class, so the modal asks which one.
+  const handleNew = () => {
+    if (classes.length === 0) {
+      toast({
+        type: "error",
+        title: "Create a class first",
+        description: "Materials live inside a class.",
+      });
+      router.push("/app/classes");
+      return;
+    }
+
+    openModal(
+      <ModalContainer size="md">
+        <CreateContentModal classes={classes} />
+      </ModalContainer>,
+    );
+  };
+
   const { query, setQuery, value } = useDebounce(
     50,
     searchParams.get("search") ?? "",
@@ -41,7 +75,8 @@ export const ContentsContainer = ({ contents }: { contents: Content[] }) => {
 
   return (
     <PageContainer
-      title="All Contents"
+      title="All Materials"
+      action={<PageButton onClick={handleNew} text="New material" icon={Plus} />}
       description="Browse, search and filter every note, task and study aid across your classes."
     >
       <div className="flex w-full flex-col gap-3 md:w-150 md:flex-row md:items-center">
@@ -50,7 +85,7 @@ export const ContentsContainer = ({ contents }: { contents: Content[] }) => {
             name="search"
             value={query}
             setValue={setQuery}
-            placeholder="Search Content ..."
+            placeholder="Search materials ..."
             icon={Search}
           />
         </div>
@@ -87,7 +122,7 @@ export const ContentsContainer = ({ contents }: { contents: Content[] }) => {
             compact
             icon={SearchX}
             title="Nothing matches these filters"
-            description="No content matches your search or filters. Clear them to see everything you've created."
+            description="No material matches your search or filters. Clear them to see everything you've created."
             action={
               <button
                 type="button"

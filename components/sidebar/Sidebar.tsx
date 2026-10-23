@@ -12,7 +12,12 @@ import { ListTodo } from "lucide-react";
 // Today leads the nav: it's the app's home.
 const navLinks = [
   { label: "Today", href: "/app/today", icon: ListTodo, keywords: ["today"] },
-  ...links,
+  // data/sidebar/links.ts still says Contents; the section is now Materials.
+  ...links.map((link) =>
+    link.href === "/app/contents"
+      ? { ...link, label: "Materials", href: "/app/materials", keywords: ["materials"] }
+      : link,
+  ),
 ];
 
 export default function Sidebar({ user }: { user: User; isMobile?: boolean }) {
