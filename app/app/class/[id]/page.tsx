@@ -18,7 +18,13 @@ const page = async ({ params, searchParams }: PageProps) => {
 
   if (error) return <ErrorScreen error={error} />;
 
-  return <ClassContent contents={data.contents} classItem={data.classItem} />;
+  return (
+    <ClassContent
+      contents={data.contents}
+      classItem={data.classItem}
+      pins={data.pins}
+    />
+  );
 };
 
 export default page;

@@ -24,7 +24,7 @@ Classly is an AI study app for students. After signing in with Google, a user:
    - `task`: homework or a reminder: `due_date` + `priority`, optional details. Title and details are always proofread with the nano grammar model at no credit cost (saved as written if the call fails or the text is over 500 characters). Can be ticked off.
    - From an open note, **study tools** make AI study aids saved to the same class: `summarize` (markdown summary at a chosen length), `quiz` (up to 10 multiple-choice questions, answered in-app; submitting saves answers and sets `is_completed`), `diagram` (AI PNG, 8 layouts, stored in Supabase Storage).
    - Legacy rows with `type` `homework` or `reminder` are read as tasks by `normalizeContent` (`lib/contenttypes.ts`). Once this code is deployed, run `update materials set type = 'task' where type in ('homework','reminder')` to retire them.
-3. Attaches files (images, PDF, Word) to any content.
+3. Attaches files (images, PDF, Word) to any content, and **pins** links, documents and pictures to a class for the whole term (the "Pinned" shelf at the top of the class page).
 4. Starts on **Today** (`/app/today`, the app home): overdue, due today, next 7 days, today's class timetable, and a quick-add task form. Browses everything on **All Materials** (search, filter All / Notes / Tasks / Pending (open tasks, soonest due first) / Study aids, due date) and sees class sessions plus task due dates on the **Calendar**.
 5. Manages profile, plan and AI usage in **Settings**, and upgrades to **Pro** through Paddle.
 
@@ -63,7 +63,7 @@ Plans: **Starter** (free) and **Pro** ($12/mo). Limits are enforced in the datab
 | `/app/today` | `app/app/today/page.tsx` | Today screen (`actions/today/getToday.ts` → `components/today/`). Day grouping happens in the browser (`hooks/shared/useNow.ts`) because "today" depends on the student's timezone. |
 | `/app/*` layout | `app/app/layout.tsx` | `Aside` shell: collapsible sidebar (`components/sidebar/`, links in `data/sidebar/links.ts`) + `UserCard`. |
 | `/app/classes` | `app/app/classes/page.tsx` | Class grid. `?search=` filter. |
-| `/app/class/[id]` | `app/app/class/[id]/page.tsx` | One class's contents, with filter pills (`?type=note\|task\|pending\|study`, `CONTENT_FILTERS`) and the "New" content modal. |
+| `/app/class/[id]` | `app/app/class/[id]/page.tsx` | One class: the Pinned shelf (`components/class/ClassPins.tsx`, `PinModal.tsx`), then its contents, with filter pills (`?type=note\|task\|pending\|study`, `CONTENT_FILTERS`) and the "New" content modal. |
 | `/app/materials` | `app/app/materials/page.tsx` | All Materials across classes (`/app/contents` redirects here via `next.config.ts`; the sidebar label is overridden in `Sidebar.tsx` because `data/sidebar/links.ts` still says Contents). `?search=`, `?type=note\|task\|pending\|study`, `?dueDate=YYYY-MM-DD`. |
 | `/app/calendar` | `app/app/calendar/page.tsx` | Day / week / month calendar. `?type=class\|task\|all`. |
 | `/app/settings` | `app/app/settings/page.tsx` | Profile, plan (usage, upgrade / manage subscription), account (sign out). |
@@ -127,6 +127,20 @@ Shown to students as **Materials**. In code the row type is still `Content` and 
 
 Policies: owner-only CRUD (`auth.uid() = user_id`).
 
+### `class_pins`: links and files kept on a class all term
+
+| column | type | notes |
+|---|---|---|
+| `id` | uuid PK default gen_random_uuid() | |
+| `user_id` | uuid not null default `auth.uid()` | FK → `auth.users(id)` ON DELETE CASCADE |
+| `class_id` | uuid not null | FK → `classes(id)` ON DELETE CASCADE |
+| `kind` | text not null | check `in ('link','file')` |
+| `title` | text not null | 1–200 chars; defaults to the link's host or the file name without extension |
+| `url` | text not null | must start with `http(s)://`, ≤ 2048 chars. Files are public URLs in `content-files`. |
+| `created_at` | timestamptz default now() | shown oldest first |
+
+Policies: owner-only CRUD; insert also requires the class to be the caller's. Actions: `actions/pins/createPins.ts` (`pinLink`, `pinFiles`, which uploads through `uploadFiles` and removes the uploads if the insert fails), `deletePin.ts` (also deletes a pinned file's object). `getClass` returns `pins`. Link parsing in `lib/pins.ts` (`normalizeLink` adds `https://`). Deleting a class cascades the rows but leaves pinned files in the bucket, like materials. Migration: `class_pins`.
+
 ### `paddle_subscriptions`: cache of Paddle subscriptions, written only by the webhook
 
 | column | type | notes |
@@ -170,7 +184,7 @@ Policy: select own only. No write policies; writes go through the service-role R
 
 ### Migrations applied (remote only)
 
-`enable_owner_rls_policies`, `create_content_files_bucket`, `append_content_files_fn`, `remove_content_files`, `remove_content_files_by_url`, `content_files_allow_word`, `remove_content_files_revoke_anon`, `lock_users_plan`, `rename_contents_to_materials`, `users_insert_starter_only`, `paddle_subscriptions`, `ai_usage_and_plan_limits`, `ai_credit_functions`.
+`enable_owner_rls_policies`, `create_content_files_bucket`, `append_content_files_fn`, `remove_content_files`, `remove_content_files_by_url`, `content_files_allow_word`, `remove_content_files_revoke_anon`, `lock_users_plan`, `rename_contents_to_materials`, `class_pins`, `users_insert_starter_only`, `paddle_subscriptions`, `ai_usage_and_plan_limits`, `ai_credit_functions`.
 
 ### Storage buckets
 
@@ -269,8 +283,8 @@ The client side is `CreateContentModal` → `SelectContentTypeView` (Note or Tas
 ## Calendar
 
 - The server sends `EventData` with plain strings; `components/calendar/utils.ts` `buildEvents` turns it into `Date`s **in the browser** so days and times aren't shifted by the server's UTC timezone. Classes repeat on every visible day matching `day`; tasks are all-day on `dueDate` (parsed as local midnight).
-- Views: `full-calendar.tsx` (header, filter, Day/Week/Month tabs; weeks start Monday), `week-view.tsx`, `month-view.tsx`, `event-block.tsx`, `event-details.tsx`. Visible hours are 5–23, 64 px per hour.
-- Event colors come from `KIND_COLORS` in `components/calendar/utils.ts` (`class`, `task`).
+- Views: `full-calendar.tsx` (PageContainer header, prev/next, "Back to today", All/Classes/Tasks pills on `?type=`, Day/Week/Month switch; weeks start Monday), `week-view.tsx` (day and week: one scroll box with a sticky header holding each day's due tasks, sticky hour gutter, opens an hour before now, overlapping classes split into lanes via `layoutLanes`), `month-view.tsx`, `event-block.tsx` (`EventBlock` class session, `TaskChip` pink task note, `ClassLine` month row, shared `popover` class), `event-details.tsx` (popover body with an Open class link). Visible hours are 5–23, 64 px per hour. Week and month keep a 760px minimum width and scroll sideways on phones.
+- Colors: a class session uses its class's own `color` (`classColor`, fallback sky) through the `.cal-block` CSS (`--class` inline); tasks are pink notes (`TASK_COLOR`), plain paper with a green check once done. Styles live in the "Calendar" block of `app/globals.css` (`.cal-block`, `.cal-task`, `.cal-popover`). `EventData` carries `classId`, `className`, `color` and `completed` for this.
 
 ## Code layout conventions
 

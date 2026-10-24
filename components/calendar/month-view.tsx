@@ -17,13 +17,34 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { KIND_COLORS } from "./utils";
-import { EventDetails } from "./event-details";
 import { Event } from "@/types";
+import { ClassLine, TaskChip, popover } from "./event-block";
 
-const CHIP_LIMIT = 3;
+const ITEM_LIMIT = 3;
 const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const TODAY_TINT = "rgba(255, 233, 74, 0.13)";
 
+/** Tasks due first (they're what the month is for), then classes by time. */
+const itemsFor = (events: Event[], day: Date) => {
+  const onDay = events.filter((e) => isSameDay(e.start, day));
+  return [
+    ...onDay
+      .filter((e) => e.allDay)
+      .sort((a, b) => Number(!!a.completed) - Number(!!b.completed)),
+    ...onDay
+      .filter((e) => !e.allDay)
+      .sort((a, b) => a.start.getTime() - b.start.getTime()),
+  ];
+};
+
+const Item = ({ event, index }: { event: Event; index: number }) =>
+  event.allDay ? (
+    <TaskChip event={event} tilt={index % 2 ? 0.5 : -0.5} side="right" />
+  ) : (
+    <ClassLine event={event} />
+  );
+
+/** A month on one sheet. Scrolls sideways on phones rather than squashing. */
 export function MonthView({
   currentDate,
   events,
@@ -31,139 +52,92 @@ export function MonthView({
   currentDate: Date;
   events: Event[];
 }) {
-  const monthStart = startOfMonth(currentDate);
-  const gridStart = startOfWeek(monthStart, { weekStartsOn: 1 });
-  const gridEnd = endOfWeek(endOfMonth(currentDate), { weekStartsOn: 1 });
-  const days = eachDayOfInterval({ start: gridStart, end: gridEnd });
-  const weeks = Array.from({ length: days.length / 7 }, (_, i) =>
-    days.slice(i * 7, i * 7 + 7),
-  );
+  const days = eachDayOfInterval({
+    start: startOfWeek(startOfMonth(currentDate), { weekStartsOn: 1 }),
+    end: endOfWeek(endOfMonth(currentDate), { weekStartsOn: 1 }),
+  });
 
   return (
-    <div className="flex h-full flex-col overflow-hidden">
-      <div className="grid grid-cols-7 border-b">
-        {WEEKDAY_LABELS.map((label) => (
-          <div
-            key={label}
-            className="border-r px-2 py-2 text-center text-xs font-medium text-muted-foreground last:border-r-0"
-          >
-            {label}
-          </div>
-        ))}
-      </div>
+    <div className="max-h-[calc(100dvh-15.5rem)] min-h-[420px] overflow-auto overscroll-contain">
+      <div className="min-w-[760px]">
+        <div className="sticky top-0 z-10 grid grid-cols-7 border-b border-ink/15 bg-note-paper">
+          {WEEKDAY_LABELS.map((label) => (
+            <div
+              key={label}
+              className="border-l border-ink/10 px-2.5 py-2.5 text-xs font-semibold text-ink/60 first:border-l-0"
+            >
+              {label}
+            </div>
+          ))}
+        </div>
 
-      <div className="grid flex-1 grid-rows-6 overflow-y-auto">
-        {weeks.map((week, weekIdx) => (
-          <div
-            key={weekIdx}
-            className="grid grid-cols-7 border-b last:border-b-0"
-          >
-            {week.map((day) => {
-              const dayEvents = events
-                .filter((e) => isSameDay(e.start, day))
-                .sort((a, b) => a.start.getTime() - b.start.getTime());
-              const visible = dayEvents.slice(0, CHIP_LIMIT);
-              const overflow = dayEvents.length - visible.length;
+        <div className="grid grid-cols-7">
+          {days.map((day) => {
+            const inMonth = isSameMonth(day, currentDate);
+            const today = isToday(day);
+            const items = itemsFor(events, day);
+            const visible = items.slice(0, ITEM_LIMIT);
+            const overflow = items.length - visible.length;
 
-              return (
-                <div
-                  key={day.toISOString()}
+            return (
+              <div
+                key={day.getTime()}
+                className={cn(
+                  "flex min-h-32 min-w-0 flex-col gap-1.5 border-b border-l border-ink/10 p-2 [&:nth-child(7n+1)]:border-l-0",
+                  !inMonth && "bg-ink/[0.035]",
+                )}
+                style={today ? { backgroundColor: TODAY_TINT } : undefined}
+              >
+                <span
                   className={cn(
-                    "flex min-h-28 flex-col gap-1 border-r p-1.5 last:border-r-0",
-                    !isSameMonth(day, currentDate) &&
-                      "bg-muted/30 text-muted-foreground",
+                    "tabular grid h-7 w-fit min-w-7 place-items-center rounded-[3px] px-1 text-sm font-bold",
+                    today &&
+                      "bg-note-yellow shadow-[0_1px_0_rgba(0,0,0,0.14),0_8px_12px_-8px_rgba(0,0,0,0.5)] [transform:rotate(-2deg)]",
+                    !inMonth && !today && "font-semibold text-ink/40",
                   )}
                 >
-                  <span
-                    className={cn(
-                      "flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold",
-                      isToday(day) && "bg-primary text-primary-foreground",
-                    )}
-                  >
-                    {format(day, "d")}
-                  </span>
+                  {format(day, "d")}
+                  {today && <span className="sr-only"> (today)</span>}
+                </span>
 
-                  <div className="flex flex-1 flex-col gap-1">
-                    {visible.map((event) => {
-                      const colors = KIND_COLORS[event.kind];
-                      return (
-                        <Popover key={event.id}>
-                          <PopoverTrigger asChild>
-                            <button
-                              className={cn(
-                                "flex items-center gap-1 truncate rounded px-1 py-0.5 text-left text-[11px]",
-                                colors.bg,
-                                colors.text,
-                              )}
-                            >
-                              <span
-                                className={cn(
-                                  "h-1.5 w-1.5 shrink-0 rounded-full",
-                                  colors.dot,
-                                )}
-                              />
-                              <span className="truncate">{event.title}</span>
-                            </button>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            side="right"
-                            align="start"
-                            className="p-3"
-                          >
-                            <EventDetails event={event} />
-                          </PopoverContent>
-                        </Popover>
-                      );
-                    })}
+                <div className={cn("flex flex-col gap-1", !inMonth && "opacity-60")}>
+                  {visible.map((event, i) => (
+                    <Item key={event.id} event={event} index={i} />
+                  ))}
 
-                    {overflow > 0 && (
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <button className="truncate px-1 text-left text-[11px] font-medium text-muted-foreground hover:text-foreground">
-                            +{overflow} more
-                          </button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          side="right"
-                          align="start"
-                          className="w-64 p-3"
+                  {overflow > 0 && (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button
+                          type="button"
+                          className="w-fit cursor-pointer rounded-[3px] px-1 py-0.5 text-[11px] font-semibold text-ink/65 underline decoration-ink/25 underline-offset-4 hover:text-ink hover:decoration-ink"
                         >
-                          <p className="mb-2 text-xs font-medium text-muted-foreground">
+                          {overflow} more
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        side="right"
+                        align="start"
+                        className={popover}
+                      >
+                        <div className="flex flex-col gap-2 p-4">
+                          <p className="text-sm font-bold tracking-tight">
                             {format(day, "EEEE, MMMM d")}
                           </p>
-                          <div className="space-y-1.5">
-                            {dayEvents.map((event) => {
-                              const colors = KIND_COLORS[event.kind];
-                              return (
-                                <div
-                                  key={event.id}
-                                  className="flex items-center gap-1.5 text-xs"
-                                >
-                                  <span
-                                    className={cn(
-                                      "h-1.5 w-1.5 shrink-0 rounded-full",
-                                      colors.dot,
-                                    )}
-                                  />
-                                  <span className="font-medium">
-                                    {format(event.start, "h:mm a")}
-                                  </span>
-                                  <span className="truncate text-muted-foreground">
-                                    {event.title}
-                                  </span>
-                                </div>
-                              );
-                            })}
+                          <div className="flex flex-col gap-1.5">
+                            {items.map((event, i) => (
+                              <Item key={event.id} event={event} index={i} />
+                            ))}
                           </div>
-                        </PopoverContent>
-                      </Popover>
-                    )}
-                  </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  )}
                 </div>
-              );
-            })}
-          </div>
-        ))}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

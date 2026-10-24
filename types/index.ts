@@ -53,6 +53,17 @@ export type Class = {
   schedule?: ScheduleEntry[];
 };
 
+/** Something kept on a class for the whole term: a link or an uploaded file. */
+export type ClassPin = {
+  id: string;
+  user_id: string;
+  class_id: string;
+  kind: "link" | "file";
+  title: string;
+  url: string;
+  created_at: string;
+};
+
 export type NewClass = Omit<
   Class,
   "id" | "created_at" | "updated_at" | "user_id"
@@ -170,6 +181,13 @@ export interface Event {
   kind: EventKind;
   description?: string;
   allDay?: boolean;
+  /** The class it belongs to (a class event is its own class). */
+  classId?: string;
+  className?: string;
+  /** The class's hex color, when it has one. */
+  color?: string | null;
+  /** Tasks: ticked off. */
+  completed?: boolean;
 }
 
 /**
@@ -192,6 +210,10 @@ export type EventData = {
   startTime?: string;
   /** Classes: "10:15". */
   endTime?: string;
+  classId?: string;
+  className?: string;
+  color?: string | null;
+  completed?: boolean;
 };
 
 // * section type

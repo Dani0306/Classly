@@ -550,7 +550,76 @@ textarea {
   color: color-mix(in srgb, var(--ink) 50%, transparent);
 }
 
+/* ===== Calendar: a planner sheet pinned to the wall ===== */
+
+/* A class session: paper tinted with the class color, a solid strip of that
+   color along the top, lifted a little when picked. --class is set inline. */
+.cal-block {
+  background: color-mix(in srgb, var(--class) 30%, var(--note-paper));
+  border-top: 3px solid var(--class);
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.1),
+    0 8px 14px -10px rgba(0, 0, 0, 0.45);
+  transition:
+    transform 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out);
+}
+.cal-block.is-past {
+  background: color-mix(in srgb, var(--class) 14%, var(--note-paper));
+}
+@media (hover: hover) and (pointer: fine) {
+  .cal-block:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 1px 0 rgba(0, 0, 0, 0.12),
+      0 12px 18px -10px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* A task: a tiny sticky note, a little crooked until it's picked. */
+.cal-task {
+  transform: rotate(var(--tilt, 0deg));
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.12),
+    0 6px 10px -7px rgba(0, 0, 0, 0.45);
+  transition:
+    transform 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out);
+}
+.cal-task:focus-visible {
+  transform: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cal-task:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 1px 0 rgba(0, 0, 0, 0.12),
+      0 10px 14px -8px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Popovers on the planner are paper notes too. */
+.cal-popover {
+  border-radius: 3px;
+  background: var(--note-paper);
+  color: var(--ink);
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.14),
+    0 22px 34px -16px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(23, 24, 28, 0.08);
+}
+/* Radix focuses the popover itself on open; the ring belongs to its controls. */
+.cal-popover:focus-visible {
+  outline: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .cal-block,
+  .cal-block:hover,
+  .cal-task,
+  .cal-task:hover {
+    transform: none;
+  }
   .drop-in {
     animation: fadeIn 200ms ease 200ms both;
   }

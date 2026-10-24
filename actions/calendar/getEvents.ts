@@ -37,6 +37,9 @@ export const getMyEvents = async (
           title: item.name,
           kind: "class" as const,
           description: item.description ?? "",
+          classId: item.id,
+          className: item.name,
+          color: item.color,
           day: s.day,
           startTime: s.start_time,
           endTime: s.end_time,
@@ -51,7 +54,7 @@ export const getMyEvents = async (
   if (wantsTasks) {
     const { data: contents, error: contentsError } = await supabase
       .from("materials")
-      .select("*")
+      .select("*, classes(name, color)")
       .eq("user_id", user.id)
       .in("type", TASK_DB_TYPES)
       .returns<Content[]>();
@@ -69,6 +72,10 @@ export const getMyEvents = async (
         kind: "task" as const,
         description: item.ai_output ?? item.content ?? "",
         dueDate: item.due_date!.slice(0, 10),
+        classId: item.class_id,
+        className: item.classes?.name,
+        color: item.classes?.color,
+        completed: !!item.is_completed,
       }));
   }
 

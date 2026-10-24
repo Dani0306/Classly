@@ -1,6 +1,6 @@
 "use server";
 
-import { Class, Content } from "@/types";
+import { Class, ClassPin, Content } from "@/types";
 import {
   isPendingFilter,
   normalizeContent,
@@ -38,6 +38,7 @@ export const getClass = async (id: string, filter?: string) => {
   const [
     { data: classItem, error: classError },
     { data: contents, error: notesError },
+    { data: pins, error: pinsError },
   ] = await Promise.all([
     supabase
       .from("classes")
@@ -46,13 +47,21 @@ export const getClass = async (id: string, filter?: string) => {
       .eq("user_id", user.id)
       .single(),
     query.order("created_at", { ascending: false }),
+    supabase
+      .from("class_pins")
+      .select("*")
+      .eq("class_id", id)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true }),
   ]);
 
   if (classError) throw new Error("Failed getting class.");
   if (notesError) throw new Error("Failed getting notes from class.");
+  if (pinsError) throw new Error("Failed getting the class's pinned items.");
 
   return {
     classItem: classItem as Class,
     contents: (contents as Content[]).map(normalizeContent),
+    pins: pins as ClassPin[],
   };
 };
