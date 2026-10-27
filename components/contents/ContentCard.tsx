@@ -9,7 +9,7 @@ import AIOutputSmall from "../ai/AIOutputSmall";
 import QuizComponent from "../quiz/QuizComponent";
 import ShowContent from "./ShowContent";
 import ContentBadge from "./ContentBadge";
-import { CircleAlert, Paperclip } from "lucide-react";
+import { CircleAlert, CircleCheck, Paperclip } from "lucide-react";
 import DateBadge from "../shared/DateBadge";
 
 const ContentCard = ({
@@ -24,6 +24,7 @@ const ContentCard = ({
 
   const attachments = content.files_urls ?? [];
   const isPending = content.type === "task" && !content.is_completed;
+  const isDone = content.type === "task" && !!content.is_completed;
 
   const handleClick = () => {
     openModal(
@@ -56,12 +57,19 @@ const ContentCard = ({
           "--tape": `${typeColor(content.type)}d9`,
         } as React.CSSProperties
       }
-      className={`note tape tilt relative flex w-85 cursor-pointer flex-col gap-5 p-5 pt-7 md:p-6 md:pt-7 ${isPending ? "ring-2 ring-amber-400" : ""}`}
+      className={`note tape tilt relative flex w-85 cursor-pointer flex-col gap-5 p-5 pt-7 md:p-6 md:pt-7 ${isPending ? "ring-2 ring-amber-400" : ""} ${isDone ? "opacity-70 ring-2 ring-green-500/60" : ""}`}
     >
       {isPending && (
         <span className="absolute -top-3 right-4 z-10 inline-flex items-center gap-1 rounded-full border border-amber-500 bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-900 shadow-sm">
           <CircleAlert className="size-3.5" />
           Pending
+        </span>
+      )}
+
+      {isDone && (
+        <span className="absolute -top-3 right-4 z-10 inline-flex items-center gap-1 rounded-full border border-green-600 bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-900 shadow-sm">
+          <CircleCheck className="size-3.5" />
+          Done
         </span>
       )}
 
