@@ -2,6 +2,8 @@
 
 import { client } from "@/ai/client";
 import { generateQuizPrompt } from "@/ai/prompts/generateQuizPrompt";
+import { parseModelJson } from "@/lib/ai/parseJson";
+import { QuizQuestion } from "@/types";
 import { createServerSupabase } from "@/utils/supabase/server";
 
 export const generateQuiz = async (title: string, text: string) => {
@@ -20,7 +22,7 @@ export const generateQuiz = async (title: string, text: string) => {
 
   if (error) throw new Error("Failed generating quiz.");
 
-  const response = JSON.parse(output_text);
+  const response = parseModelJson<QuizQuestion[]>(output_text);
 
   return response;
 };

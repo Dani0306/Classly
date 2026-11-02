@@ -4,6 +4,7 @@ import { client } from "@/ai/client";
 import { generateDiagramPrompt } from "@/ai/prompts/generateDiagramPrompt";
 import { DiagramType } from "@/types";
 import { createServerSupabase } from "@/utils/supabase/server";
+import { randomBytes } from "crypto";
 
 export const generateDiagram = async (
   title: string,
@@ -41,7 +42,7 @@ export const generateDiagram = async (
 
   // Convert base64 to buffer and upload to Supabase Storage
   const buffer = Buffer.from(imageData[0]!, "base64");
-  const fileName = `${user.id}/${Date.now()}.png`;
+  const fileName = `${user.id}/${Date.now()}-${randomBytes(4).toString("hex")}.png`;
 
   const { error: uploadError } = await supabase.storage
     .from("diagrams")
@@ -55,7 +56,7 @@ export const generateDiagram = async (
   // Return just the public URL — tiny string instead of massive base64
   const {
     data: { publicUrl },
-  } = supabase.storage.from("content-files").getPublicUrl(fileName);
+  } = supabase.storage.from("diagrams").getPublicUrl(fileName);
 
   return publicUrl;
 };

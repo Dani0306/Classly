@@ -11,7 +11,6 @@ import { useDeleteContent } from "@/hooks/contents/useDeleteContent";
 import { useNow } from "@/hooks/shared/useNow";
 import { useState, useTransition } from "react";
 import { format, parseISO } from "date-fns";
-import ReactMarkdown from "react-markdown";
 import {
   CalendarClock,
   Check,
@@ -29,6 +28,7 @@ import SheetTabs from "./SheetTabs";
 import Attachments from "./Attachments";
 import DiagramPreview from "./DiagramPreview";
 import StudyTools from "./StudyTools";
+import SummaryView from "./SummaryView";
 import { attachFiles } from "@/actions/contents/attachFiles";
 import { useToast } from "@/providers/ToastProvider";
 
@@ -84,6 +84,10 @@ const ContentReader = ({
   text: string;
   onEdit: () => void;
 }) => {
+  if (content.type === "summarize" && text.trim()) {
+    return <SummaryView text={text} onEdit={onEdit} />;
+  }
+
   if (!text.trim()) {
     return (
       <button
@@ -99,15 +103,8 @@ const ContentReader = ({
   }
 
   return (
-    <div
-      onDoubleClick={onEdit}
-      className={cn("reading", content.type !== "summarize" && "whitespace-pre-wrap")}
-    >
-      {content.type === "summarize" ? (
-        <ReactMarkdown>{text}</ReactMarkdown>
-      ) : (
-        text
-      )}
+    <div onDoubleClick={onEdit} className="reading whitespace-pre-wrap">
+      {text}
     </div>
   );
 };

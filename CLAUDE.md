@@ -236,6 +236,8 @@ All are `"use server"`, and all call `auth.getUser()` first and throw if there i
 4. Insert into `materials`. If step 3 or 4 fails, `refundAiCredit(usageId)` runs and the error is rethrown. Uploaded files are not rolled back in that case.
 5. `revalidatePath("/app/class/[id]", "page")`.
 
+While an AI call runs, `components/loading/GenerationScreen.tsx` (a paper note acting out the kind: lines, option strips or diagram nodes) replaces the form in `StudyTools` and the polish flow; plain saves keep `LoadingScreen`. Summaries render through `SummaryView` (word count, copy) and diagrams through `DiagramPreview` (fit / actual size, download).
+
 The client side is `CreateContentModal` → `SelectContentTypeView` (Note or Task) → `CreateContent` (form driven by `CONTENT_FORMS`; the note's AI checkbox shows `AllowanceNote`) → `useCreateContent`. Study aids go `ShowContent` → `StudyTools` → `useCreateContent` with the note's text. The Today quick-add calls `createContentByType` directly.
 
 ## AI usage and plan limits
@@ -321,7 +323,7 @@ utils/                supabase clients, tryCatch, misc helpers (utils/fn.ts)
 
 Check these before assuming a feature works:
 
-- `generateDiagram` uploads to the `diagrams` bucket but builds the returned URL with `storage.from("content-files").getPublicUrl(...)`, so the stored `ai_output` points at the wrong bucket. Its key also lacks the random segment.
+- Diagram rows saved before the fix store a `content-files` URL for an image that lives in `diagrams`. `DiagramPreview` rewrites the bucket when showing them; new rows are correct.
 - `ClassContent`'s dropdown options (View Details, Edit, View Notes, Share, Delete) are no-op stubs.
 - `createClass` calls `revalidatePath("app/classes")` without the leading slash.
 - `getMyClasses` interpolates the search term into `.or()` unquoted (unlike `getAllContents`), so commas or parentheses in a search break the filter.
