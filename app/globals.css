@@ -502,6 +502,100 @@ textarea {
   }
 }
 
+/* ========== AI GENERATION ========== */
+
+/* The note shown while the AI works. Every loop is composite-friendly or a
+   clip-path wipe, and every loop starts from an already-visible default. */
+.gen-sheet {
+  animation: sheetIn 240ms var(--ease-out) both;
+}
+.gen-line {
+  display: block;
+  border-radius: 2px;
+  animation: genLine 3.6s var(--ease-out) infinite both;
+}
+@keyframes genLine {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  40%,
+  85% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+/* Polishing marks lines with the highlighter just after they are written. */
+.gen-mark {
+  animation: genLine 3.6s var(--ease-out) infinite both;
+}
+.gen-pick {
+  animation: genPick 4.5s var(--ease-out) infinite both;
+}
+@keyframes genPick {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  8%,
+  28% {
+    clip-path: inset(0 0 0 0);
+  }
+  38%,
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+.gen-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: genNode 3.8s var(--ease-out) infinite both;
+}
+@keyframes genNode {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  12%,
+  80% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+.gen-edge {
+  stroke-dasharray: 1;
+  animation: genEdge 3.8s var(--ease-out) infinite both;
+}
+@keyframes genEdge {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  35%,
+  80% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+/* The status line changes stage without a hard cut. */
+.gen-phase {
+  animation: genPhase 220ms var(--ease-out) both;
+}
+@keyframes genPhase {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+  }
+}
+
 /* ========== QUIZ ========== */
 
 /* A new question slides in from the side it came from. Only pointer moves
@@ -656,13 +750,27 @@ textarea {
   .modal-backdrop > *,
   .unfold,
   .stamp,
-  .quiz-step {
+  .quiz-step,
+  .gen-sheet,
+  .gen-phase {
     animation: fadeIn 160ms ease both;
   }
   .check-path,
   .strike,
   .quiz-tick {
     transition: none;
+  }
+  /* Still frames of the finished state: written lines, a picked option, drawn edges. */
+  .gen-line,
+  .gen-mark,
+  .gen-node,
+  .gen-edge {
+    animation: none;
+  }
+  .gen-pick {
+    animation: none;
+    clip-path: inset(0 0 0 0);
+    opacity: 0;
   }
   .reveal,
   .slide-up,

@@ -2,6 +2,7 @@
 
 import { client } from "@/ai/client";
 import { generateSummaryPrompt } from "@/ai/prompts/generateSummaryPrompt";
+import { parseModelJson } from "@/lib/ai/parseJson";
 import { createServerSupabase } from "@/utils/supabase/server";
 
 export const generateSummary = async (
@@ -24,7 +25,7 @@ export const generateSummary = async (
 
   if (error) throw new Error("Error generating summary.");
 
-  const response = JSON.parse(output_text);
+  const response = parseModelJson<{ title: string; text: string }>(output_text);
 
   return response;
 };

@@ -20,7 +20,7 @@ import { useCreateContent } from "@/hooks/contents/useCreateContent";
 import { useModal } from "@/providers/AppModalProvider";
 import SelectOptions from "../shared/SelectOptions";
 import PageButton from "../shared/PageButton";
-import LoadingScreen from "../loading/LoadingScreen";
+import GenerationScreen from "../loading/GenerationScreen";
 import AllowanceNote from "./AllowanceNote";
 
 const TOOLS: {
@@ -30,7 +30,6 @@ const TOOLS: {
   icon: LucideIcon;
   kind: AiKind;
   blurb: string;
-  loading: string;
 }[] = [
   {
     type: "summarize",
@@ -39,7 +38,6 @@ const TOOLS: {
     icon: BookOpenText,
     kind: "summary",
     blurb: "The key points of this note, at the length you pick.",
-    loading: "Summarizing your note ...",
   },
   {
     type: "quiz",
@@ -48,7 +46,6 @@ const TOOLS: {
     icon: HelpCircle,
     kind: "quiz",
     blurb: "Up to 10 multiple-choice questions to test yourself on this note.",
-    loading: "Writing your quiz ...",
   },
   {
     type: "diagram",
@@ -57,7 +54,6 @@ const TOOLS: {
     icon: Workflow,
     kind: "diagram",
     blurb: "A visual map of this note, in the layout you pick.",
-    loading: "Drawing your diagram ...",
   },
 ];
 
@@ -75,8 +71,8 @@ const StudyTools = ({ content, text }: { content: Content; text: string }) => {
 
   if (isPending && tool) {
     return (
-      <div className="mt-10 py-10">
-        <LoadingScreen message={tool.loading} />
+      <div className="mt-10">
+        <GenerationScreen kind={tool.kind} />
       </div>
     );
   }

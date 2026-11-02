@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Plus, Sparkles } from "lucide-react";
 import LoadingScreen from "../loading/LoadingScreen";
+import GenerationScreen from "../loading/GenerationScreen";
 import Input from "../shared/Input";
 import ModalTitle from "../modal/ModalTitle";
 import DatePicker from "../shared/DatePicker";
@@ -78,9 +79,11 @@ const CreateContent = ({
   if (isPending) {
     return (
       <div className="flex h-full w-full items-center justify-center">
-        <LoadingScreen
-          message={spendsCredit ? "Polishing your note ..." : form.loadingMessage}
-        />
+        {spendsCredit ? (
+          <GenerationScreen kind="grammar" />
+        ) : (
+          <LoadingScreen message={form.loadingMessage} />
+        )}
       </div>
     );
   }
