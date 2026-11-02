@@ -54,16 +54,18 @@ const LandingHeader = ({ user }: { user: User | null }) => {
         </ul>
 
         <div className="hidden gap-2 md:flex">
+          {!user && (
+            <PageButton
+              onClick={handleRedirect}
+              text="Sign In"
+              icon={UserIcon}
+              light
+              size="md"
+            />
+          )}
           <PageButton
             onClick={handleRedirect}
-            text="Sign In"
-            icon={UserIcon}
-            light
-            size="md"
-          />
-          <PageButton
-            onClick={handleRedirect}
-            text="Get Started"
+            text={user ? "Go to Classes" : "Get started"}
             icon={LogIn}
             size="md"
           />
@@ -116,15 +118,17 @@ const LandingHeader = ({ user }: { user: User | null }) => {
         </ul>
 
         <div className="flex flex-col gap-3 p-5">
+          {!user && (
+            <PageButton
+              onClick={handleRedirect}
+              text="Sign In"
+              icon={UserIcon}
+              light
+            />
+          )}
           <PageButton
             onClick={handleRedirect}
-            text="Sign In"
-            icon={UserIcon}
-            light
-          />
-          <PageButton
-            onClick={handleRedirect}
-            text="Get Started"
+            text={user ? "Go to Classes" : "Get started"}
             icon={LogIn}
           />
         </div>
