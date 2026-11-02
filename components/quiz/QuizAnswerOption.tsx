@@ -1,90 +1,49 @@
-import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+export const OPTION_KEYS = ["A", "B", "C", "D"];
+
+/** One choice: a paper strip with its letter key. Picked means highlighted and inked in. */
 const QuizAnswerOption = ({
   answer,
+  index,
   isSelected,
-  isCorrectAnswer,
-  isSubmitted,
-  correctAnswer,
+  disabled,
   onSelect,
 }: {
   answer: string;
+  index: number;
   isSelected: boolean;
-  isCorrectAnswer: boolean;
-  isSubmitted: boolean;
-  correctAnswer: string;
+  disabled: boolean;
   onSelect: () => void;
-}) => {
-  const showCorrect = isSubmitted && isCorrectAnswer;
-  const showWrong = isSubmitted && isSelected && !isCorrectAnswer;
-  const showNeutralSelected = isSelected && !isSubmitted;
-
-  return (
-    <button
-      onClick={onSelect}
-      disabled={isSubmitted}
+}) => (
+  <button
+    type="button"
+    role="radio"
+    aria-checked={isSelected}
+    disabled={disabled}
+    onClick={onSelect}
+    className={cn(
+      "quiz-option group flex w-full cursor-pointer items-start gap-3.5 rounded-[3px] border px-4 py-3.5 text-left disabled:cursor-default",
+      isSelected
+        ? "border-ink bg-highlight-soft shadow-[inset_0_0_0_1px_var(--ink)]"
+        : "border-ink/15 bg-note-paper hover:border-ink/35 hover:bg-white",
+    )}
+  >
+    <span
+      aria-hidden
       className={cn(
-        "flex items-center space-x-3 px-4 py-3 rounded-[3px] border text-left transition-all duration-200",
-        isSubmitted ? "cursor-default" : "cursor-pointer",
-        showCorrect
-          ? "border-green-500 bg-green-50"
-          : showWrong
-            ? "border-red-500 bg-red-50"
-            : showNeutralSelected
-              ? "border-blue-600 bg-blue-600/10"
-              : "border-border hover:border-primary/40 hover:bg-gray-50",
+        "grid size-6 shrink-0 place-items-center rounded-[3px] text-[11px] font-bold transition-colors duration-150",
+        isSelected
+          ? "bg-ink text-note-yellow"
+          : "bg-ink/[0.07] text-ink/70 group-hover:bg-ink/[0.12]",
       )}
     >
-      <div
-        className={cn(
-          "size-4 rounded-full border-2 flex items-center justify-center shrink-0",
-          showCorrect
-            ? "border-green-500 bg-green-500"
-            : showWrong
-              ? "border-red-500 bg-red-500"
-              : showNeutralSelected
-                ? "border-blue-600 bg-blue-600"
-                : "border-gray-300",
-        )}
-      >
-        {showCorrect && <Check className="size-2.5 text-white" />}
-        {showWrong && <X className="size-2.5 text-white" />}
-        {showNeutralSelected && <Check className="size-2.5 text-white" />}
-      </div>
-
-      <div className="flex flex-col gap-0.5 flex-1">
-        <p
-          className={cn(
-            "text-xs font-light",
-            showCorrect
-              ? "text-green-700"
-              : showWrong
-                ? "text-red-600 line-through"
-                : "text-foreground/80",
-          )}
-        >
-          {answer}
-        </p>
-        {isSubmitted && showWrong && (
-          <p className="text-[11px] text-green-600 font-medium">
-            Correct answer: {correctAnswer}
-          </p>
-        )}
-      </div>
-
-      {showCorrect && (
-        <span className="ml-auto text-[10px] font-medium text-green-600 bg-green-100 px-2 py-0.5 rounded-full shrink-0">
-          Correct
-        </span>
-      )}
-      {showWrong && (
-        <span className="ml-auto text-[10px] font-medium text-red-500 bg-red-100 px-2 py-0.5 rounded-full shrink-0">
-          Wrong
-        </span>
-      )}
-    </button>
-  );
-};
+      {OPTION_KEYS[index]}
+    </span>
+    <span className="pt-0.5 text-[15px] leading-snug text-ink [overflow-wrap:anywhere]">
+      {answer}
+    </span>
+  </button>
+);
 
 export default QuizAnswerOption;
