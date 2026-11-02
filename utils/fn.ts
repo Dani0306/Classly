@@ -61,10 +61,15 @@ export function cutText(text: string) {
 // * Shuffle questions
 
 export const shuffleAnswers = (questions: QuizQuestion[]): QuizQuestion[] => {
-  return questions.map((q) => ({
-    ...q,
-    answers: [...q.answers].sort(() => Math.random() - 0.5),
-  }));
+  return questions.map((q) => {
+    // Fisher–Yates: sorting by a random comparator isn't a fair shuffle.
+    const answers = [...q.answers];
+    for (let i = answers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [answers[i], answers[j]] = [answers[j], answers[i]];
+    }
+    return { ...q, answers };
+  });
 };
 
 // * Check all questions have been answered

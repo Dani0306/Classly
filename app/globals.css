@@ -596,6 +596,36 @@ textarea {
   }
 }
 
+/* ========== QUIZ ========== */
+
+/* A new question slides in from the side it came from. Only pointer moves
+   animate; keyboard moves swap instantly. --step-from is set inline. */
+.quiz-step {
+  animation: quizStep 200ms var(--ease-out) both;
+}
+@keyframes quizStep {
+  from {
+    opacity: 0;
+    transform: translateX(var(--step-from, 14px));
+  }
+}
+.quiz-option {
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+.quiz-option:active:not(:disabled) {
+  transform: scale(0.985);
+}
+/* The current tick stands taller; scaled, not resized, so nothing reflows. */
+.quiz-tick {
+  transition:
+    scale 200ms var(--ease-out),
+    background-color 150ms ease;
+}
+
 /* ========== TASK CHECKBOX ========== */
 
 /* Ticking a task is the Today screen's one authored moment: the check draws
@@ -720,12 +750,14 @@ textarea {
   .modal-backdrop > *,
   .unfold,
   .stamp,
+  .quiz-step,
   .gen-sheet,
   .gen-phase {
     animation: fadeIn 160ms ease both;
   }
   .check-path,
-  .strike {
+  .strike,
+  .quiz-tick {
     transition: none;
   }
   /* Still frames of the finished state: written lines, a picked option, drawn edges. */

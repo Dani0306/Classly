@@ -31,7 +31,7 @@ const ContentCard = ({
       <ModalContainer defaultPadding={false}>
         <>
           {content.type === "quiz" ? (
-            <QuizComponent content={content} />
+            <QuizComponent content={content} classLabel={classLabel} />
           ) : (
             <ShowContent content={content} classLabel={classLabel} />
           )}
