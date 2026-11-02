@@ -8,6 +8,7 @@ import { useModal } from "@/providers/AppModalProvider";
 import ModalContainer from "../modal/ModalContainer";
 import LoginModal from "../auth/LoginModal";
 import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
@@ -18,14 +19,20 @@ const NAV_LINKS = [
 const LandingHeader = ({ user }: { user: User | null }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const router = useRouter();
+
   const { openModal } = useModal();
 
-  const showLoginModal = () => {
-    openModal(
-      <ModalContainer size="sm">
-        <LoginModal />
-      </ModalContainer>,
-    );
+  const handleRedirect = () => {
+    if (!user)
+      openModal(
+        <ModalContainer size="sm">
+          <LoginModal />
+        </ModalContainer>,
+      );
+    else {
+      router.push("/app/classes");
+    }
   };
 
   return (
@@ -48,14 +55,14 @@ const LandingHeader = ({ user }: { user: User | null }) => {
 
         <div className="hidden gap-2 md:flex">
           <PageButton
-            onClick={showLoginModal}
+            onClick={handleRedirect}
             text="Sign In"
             icon={UserIcon}
             light
             size="md"
           />
           <PageButton
-            onClick={user ? undefined : showLoginModal}
+            onClick={handleRedirect}
             text="Get Started"
             icon={LogIn}
             size="md"
@@ -110,13 +117,13 @@ const LandingHeader = ({ user }: { user: User | null }) => {
 
         <div className="flex flex-col gap-3 p-5">
           <PageButton
-            onClick={showLoginModal}
+            onClick={handleRedirect}
             text="Sign In"
             icon={UserIcon}
             light
           />
           <PageButton
-            onClick={user ? undefined : showLoginModal}
+            onClick={handleRedirect}
             text="Get Started"
             icon={LogIn}
           />
